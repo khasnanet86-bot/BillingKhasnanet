@@ -1,0 +1,810 @@
+<!DOCTYPE html>
+<html>
+<head>
+<base target="_top">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌐</text></svg>">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6f9;color:#1f2937;}button,input,select{font-family:inherit;}
+
+/* ========================================== */
+/* DARK MODE - VARIABEL                      */
+/* ========================================== */
+:root {
+  --bg-primary: #f4f6f9;
+  --bg-card: #ffffff;
+  --bg-sidebar: #ffffff;
+  --bg-header: #111827;
+  --text-primary: #1f2937;
+  --text-secondary: #6b7280;
+  --text-header: #ffffff;
+  --border-color: #e5e7eb;
+  --shadow-color: rgba(0,0,0,0.06);
+  --input-bg: #ffffff;
+  --input-border: #d1d5db;
+  --hover-bg: #f3f4f6;
+  --table-header: #f3f4f6;
+  --table-border: #e5e7eb;
+  --card-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+[data-theme="dark"] {
+  --bg-primary: #0f172a;
+  --bg-card: #1e293b;
+  --bg-sidebar: #1e293b;
+  --bg-header: #0f172a;
+  --text-primary: #e2e8f0;
+  --text-secondary: #94a3b8;
+  --text-header: #ffffff;
+  --border-color: #334155;
+  --shadow-color: rgba(0,0,0,0.3);
+  --input-bg: #1e293b;
+  --input-border: #334155;
+  --hover-bg: #334155;
+  --table-header: #1e293b;
+  --table-border: #334155;
+  --card-shadow: 0 4px 20px rgba(0,0,0,0.3);
+}
+
+body{background:var(--bg-primary);color:var(--text-primary);transition:background .3s,color .3s}
+.header{background:var(--bg-header);color:var(--text-header)}
+.sidebar{background:var(--bg-sidebar);border-right:1px solid var(--border-color)}
+.sidebar .menu:hover{background:var(--hover-bg)}
+.sidebar .menu.active{background:#2563eb;color:#fff}
+.card,.dashboard-card,.toolbar,.table-box,.modal-box,.expense-form,.login-box,.metric-card,#pengeluaranPage .card,#usersPage .card{background:var(--bg-card);color:var(--text-primary);box-shadow:var(--card-shadow);border-color:var(--border-color)}
+.table-box table{background:var(--bg-card)}
+.table-box th{background:var(--table-header);color:var(--text-primary);border-bottom:2px solid var(--border-color)}
+.table-box td{border-bottom:1px solid var(--border-color);color:var(--text-primary)}
+.table-box tr:hover{background:var(--hover-bg)}
+.input,.search,.filter,.filter-date{background:var(--input-bg);border:2px solid var(--input-border);color:var(--text-primary)}
+.input:focus,.search:focus,.filter:focus,.filter-date:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,0.15)}
+.metric-card .metric-label{color:var(--text-secondary)}
+.dashboard-card h3{color:var(--text-primary)}
+.status-on{background:#dcfce7;color:#166534}
+[data-theme="dark"] .status-on{background:#064e3b;color:#86efac}
+.status-off{background:#fee2e2;color:#991b1b}
+[data-theme="dark"] .status-off{background:#7f1d1d;color:#fca5a5}
+.info-data,.toggle-status{color:var(--text-secondary)}
+.dark-toggle{background:transparent;border:2px solid rgba(255,255,255,0.2);color:#fff;padding:8px 14px;border-radius:8px;cursor:pointer;font-size:16px;transition:all .3s}
+.dark-toggle:hover{background:rgba(255,255,255,0.1);transform:scale(1.05)}
+[data-theme="dark"] .modal-box{background:#1e293b;color:var(--text-primary)}
+[data-theme="dark"] .modal-box .close{background:#dc2626}
+[data-theme="dark"] .detail-item{background:#0f172a}
+[data-theme="dark"] ::-webkit-scrollbar{width:8px;height:8px}
+[data-theme="dark"] ::-webkit-scrollbar-track{background:#1e293b}
+[data-theme="dark"] ::-webkit-scrollbar-thumb{background:#475569;border-radius:4px}
+[data-theme="dark"] ::-webkit-scrollbar-thumb:hover{background:#64748b}
+[data-theme="dark"] .notification{background:#1e293b;color:#e2e8f0;border:1px solid #334155}
+[data-theme="dark"] .notification-success{background:#064e3b;color:#86efac;border-color:#16a34a}
+[data-theme="dark"] .notification-error{background:#7f1d1d;color:#fca5a5;border-color:#dc2626}
+[data-theme="dark"] .notification-info{background:#1e3a5f;color:#93c5fd;border-color:#2563eb}
+
+#loginPage{min-height:100vh;display:flex;justify-content:center;align-items:center;background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 30%,#2563eb 70%,#7c3aed 100%);background-size:400% 400%;animation:gradientBG 15s ease infinite;padding:20px;position:relative;overflow:hidden;}
+@keyframes gradientBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+.login-bubble{position:absolute;border-radius:50%;background:rgba(255,255,255,0.05);animation:floatBubble 20s infinite ease-in-out;pointer-events:none;}
+.login-bubble:nth-child(1){width:300px;height:300px;top:-100px;left:-100px;animation-delay:0s}
+.login-bubble:nth-child(2){width:200px;height:200px;bottom:-50px;right:-50px;animation-delay:-5s}
+.login-bubble:nth-child(3){width:150px;height:150px;top:50%;left:50%;transform:translate(-50%,-50%);animation-delay:-10s}
+.login-bubble:nth-child(4){width:100px;height:100px;top:20%;right:10%;animation-delay:-3s}
+.login-bubble:nth-child(5){width:250px;height:250px;bottom:10%;left:5%;animation-delay:-7s}
+@keyframes floatBubble{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(30px,-30px) scale(1.1)}50%{transform:translate(-20px,20px) scale(0.9)}75%{transform:translate(20px,30px) scale(1.05)}}
+.login-box{width:100%;max-width:420px;background:rgba(255,255,255,0.08);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(255,255,255,0.15);padding:45px 40px 40px;border-radius:24px;box-shadow:0 25px 60px rgba(0,0,0,0.4),inset 0 1px 0 rgba(255,255,255,0.1);position:relative;z-index:10;animation:slideUp .8s cubic-bezier(0.16,1,0.3,1) forwards;opacity:0;transform:translateY(30px)}
+@keyframes slideUp{to{opacity:1;transform:translateY(0)}}
+.logo{text-align:center;margin-bottom:35px}
+.logo .logo-icon{font-size:48px;display:block;margin-bottom:10px;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+.logo h1{margin:0;font-size:32px;font-weight:800;background:linear-gradient(135deg,#ffffff 0%,#93c5fd 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:1px}
+.logo p{color:rgba(255,255,255,0.6);margin:5px 0 0;font-size:14px;letter-spacing:2px;text-transform:uppercase}
+.input-group{position:relative;margin-bottom:20px}
+.input-group .input-icon{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:rgba(255,255,255,0.4);font-size:18px;z-index:2;pointer-events:none}
+.input{width:100%;padding:16px 16px 16px 50px;border:2px solid rgba(255,255,255,0.1);border-radius:14px;background:rgba(255,255,255,0.06);color:white;font-size:15px;transition:all .3s;outline:none}
+.input::placeholder{color:rgba(255,255,255,0.4)}
+.input:focus{border-color:rgba(255,255,255,0.3);background:rgba(255,255,255,0.1);box-shadow:0 0 30px rgba(37,99,235,0.15)}
+.login-button{width:100%;padding:16px;border:none;border-radius:14px;background:linear-gradient(135deg,#2563eb,#7c3aed);color:white;font-size:16px;font-weight:700;cursor:pointer;transition:all .3s;position:relative;overflow:hidden;margin-top:10px;letter-spacing:1px}
+.login-button::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.15),transparent);transition:left .6s}
+.login-button:hover::before{left:100%}
+.login-button:hover{transform:translateY(-2px);box-shadow:0 15px 40px rgba(37,99,235,0.3)}
+.login-button .btn-text{display:inline-block}
+.login-button .btn-loader{display:none;width:20px;height:20px;border:3px solid rgba(255,255,255,0.2);border-top:3px solid white;border-radius:50%;animation:spin .8s linear infinite;margin:0 auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.login-button.loading .btn-text{display:none}
+.login-button.loading .btn-loader{display:block}
+.login-message{text-align:center;color:#fca5a5;margin-top:15px;font-size:14px;min-height:24px}
+@keyframes shake{0%,100%{transform:translateX(0)}10%,30%,50%,70%,90%{transform:translateX(-10px)}20%,40%,60%,80%{transform:translateX(10px)}}
+.shake{animation:shake .5s ease}
+#dashboardPage{display:none}
+.header{height:65px;background:#111827;color:white;display:flex;align-items:center;justify-content:space-between;padding:0 25px;position:sticky;top:0;z-index:100}
+.header-title{font-size:20px;font-weight:bold}
+.user-area{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
+.logout{border:none;background:#dc2626;color:white;padding:8px 14px;border-radius:8px;cursor:pointer}
+.logout:hover{background:#b91c1c}
+.layout{display:flex;min-height:calc(100vh - 65px)}
+.sidebar{width:230px;background:white;border-right:1px solid #e5e7eb;padding:20px 10px;position:sticky;top:65px;height:calc(100vh - 65px);overflow-y:auto}
+.menu{padding:13px 15px;margin-bottom:5px;border-radius:9px;cursor:pointer;transition:all .2s}
+.menu:hover{background:#eff6ff}
+.menu.active{background:#2563eb;color:white}
+.content{flex:1;padding:25px;overflow-x:hidden}
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin-bottom:25px}
+.card{background:white;padding:20px;border-radius:14px;box-shadow:0 3px 12px rgba(0,0,0,.06)}
+.card-title{color:#6b7280;font-size:14px}
+.card-number{font-size:30px;font-weight:bold;margin-top:8px}
+#pelangganPage{display:none}
+.toolbar{background:white;padding:18px;border-radius:14px;margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.search{flex:1;min-width:180px;padding:13px;border:1px solid #d1d5db;border-radius:9px}
+.filter{padding:13px;border:1px solid #d1d5db;border-radius:9px;background:white;min-width:130px}
+.table-box{background:white;border-radius:14px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:950px}
+th{background:#f3f4f6;padding:13px;text-align:left;font-size:13px;cursor:pointer}
+td{padding:13px;border-top:1px solid #eee;font-size:14px}
+.status{padding:5px 9px;border-radius:20px;font-size:12px;font-weight:bold}
+.status-on{background:#dcfce7;color:#166534}
+.status-off{background:#fee2e2;color:#991b1b}
+.detail-btn{border:0;background:#2563eb;color:white;padding:7px 10px;border-radius:7px;cursor:pointer}
+.detail-btn:hover{background:#1d4ed8}
+.success-btn{border:0;background:#16a34a;color:white;padding:7px 10px;border-radius:7px;cursor:pointer}
+.success-btn:hover{background:#15803d}
+.danger-btn{border:0;background:#dc2626;color:white;padding:7px 10px;border-radius:7px;cursor:pointer}
+.danger-btn:hover{background:#b91c1c}
+.thermal-btn{border:0;background:#6b7280;color:white;padding:7px 10px;border-radius:7px;cursor:pointer}
+.thermal-btn:hover{background:#4b5563}
+.reset-btn{border:0;background:#6b7280;color:white;padding:7px 10px;border-radius:7px;cursor:pointer}
+.reset-btn:hover{background:#4b5563}
+.modal{display:none;position:fixed;z-index:1000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.5);padding:20px;overflow:auto}
+.modal-box{max-width:650px;margin:40px auto;background:white;border-radius:16px;padding:25px}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.close{border:0;background:#ef4444;color:white;border-radius:7px;padding:7px 12px;cursor:pointer}
+.close:hover{background:#dc2626}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.detail-item{background:#f9fafb;padding:12px;border-radius:8px}
+.detail-label{font-size:12px;color:#6b7280}
+.detail-value{font-weight:bold;margin-top:4px}
+.wa-btn{display:inline-block;margin-top:20px;padding:12px 18px;background:#16a34a;color:white;text-decoration:none;border-radius:9px}
+.wa-btn:hover{background:#15803d}
+.notification{position:fixed;top:20px;right:20px;padding:15px 25px;border-radius:10px;color:white;z-index:2000;max-width:400px;box-shadow:0 10px 30px rgba(0,0,0,.2);animation:slideIn .3s ease}
+.notification-success{background:#16a34a}
+.notification-error{background:#dc2626}
+.notification-info{background:#2563eb}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+.dashboard-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:20px}
+.dashboard-grid .full-width{grid-column:1/3}
+.dashboard-card{background:white;border-radius:16px;padding:20px;box-shadow:0 4px 20px rgba(0,0,0,.06);transition:transform .2s}
+.dashboard-card:hover{transform:translateY(-2px)}
+.dashboard-card h3{margin-top:0;margin-bottom:15px;font-size:16px;color:#6b7280;display:flex;align-items:center;gap:8px}
+.dashboard-card .chart-container{position:relative;height:200px}
+.dashboard-card .chart-container.tall{height:250px}
+.metric-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:15px;margin-bottom:25px}
+.metric-card{background:white;padding:20px;border-radius:14px;box-shadow:0 4px 20px rgba(0,0,0,.06);border-left:4px solid #2563eb;transition:transform .2s}
+.metric-card:hover{transform:translateY(-3px)}
+.metric-card .metric-icon{font-size:24px}
+.metric-card .metric-value{font-size:28px;font-weight:bold;margin-top:5px;transition:filter 0.3s ease}
+.metric-card .metric-label{font-size:14px;color:#6b7280;margin-top:2px}
+.filter-date{min-width:150px}
+.info-data{margin-top:10px;color:#6b7280;font-size:13px}
+.toggle-btn{background:#8b5cf6;color:white;border:none;padding:10px 20px;border-radius:8px;cursor:pointer;font-weight:bold;font-size:14px;transition:all .3s}
+.toggle-btn:hover{transform:scale(1.02);box-shadow:0 4px 15px rgba(139,92,246,0.4)}
+.toggle-btn.showing{background:#16a34a}
+.toggle-btn.hidden{background:#dc2626}
+.toggle-status{font-size:13px;color:#6b7280}
+.metric-value.hidden-nominal{filter:blur(10px);user-select:none;cursor:default;transition:filter .3s;color:#9ca3af}
+.metric-value.hidden-nominal:hover{filter:blur(5px)}
+#pengeluaranPage .card{background:white;padding:20px;border-radius:14px;box-shadow:0 3px 12px rgba(0,0,0,.06);margin-bottom:20px}
+#pengeluaranPage .card h3{margin-top:0;margin-bottom:15px;font-size:16px;color:#6b7280}
+#pengeluaranPage .toolbar{background:white;padding:18px;border-radius:14px;margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+#pengeluaranPage .table-box{background:white;border-radius:14px;overflow-x:auto}
+#pengeluaranPage table{width:100%;border-collapse:collapse;min-width:800px}
+#pengeluaranPage th{background:#f3f4f6;padding:13px;text-align:left;font-size:13px;font-weight:600;color:#374151;border-bottom:2px solid #e5e7eb}
+#pengeluaranPage td{padding:13px;border-bottom:1px solid #f3f4f6;font-size:14px;vertical-align:middle}
+#pengeluaranPage tr:hover{background:#f9fafb}
+#whatsappPage .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:25px}
+#usersPage .card{background:white;padding:20px;border-radius:14px;box-shadow:0 3px 12px rgba(0,0,0,.06);margin-bottom:20px}
+#usersPage .card h3{margin-top:0;margin-bottom:15px;font-size:16px;color:#6b7280}
+#mikrotikPage .card{background:white;padding:20px;border-radius:14px;box-shadow:0 3px 12px rgba(0,0,0,.06);margin-bottom:20px}
+#mikrotikPage .card h3{margin-top:0;margin-bottom:15px;font-size:16px;color:#6b7280}
+#mikrotikPage .table-box{background:white;border-radius:14px;overflow-x:auto}
+#mikrotikPage table{width:100%;border-collapse:collapse;min-width:500px}
+#mikrotikPage th{background:#f3f4f6;padding:13px;text-align:left;font-size:13px;font-weight:600;color:#374151;border-bottom:2px solid #e5e7eb}
+#mikrotikPage td{padding:13px;border-bottom:1px solid #f3f4f6;font-size:14px;vertical-align:middle}
+#mikrotikPage tr:hover{background:#f9fafb}
+
+/* FULL COLOR GRADIENT METRIC CARDS */
+.metric-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:15px;margin-bottom:25px}
+.metric-card{padding:20px;border-radius:16px;transition:all .3s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden;cursor:default;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,.15);border:none}
+.metric-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 12px 40px rgba(0,0,0,.25)}
+.metric-card .metric-icon{font-size:32px;display:block;margin-bottom:8px;opacity:.9}
+.metric-card .metric-value{font-size:28px;font-weight:800;margin-top:2px;letter-spacing:-.5px;color:#fff}
+.metric-card .metric-label{font-size:13px;color:rgba(255,255,255,.85);margin-top:2px;font-weight:500}
+.metric-card:nth-child(1){background:linear-gradient(135deg,#2563eb,#1d4ed8)}
+.metric-card:nth-child(1)::after{content:'💰';position:absolute;right:10px;bottom:10px;font-size:50px;opacity:.15}
+.metric-card:nth-child(2){background:linear-gradient(135deg,#dc2626,#b91c1c)}
+.metric-card:nth-child(2)::after{content:'📤';position:absolute;right:10px;bottom:10px;font-size:50px;opacity:.15}
+.metric-card:nth-child(3){background:linear-gradient(135deg,#16a34a,#15803d)}
+.metric-card:nth-child(3)::after{content:'📈';position:absolute;right:10px;bottom:10px;font-size:50px;opacity:.15}
+.metric-card:nth-child(4){background:linear-gradient(135deg,#8b5cf6,#6d28d9)}
+.metric-card:nth-child(4)::after{content:'📊';position:absolute;right:10px;bottom:10px;font-size:50px;opacity:.15}
+.metric-card:nth-child(5){background:linear-gradient(135deg,#f59e0b,#d97706)}
+.metric-card:nth-child(5)::after{content:'👥';position:absolute;right:10px;bottom:10px;font-size:50px;opacity:.15}
+.metric-card:nth-child(6){background:linear-gradient(135deg,#06b6d4,#0891b2)}
+.metric-card:nth-child(6)::after{content:'✅';position:absolute;right:10px;bottom:10px;font-size:50px;opacity:.15}
+[data-theme="dark"] .metric-card{box-shadow:0 4px 20px rgba(0,0,0,.4)}
+[data-theme="dark"] .metric-card:hover{box-shadow:0 12px 40px rgba(0,0,0,.5)}
+
+@media(max-width:1200px){.metric-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:900px){.metric-grid{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:repeat(2,1fr)}.sidebar{width:70px}.menu span{display:none}.dashboard-grid{grid-template-columns:1fr}.dashboard-grid .full-width{grid-column:1}}
+@media(max-width:600px){.metric-grid{grid-template-columns:1fr}.metric-card .metric-value{font-size:22px}.metric-card .metric-icon{font-size:26px}.dashboard-card .chart-container{height:180px}.dashboard-card .chart-container.tall{height:200px}.header{padding:0 15px}.header-title{font-size:16px}.sidebar{display:none}.content{padding:15px}.cards{grid-template-columns:1fr}.card{padding:15px}.card-number{font-size:24px}.detail-grid{grid-template-columns:1fr}.toolbar{flex-direction:column}.search{min-width:auto}}
+</style>
+</head>
+<body>
+<div id="loginPage">
+  <div class="login-bubble"></div><div class="login-bubble"></div><div class="login-bubble"></div><div class="login-bubble"></div><div class="login-bubble"></div>
+  <div class="login-box" id="loginBox">
+    <div class="logo"><span class="logo-icon">🌐</span><h1>KHASNANET</h1><p>RTRW NET Management</p></div>
+    <div class="input-group"><span class="input-icon">👤</span><input id="username" class="input" type="text" placeholder="Username" onkeydown="if(event.key==='Enter')login()"></div>
+    <div class="input-group"><span class="input-icon">🔒</span><input id="password" class="input" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')login()"></div>
+    <button class="login-button" onclick="login()" id="loginBtn"><span class="btn-text">🚀 LOGIN</span><span class="btn-loader"></span></button>
+    <div id="loginMessage" class="login-message"></div>
+    <div style="text-align:center;margin-top:25px;color:rgba(255,255,255,0.25);font-size:12px;">v2.0 • Sistem Billing RTRW Net</div>
+  </div>
+</div>
+<div id="dashboardPage">
+  <div class="header">
+    <div class="header-title">KHASNANET RTRW NET</div>
+    <div class="user-area">
+      <span id="userName"></span>
+      <span id="userLevel" style="font-size:12px;color:#93c5fd;"></span>
+      <button class="dark-toggle" onclick="toggleDarkMode()" id="darkToggleBtn" title="Toggle Dark/Light Mode">🌙</button>
+      <button class="logout" onclick="logout()">Logout</button>
+    </div>
+  </div>
+  <div class="layout">
+    <div class="sidebar">
+      <div class="menu active" onclick="showDashboard()">🏠 <span>Dashboard</span></div>
+      <div class="menu" onclick="showPelanggan()">👥 <span>Pelanggan</span></div>
+      <div class="menu" onclick="showTagihan()">🧾 <span>Tagihan</span></div>
+      <div class="menu" onclick="showPembayaran()">💳 <span>Pembayaran</span></div>
+      <div class="menu" id="menuWhatsapp" style="display:none;" onclick="showWhatsapp()">📱 <span>WhatsApp</span></div>
+      <div class="menu" id="menuPengeluaran" style="display:none;" onclick="showPengeluaran()">📋 <span>Pengeluaran</span></div>
+      <div class="menu" onclick="showLaporan()">📊 <span>Laporan</span></div>
+      <div class="menu" id="menuMikrotik" style="display:none;" onclick="showMikrotik()">🔧 <span>MikroTik</span></div>
+      <div class="menu" id="menuPengaturan" style="display:none;" onclick="showPengaturan()">⚙️ <span>Pengaturan</span></div>
+      <div class="menu" id="menuUsers" style="display:none;" onclick="showUsers()">👤 <span>Manajemen User</span></div>
+    </div>
+    <div class="content">
+      <!-- DASHBOARD -->
+      <div id="dashboardContent">
+        <h2>📊 Dashboard</h2>
+        <div class="toolbar" style="background:white;padding:18px;border-radius:14px;margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <button class="toggle-btn showing" onclick="toggleNominal()" id="toggleNominalBtn">👁️ Sembunyikan Semua Nominal</button>
+          <span class="toggle-status" id="toggleStatus">(Saat ini: Terlihat)</span>
+          <button class="success-btn" onclick="refreshDashboard()" style="background:#6b7280;">🔄 Refresh</button>
+          <button class="success-btn" onclick="testWAAdmin()" style="background:#8b5cf6;">🔧 Test WA</button>
+        </div>
+        <div class="toolbar" style="background:white;padding:18px;border-radius:14px;margin-bottom:20px;">
+          <label style="font-weight:bold;margin-right:5px;">📅 Filter Tanggal:</label>
+          <input type="date" id="filterStartDate" class="filter filter-date" onchange="loadDashboardWithFilter()">
+          <span style="padding:0 5px;">s/d</span>
+          <input type="date" id="filterEndDate" class="filter filter-date" onchange="loadDashboardWithFilter()">
+          <button class="reset-btn" onclick="resetDateFilter()">↺ Reset</button>
+        </div>
+        <!-- METRIC CARDS FULL COLOR -->
+        <div class="metric-grid">
+          <div class="metric-card"><span class="metric-icon">💰</span><div class="metric-value" id="metricPemasukan">Rp 0</div><div class="metric-label">Total Pemasukan</div></div>
+          <div class="metric-card"><span class="metric-icon">📤</span><div class="metric-value" id="metricPengeluaran">Rp 0</div><div class="metric-label">Total Pengeluaran</div></div>
+          <div class="metric-card"><span class="metric-icon">📈</span><div class="metric-value" id="metricLaba">Rp 0</div><div class="metric-label">Laba Bersih</div></div>
+          <div class="metric-card"><span class="metric-icon">📊</span><div class="metric-value" id="metricPersentase">0%</div><div class="metric-label">% Laba</div></div>
+          <div class="metric-card"><span class="metric-icon">👥</span><div class="metric-value" id="metricTotalPelanggan">0</div><div class="metric-label">Total Pelanggan</div></div>
+          <div class="metric-card"><span class="metric-icon">✅</span><div class="metric-value" id="metricAktif">0</div><div class="metric-label">Pelanggan Aktif</div></div>
+        </div>
+        <div class="dashboard-grid">
+          <div class="dashboard-card"><h3>📊 Status Pelanggan</h3><div class="chart-container"><canvas id="chartStatusPelanggan"></canvas></div></div>
+          <div class="dashboard-card"><h3>📊 Status Pembayaran</h3><div class="chart-container"><canvas id="chartStatusBayar"></canvas></div></div>
+          <div class="dashboard-card"><h3>📍 Pelanggan per Area</h3><div class="chart-container"><canvas id="chartArea"></canvas></div></div>
+          <div class="dashboard-card"><h3>📦 Pendapatan per Paket</h3><div class="chart-container"><canvas id="chartPaket"></canvas></div></div>
+          <div class="dashboard-card full-width"><h3>📈 Trend Tagihan 12 Bulan</h3><div class="chart-container tall"><canvas id="chartTrend"></canvas></div></div>
+          <div class="dashboard-card full-width"><h3>📊 Kategori Pengeluaran</h3><div class="chart-container tall"><canvas id="chartPengeluaran"></canvas></div></div>
+        </div>
+        <div class="card" style="margin-top:20px;padding:20px;">
+          <h3 style="margin-top:0;">➕ Tambah Pengeluaran</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <input id="inputTanggal" type="date" class="filter" style="min-width:150px;">
+            <select id="inputKategori" class="filter"><option value="Operasional">Operasional</option><option value="Gaji">Gaji</option><option value="Internet">Internet/Bandwidth</option><option value="Perbaikan">Perbaikan</option><option value="ATK">ATK</option><option value="Lainnya">Lainnya</option></select>
+            <input id="inputDeskripsi" class="search" placeholder="Deskripsi..." style="min-width:200px;">
+            <input id="inputJumlah" type="number" class="filter" placeholder="Jumlah" style="min-width:150px;">
+            <button class="success-btn" onclick="tambahPengeluaranDash()">💾 Simpan</button>
+          </div>
+        </div>
+      </div>
+      <!-- PELANGGAN -->
+      <div id="pelangganPage">
+        <h2>Data Pelanggan</h2>
+        <div class="toolbar">
+          <input id="pelangganSearch" class="search" placeholder="🔎 Cari..." oninput="filterPelanggan()">
+          <select id="areaFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Area</option></select>
+          <select id="paketFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Paket</option></select>
+          <select id="hargaFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Harga</option></select>
+          <select id="statusFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Status</option><option value="ON">Aktif</option><option value="ISOLIR">Isolir</option></select>
+          <button class="reset-btn" onclick="resetFilter()">↺ Reset</button>
+          <button class="success-btn" onclick="exportPelangganExcel()">📊 Export Excel</button>
+        </div>
+        <div class="table-box">
+          <table>
+            <thead><tr><th onclick="sortTable('ID')">ID ⬍</th><th onclick="sortTable('NAMA')">Nama ⬍</th><th>WhatsApp</th><th onclick="sortTable('AREA')">Area ⬍</th><th onclick="sortTable('PAKET')">Paket ⬍</th><th onclick="sortTable('HARGA')">Harga ⬍</th><th onclick="sortTable('STATUS')">Status ⬍</th><th>Aksi</th></tr></thead>
+            <tbody id="pelangganTable"><tr><td colspan="8" style="text-align:center">Memuat data...</td></tr></tbody>
+          </table>
+        </div>
+        <div class="info-data">Menampilkan: <span id="jmlData">0</span> dari <span id="totalData">0</span> pelanggan</div>
+      </div>
+      <!-- TAGIHAN -->
+      <div id="tagihanPage" style="display:none;">
+        <h2>🧾 Tagihan</h2>
+        <div class="toolbar">
+          <select id="tagihanPeriode" class="filter" onchange="loadTagihan()" style="min-width:180px;"><option value="">Memuat periode...</option></select>
+          <button class="detail-btn" onclick="generateTagihanDariWeb()">➕ Generate</button>
+          <button class="detail-btn" onclick="loadDaftarPeriodeTagihan()">🔄 Refresh</button>
+          <button class="success-btn" onclick="exportTagihanExcel()">📊 Export Excel</button>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="card-title">Total Tagihan</div><div class="card-number" id="totalTagihan">0</div></div>
+          <div class="card"><div class="card-title">Sudah Bayar</div><div class="card-number" id="tagihanLunas">0</div></div>
+          <div class="card"><div class="card-title">Belum Bayar</div><div class="card-number" id="tagihanBelumBayar">0</div></div>
+        </div>
+        <div class="toolbar"><input id="tagihanSearch" class="search" placeholder="🔎 Cari nama atau ID pelanggan..." oninput="filterTagihan()"></div>
+        <div class="table-box">
+          <table>
+            <thead><tr><th>ID Tagihan</th><th>ID Pelanggan</th><th>Nama</th><th>Paket</th><th>Jumlah</th><th>Jatuh Tempo</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="tagihanTable"><tr><td colspan="8" style="text-align:center;padding:30px;">⏳ Memuat tagihan...</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- PEMBAYARAN -->
+      <div id="pembayaranPage" style="display:none;">
+        <h2>💳 Pembayaran</h2>
+        <div class="toolbar">
+          <input id="bayarSearch" class="search" placeholder="🔎 Cari ID Pembayaran, ID Pelanggan, atau Nama..." oninput="filterPembayaran()">
+          <button class="detail-btn" onclick="loadPembayaran()">🔄 Refresh</button>
+        </div>
+        <div class="table-box">
+          <table>
+            <thead><tr><th>ID Pembayaran</th><th>ID Pelanggan</th><th>Nama</th><th>Periode</th><th>Nominal</th><th>Metode / Bank</th><th>Tgl Bayar</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="pembayaranTable"><tr><td colspan="9" style="text-align:center">Memuat data pembayaran...</td></tr></tbody>
+          </table>
+        </div>
+        <div class="info-data">Total: <span id="jmlPembayaran">0</span> data pembayaran</div>
+      </div>
+      <!-- WHATSAPP -->
+      <div id="whatsappPage" style="display:none;">
+        <h2>📱 WhatsApp</h2>
+        <div class="toolbar">
+          <select id="waPeriode" class="filter" onchange="loadWALog()"><option value="">Pilih Periode</option></select>
+          <button class="detail-btn" onclick="kirimTagihanMassal()">📨 Kirim Tagihan</button>
+          <button class="detail-btn" onclick="kirimPengingatWA()">⏰ Pengingat</button>
+          <button class="success-btn" onclick="kirimSemuaPelanggan()" style="background:#25D366;">📱 WA Semua Pelanggan</button>
+          <button class="detail-btn" onclick="loadWALog()">🔄 Refresh</button>
+          <button class="danger-btn" onclick="clearWALog()">🗑️ Hapus Log</button>
+        </div>
+        <div class="cards">
+          <div class="card"><div class="card-title">Total Kiriman</div><div class="card-number" id="waTotal">0</div></div>
+          <div class="card"><div class="card-title">Berhasil</div><div class="card-number" id="waSuccess" style="color:#16a34a;">0</div></div>
+          <div class="card"><div class="card-title">Gagal</div><div class="card-number" id="waFailed" style="color:#dc2626;">0</div></div>
+        </div>
+        <div class="table-box">
+          <table>
+            <thead><tr><th>Tanggal</th><th>No WhatsApp</th><th>Pesan</th><th>Status</th></tr></thead>
+            <tbody id="waLogTable"><tr><td colspan="4" style="text-align:center;padding:30px;">Belum ada log WhatsApp</td></tr></tbody>
+          </table>
+        </div>
+        <div class="info-data">Total: <span id="jmlWALog">0</span> data log</div>
+      </div>
+      <!-- PENGELUARAN -->
+      <div id="pengeluaranPage" style="display:none;">
+        <h2>📋 Pengeluaran</h2>
+        <div class="card" style="padding:20px;margin-bottom:20px;">
+          <h3 style="margin-top:0;">➕ Tambah Pengeluaran</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <input id="expTanggal" type="date" class="filter" style="min-width:150px;">
+            <select id="expKategori" class="filter"><option value="Operasional">Operasional</option><option value="Gaji">Gaji</option><option value="Internet">Internet/Bandwidth</option><option value="Perbaikan">Perbaikan</option><option value="ATK">ATK</option><option value="Lainnya">Lainnya</option></select>
+            <input id="expDeskripsi" class="search" placeholder="Deskripsi..." style="min-width:200px;">
+            <input id="expJumlah" type="number" class="filter" placeholder="Jumlah" style="min-width:150px;">
+            <input id="expPIC" class="search" placeholder="PIC" style="min-width:150px;">
+            <button class="success-btn" onclick="tambahPengeluaranForm()">💾 Simpan</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <input id="expSearch" class="search" placeholder="🔎 Cari deskripsi atau kategori..." oninput="filterPengeluaran()">
+          <select id="expFilterKategori" class="filter" onchange="filterPengeluaran()"><option value="">Semua Kategori</option><option value="Operasional">Operasional</option><option value="Gaji">Gaji</option><option value="Internet">Internet/Bandwidth</option><option value="Perbaikan">Perbaikan</option><option value="ATK">ATK</option><option value="Lainnya">Lainnya</option></select>
+          <button class="detail-btn" onclick="loadPengeluaran()">🔄 Refresh</button>
+          <button class="danger-btn" onclick="clearPengeluaran()">🗑️ Hapus Semua</button>
+        </div>
+        <div class="cards" style="grid-template-columns:repeat(3,1fr);">
+          <div class="card" style="background:#fef2f2;border-left:4px solid #dc2626;"><div class="card-title">Total Pengeluaran</div><div class="card-number" id="expTotal" style="color:#dc2626;">Rp 0</div></div>
+          <div class="card" style="background:#fefce8;border-left:4px solid #f59e0b;"><div class="card-title">Jumlah Transaksi</div><div class="card-number" id="expJumlahTransaksi" style="color:#f59e0b;">0</div></div>
+          <div class="card" style="background:#eff6ff;border-left:4px solid #2563eb;"><div class="card-title">Rata-rata per Transaksi</div><div class="card-number" id="expRata" style="color:#2563eb;">Rp 0</div></div>
+        </div>
+        <div class="table-box">
+          <table>
+            <thead><tr><th>No</th><th>Tanggal</th><th>Kategori</th><th>Deskripsi</th><th style="text-align:right;">Jumlah</th><th>PIC</th><th>Aksi</th></tr></thead>
+            <tbody id="pengeluaranTable"><tr><td colspan="7" style="text-align:center;padding:30px;">Belum ada data pengeluaran</td></tr></tbody>
+          </table>
+        </div>
+        <div class="info-data">Total: <span id="jmlPengeluaran">0</span> data</div>
+      </div>
+      <!-- MIKROTIK -->
+<div id="mikrotikPage" style="display:none;">
+  <h2>🔧 Integrasi MikroTik</h2>
+  
+  <!-- Status Koneksi -->
+  <div class="card" style="padding:20px;margin-bottom:20px;">
+    <h3 style="margin-top:0;">📡 Status Koneksi</h3>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <button class="detail-btn" onclick="testMikrotik()">🔌 Test Koneksi</button>
+      <button class="success-btn" onclick="forceEnableMikrotik()" style="background:#dc2626;">⚡ Force Enable</button>
+      <button class="detail-btn" onclick="cekKonfigurasi()" style="background:#f59e0b;">🔍 Cek Konfigurasi</button>
+      <span id="mikrotikStatus" style="font-weight:bold;color:#6b7280;">Belum di-test</span>
+    </div>
+    <div id="mikrotikInfo" style="margin-top:10px;padding:10px;background:#f9fafb;border-radius:8px;display:none;">
+      <pre id="mikrotikDetail" style="margin:0;font-size:13px;"></pre>
+    </div>
+  </div>
+  
+  <!-- ... sisanya sama ... -->
+</div>
+      <!-- LAPORAN -->
+      <div id="laporanPage" style="display:none;">
+        <h2>📊 Laporan Keuangan</h2>
+        <div class="toolbar">
+          <select id="laporanPeriode" class="filter" onchange="loadLaporanKeuangan()"><option value="">Pilih Periode</option></select>
+          <button class="detail-btn" onclick="loadLaporanKeuangan()">📊 Tampilkan</button>
+          <button class="success-btn" onclick="kirimLaporanEmail()" style="background:#8b5cf6;">📧 Kirim Email</button>
+        </div>
+        <div class="cards" style="grid-template-columns:repeat(4,1fr);">
+          <div class="card" style="background:#eff6ff;border-left:4px solid #2563eb;"><div class="card-title">Total Tagihan</div><div class="card-number" id="lapTotalTagihan" style="color:#2563eb;">Rp 0</div></div>
+          <div class="card" style="background:#f0fdf4;border-left:4px solid #16a34a;"><div class="card-title">Total Bayar</div><div class="card-number" id="lapTotalBayar" style="color:#16a34a;">Rp 0</div></div>
+          <div class="card" style="background:#fef2f2;border-left:4px solid #dc2626;"><div class="card-title">Total Belum</div><div class="card-number" id="lapTotalBelum" style="color:#dc2626;">Rp 0</div></div>
+          <div class="card" style="background:#fefce8;border-left:4px solid #f59e0b;"><div class="card-title">% Bayar</div><div class="card-number" id="lapPersen" style="color:#f59e0b;">0%</div></div>
+        </div>
+        <div class="cards" style="grid-template-columns:repeat(4,1fr);">
+          <div class="card"><div class="card-title">Total Pelanggan</div><div class="card-number" id="lapTotalPelanggan">0</div></div>
+          <div class="card"><div class="card-title">Pelanggan Aktif</div><div class="card-number" id="lapPelangganAktif" style="color:#16a34a;">0</div></div>
+          <div class="card"><div class="card-title">Pelanggan Isolir</div><div class="card-number" id="lapPelangganIsolir" style="color:#dc2626;">0</div></div>
+          <div class="card"><div class="card-title">Tagihan Lunas</div><div class="card-number" id="lapLunas" style="color:#2563eb;">0</div></div>
+        </div>
+        <h3 style="margin-top:20px;">📦 Rekap per Paket</h3>
+        <div class="table-box"><table><thead><tr><th>Paket</th><th style="text-align:right;">Jumlah Pelanggan</th><th style="text-align:right;">Total Tagihan</th><th style="text-align:right;">Lunas</th><th style="text-align:right;">Belum Bayar</th><th style="text-align:right;">% Bayar</th></tr></thead><tbody id="rekapPaketTable"><tr><td colspan="6" style="text-align:center;padding:30px;">Pilih periode untuk melihat data</td></tr></tbody></table></div>
+        <h3 style="margin-top:20px;">📍 Rekap per Area</h3>
+        <div class="table-box"><table><thead><tr><th>Area</th><th style="text-align:right;">Total Pelanggan</th><th style="text-align:right;">Aktif</th><th style="text-align:right;">Isolir</th></tr></thead><tbody id="rekapAreaTable"><tr><td colspan="4" style="text-align:center;padding:30px;">Pilih periode untuk melihat data</td></tr></tbody></table></div>
+        <div class="info-data">Total: <span id="jmlLaporan">0</span> data</div>
+      </div>
+      <!-- PENGATURAN -->
+      <div id="pengaturanPage" style="display:none;">
+        <h2>⚙️ Pengaturan</h2>
+        <div class="toolbar" style="flex-direction:column;gap:15px;align-items:stretch;">
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;"><label style="min-width:180px;"><strong>Periode Aktif</strong></label><input id="setPeriode" class="search" style="flex:1;min-width:200px;" placeholder="Agustus 2026"><button class="detail-btn" onclick="savePengaturan('PERIODE_AKTIF', document.getElementById('setPeriode').value)">Simpan</button></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;"><label style="min-width:180px;"><strong>Denda per Hari</strong></label><input id="setDenda" class="search" style="flex:1;min-width:200px;" placeholder="5000"><button class="detail-btn" onclick="savePengaturan('DENDA_PER_HARI', document.getElementById('setDenda').value)">Simpan</button></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;"><label style="min-width:180px;"><strong>WA API Key</strong></label><input id="setWAKey" class="search" style="flex:1;min-width:200px;" placeholder="API Key" type="password"><button class="detail-btn" onclick="savePengaturan('WA_API_KEY', document.getElementById('setWAKey').value)">Simpan</button></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;"><label style="min-width:180px;"><strong>WA Admin</strong></label><input id="setWAAdmin" class="search" style="flex:1;min-width:200px;" placeholder="6281234567890"><button class="detail-btn" onclick="savePengaturan('WA_ADMIN', document.getElementById('setWAAdmin').value)">Simpan</button></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;"><label style="min-width:180px;"><strong>Jatuh Tempo</strong></label><input id="setTempo" class="search" style="flex:1;min-width:200px;" placeholder="15"><button class="detail-btn" onclick="savePengaturan('TANGGAL_JATUH_TEMPO', document.getElementById('setTempo').value)">Simpan</button></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;"><label style="min-width:180px;"><strong>Email Laporan</strong></label><input id="setEmail" class="search" style="flex:1;min-width:200px;" placeholder="admin@email.com"><button class="detail-btn" onclick="savePengaturan('EMAIL_LAPORAN', document.getElementById('setEmail').value)">Simpan</button></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;"><label style="min-width:180px;"><strong>MikroTik IP</strong></label><input id="setMikrotikIP" class="search" style="flex:1;min-width:200px;" placeholder="192.168.1.1"><button class="detail-btn" onclick="savePengaturan('MIKROTIK_IP', document.getElementById('setMikrotikIP').value)">Simpan</button></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;"><label style="min-width:180px;"><strong>MikroTik User</strong></label><input id="setMikrotikUser" class="search" style="flex:1;min-width:200px;" placeholder="admin"><button class="detail-btn" onclick="savePengaturan('MIKROTIK_USER', document.getElementById('setMikrotikUser').value)">Simpan</button></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;"><label style="min-width:180px;"><strong>MikroTik Pass</strong></label><input id="setMikrotikPass" class="search" style="flex:1;min-width:200px;" placeholder="password" type="password"><button class="detail-btn" onclick="savePengaturan('MIKROTIK_PASS', document.getElementById('setMikrotikPass').value)">Simpan</button></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;"><label style="min-width:180px;"><strong>MikroTik Enable</strong></label><select id="setMikrotikEnable" class="filter"><option value="TRUE">TRUE</option><option value="FALSE">FALSE</option></select><button class="detail-btn" onclick="savePengaturan('MIKROTIK_ENABLED', document.getElementById('setMikrotikEnable').value)">Simpan</button></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;"><label style="min-width:180px;"><strong>Auto Generate</strong></label><button class="success-btn" onclick="setupAutoTrigger()">🔧 Setup Trigger</button></div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;"><label style="min-width:180px;"><strong>Laporan Bulanan</strong></label><button class="success-btn" onclick="setupTriggerLaporan()">📧 Setup Trigger</button></div>
+        </div>
+        <div style="margin-top:20px;background:white;padding:20px;border-radius:14px;"><h3>Status Pengaturan</h3><pre id="pengaturanStatus" style="background:#f9fafb;padding:15px;border-radius:8px;overflow-x:auto;font-size:13px;">Memuat...</pre></div>
+      </div>
+      <!-- MANAJEMEN USER -->
+      <div id="usersPage" style="display:none;">
+        <h2>👤 Manajemen User</h2>
+        <div class="card" style="padding:20px;margin-bottom:20px;">
+          <h3 style="margin-top:0;">➕ Tambah / Edit User</h3>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <input id="userUsername" class="search" placeholder="Username" style="min-width:150px;">
+            <input id="userPassword" class="search" type="password" placeholder="Password" style="min-width:150px;">
+            <input id="userNama" class="search" placeholder="Nama" style="min-width:150px;">
+            <select id="userLevel" class="filter"><option value="ADMINISTRATOR">ADMINISTRATOR</option><option value="ADMIN">ADMIN</option><option value="TEKNISI">TEKNISI</option></select>
+            <select id="userStatus" class="filter"><option value="AKTIF">AKTIF</option><option value="NONAKTIF">NONAKTIF</option></select>
+            <button class="success-btn" onclick="saveUser()">💾 Simpan</button>
+            <button class="reset-btn" onclick="resetUserForm()">↺ Reset</button>
+          </div>
+        </div>
+        <div class="table-box">
+          <table>
+            <thead><tr><th>Username</th><th>Nama</th><th>Level</th><th>Status</th><th>Aksi</th></tr></thead>
+            <tbody id="usersTable"><tr><td colspan="5" style="text-align:center;padding:30px;">Memuat data user...</td></tr></tbody>
+          </table>
+        </div>
+        <div class="info-data">Total: <span id="jmlUsers">0</span> user</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="detailModal" class="modal">
+  <div class="modal-box">
+    <div class="modal-header"><h2>Detail Pelanggan</h2><button class="close" onclick="closeDetail()">X</button></div>
+    <div id="detailContent"></div>
+  </div>
+</div>
+<div id="notificationContainer"></div>
+<script>
+// ==========================================
+// VARIABLES
+// ==========================================
+var customerData = [], tagihanData = [], pengeluaranData = [];
+var chartStatusPelanggan = null, chartStatusBayar = null, chartArea = null, chartPaket = null, chartTrend = null, chartPerforma = null, chartPengeluaran = null;
+var sortColumn = '', sortOrder = 'asc', nominalVisible = true;
+
+// ==========================================
+// NOTIFICATION & SAFE
+// ==========================================
+function showNotification(message,type){var container=document.getElementById('notificationContainer');var div=document.createElement('div');div.className='notification notification-'+(type||'info');div.textContent=message;container.appendChild(div);setTimeout(function(){div.style.opacity='0';div.style.transition='opacity .3s';setTimeout(function(){div.remove()},300)},4000);}
+function safe(value){if(value===null||value===undefined)return '';return String(value).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#039;');}
+function escapeAttr(value){if(value===null||value===undefined)return '';return String(value).replace(/\\/g,'\\\\').replace(/'/g,"\\'");}
+function detailField(label,value){return '<div class="detail-item"><div class="detail-label">'+label+'</div><div class="detail-value">'+safe(value)+'</div></div>';}
+
+// ==========================================
+// DARK MODE
+// ==========================================
+function toggleDarkMode(){var html=document.documentElement;var btn=document.getElementById('darkToggleBtn');if(html.getAttribute('data-theme')==='dark'){html.removeAttribute('data-theme');btn.textContent='🌙';localStorage.setItem('theme','light');showNotification('☀️ Mode Terang','info')}else{html.setAttribute('data-theme','dark');btn.textContent='☀️';localStorage.setItem('theme','dark');showNotification('🌙 Mode Gelap','info')}}
+function loadTheme(){var savedTheme=localStorage.getItem('theme');var btn=document.getElementById('darkToggleBtn');if(savedTheme==='dark'){document.documentElement.setAttribute('data-theme','dark');if(btn)btn.textContent='☀️'}else{document.documentElement.removeAttribute('data-theme');if(btn)btn.textContent='🌙'}}
+
+// ==========================================
+// LOGIN
+// ==========================================
+function login(){var username=document.getElementById('username').value.trim();var password=document.getElementById('password').value;var message=document.getElementById('loginMessage');var btn=document.getElementById('loginBtn');if(!username||!password){message.innerText='⚠️ Username dan password harus diisi';message.className='login-message';return;}btn.classList.add('loading');message.innerText='⏳ Memeriksa login...';message.className='login-message';google.script.run.withSuccessHandler(function(response){btn.classList.remove('loading');console.log('Hasil login:',response);if(response&&response.success){sessionStorage.setItem('login','true');sessionStorage.setItem('nama',response.nama||'');sessionStorage.setItem('level',response.level||'');sessionStorage.setItem('username',response.username||'');document.getElementById('loginPage').style.display='none';document.getElementById('dashboardPage').style.display='block';document.getElementById('userName').innerText=response.nama||username;var levelDisplay=document.getElementById('userLevel');if(levelDisplay){levelDisplay.innerText=' ('+response.level+')'}message.innerText='';showNotification('🎉 Selamat datang, '+(response.nama||username)+'!','success');showDashboard();}else{message.innerText='❌ '+(response&&response.message?response.message:'Login gagal');message.className='login-message';document.getElementById('loginBox').classList.add('shake');setTimeout(function(){document.getElementById('loginBox').classList.remove('shake')},500);}}).withFailureHandler(function(error){btn.classList.remove('loading');console.error('Error login:',error);message.innerText='❌ Error: '+(error.message||error);message.className='login-message';}).login(username,password);}
+function logout(){sessionStorage.clear();document.getElementById('dashboardPage').style.display='none';document.getElementById('loginPage').style.display='flex';showNotification('Anda telah logout','info');}
+function setActiveMenu(index){var menus=document.querySelectorAll('.menu');for(var i=0;i<menus.length;i++){if(i===index){menus[i].classList.add('active')}else{menus[i].classList.remove('active')}}}
+
+// ==========================================
+// SHOW SIDEBAR BY LEVEL
+// ==========================================
+function showSidebarByLevel(){var level=sessionStorage.getItem('level')||'';document.getElementById('menuWhatsapp').style.display='none';document.getElementById('menuPengeluaran').style.display='none';document.getElementById('menuPengaturan').style.display='none';document.getElementById('menuUsers').style.display='none';document.getElementById('menuMikrotik').style.display='none';if(level==='ADMINISTRATOR'){document.getElementById('menuWhatsapp').style.display='block';document.getElementById('menuPengeluaran').style.display='block';document.getElementById('menuPengaturan').style.display='block';document.getElementById('menuUsers').style.display='block';document.getElementById('menuMikrotik').style.display='block'}else if(level==='ADMIN'){document.getElementById('menuWhatsapp').style.display='block';document.getElementById('menuPengeluaran').style.display='block';document.getElementById('menuMikrotik').style.display='block'}}
+
+// ==========================================
+// DASHBOARD
+// ==========================================
+function showDashboard(){document.getElementById('dashboardContent').style.display='block';document.getElementById('pelangganPage').style.display='none';document.getElementById('tagihanPage').style.display='none';document.getElementById('pembayaranPage').style.display='none';document.getElementById('whatsappPage').style.display='none';document.getElementById('pengeluaranPage').style.display='none';document.getElementById('mikrotikPage').style.display='none';document.getElementById('laporanPage').style.display='none';document.getElementById('pengaturanPage').style.display='none';document.getElementById('usersPage').style.display='none';setActiveMenu(0);showSidebarByLevel();nominalVisible=true;updateToggleButton();loadDashboardKeuangan();}
+function toggleNominal(){nominalVisible=!nominalVisible;updateToggleButton();applyNominalVisibility();}
+function updateToggleButton(){var btn=document.getElementById('toggleNominalBtn');var status=document.getElementById('toggleStatus');if(btn){if(nominalVisible){btn.className='toggle-btn showing';btn.innerHTML='👁️ Sembunyikan Semua Nominal'}else{btn.className='toggle-btn hidden';btn.innerHTML='👁️‍🗨️ Tampilkan Semua Nominal'}}if(status){status.innerText='(Saat ini: '+(nominalVisible?'Terlihat':'Tersembunyi')+')'}}
+function applyNominalVisibility(){var elements=['metricPemasukan','metricPengeluaran','metricLaba','metricPersentase','metricTotalPelanggan','metricAktif'];for(var i=0;i<elements.length;i++){var el=document.getElementById(elements[i]);if(el){if(nominalVisible){el.classList.remove('hidden-nominal');var original=el.getAttribute('data-original');if(original){el.innerText=original}}else{el.classList.add('hidden-nominal');if(!el.getAttribute('data-original')){el.setAttribute('data-original',el.innerText)}el.innerText='***'}}}}
+function loadDashboardKeuangan(){var startDate=document.getElementById('filterStartDate')?document.getElementById('filterStartDate').value:'';var endDate=document.getElementById('filterEndDate')?document.getElementById('filterEndDate').value:'';google.script.run.withSuccessHandler(function(response){if(response&&response.success){updateKeuangan(response);updateChartsKeuangan(response);}else{showNotification('Gagal load data keuangan','error')}}).withFailureHandler(function(error){showNotification('Error: '+error.message,'error')}).getDashboardKeuangan(startDate,endDate);loadDashboardKeren();}
+function updateKeuangan(data){var pemasukan=data.pemasukan||0,pengeluaran=data.totalPengeluaran||0,laba=data.labaBersih||0,persen=data.persentaseLaba||0;document.getElementById('metricPemasukan').innerText='Rp '+pemasukan.toLocaleString('id-ID');document.getElementById('metricPengeluaran').innerText='Rp '+pengeluaran.toLocaleString('id-ID');var labaEl=document.getElementById('metricLaba');labaEl.innerText='Rp '+laba.toLocaleString('id-ID');labaEl.style.color=laba>=0?'#16a34a':'#dc2626';document.getElementById('metricPersentase').innerText=persen+'%';document.getElementById('metricTotalPelanggan').innerText=data.totalPelanggan||0;document.getElementById('metricAktif').innerText=data.aktif||0;}
+function updateChartsKeuangan(data){var ctx=document.getElementById('chartPengeluaran');if(ctx){ctx=ctx.getContext('2d');if(chartPengeluaran)chartPengeluaran.destroy();var labels=Object.keys(data.kategoriPengeluaran||{});var values=Object.values(data.kategoriPengeluaran||{});var colors=['#dc2626','#f59e0b','#8b5cf6','#06b6d4','#ec4899','#6b7280'];chartPengeluaran=new Chart(ctx,{type:'doughnut',data:{labels:labels.length?labels:['Belum ada data'],datasets:[{data:values.length?values:[1],backgroundColor:colors.slice(0,labels.length||1),borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:20}}},cutout:'65%'}});}}
+function loadDashboardKeren(){showNotification('Memuat dashboard...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){var data=response.data;updateMetrics(data);renderCharts(data);showNotification('✅ Dashboard dimuat!','success')}else{showNotification('Gagal load grafik: '+(response&&response.message?response.message:''),'error')}}).withFailureHandler(function(error){showNotification('Gagal: '+error.message,'error')}).getGrafikData();}
+function updateMetrics(data){var total=data.areaData?data.areaData.reduce(function(a,b){return a+b},0):0;var aktif=data.areaData&&data.areaData.length>0?data.areaData[0]||0:0;var isolir=data.areaData&&data.areaData.length>1?data.areaData[1]||0:0;var totalTagihan=data.trendData?data.trendData.reduce(function(a,b){return a+b},0):0;var totalBayar=data.performaData?data.performaData.reduce(function(a,b){return a+b},0):0;var totalBelum=totalTagihan-totalBayar;document.getElementById('metricTotalPelanggan').innerText=total||0;document.getElementById('metricAktif').innerText=aktif||0;document.getElementById('metricIsolir').innerText=isolir||0;}
+function renderCharts(data){try{var ctx1=document.getElementById('chartStatusPelanggan');if(ctx1){ctx1=ctx1.getContext('2d');if(chartStatusPelanggan)chartStatusPelanggan.destroy();chartStatusPelanggan=new Chart(ctx1,{type:'doughnut',data:{labels:['Aktif','Isolir'],datasets:[{data:[data.areaData?data.areaData[0]||0:0,data.areaData?data.areaData[1]||0:0],backgroundColor:['#16a34a','#dc2626'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:20}}},cutout:'70%'}})}var ctx2=document.getElementById('chartStatusBayar');if(ctx2){ctx2=ctx2.getContext('2d');if(chartStatusBayar)chartStatusBayar.destroy();chartStatusBayar=new Chart(ctx2,{type:'doughnut',data:{labels:data.statusBayarLabels||['Lunas','Belum Bayar'],datasets:[{data:data.statusBayar||[0,0],backgroundColor:data.statusBayarColors||['#16a34a','#f59e0b'],borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,plugins:{legend:{position:'bottom',labels:{usePointStyle:true,padding:20}}},cutout:'70%'}})}var ctx3=document.getElementById('chartArea');if(ctx3){ctx3=ctx3.getContext('2d');if(chartArea)chartArea.destroy();chartArea=new Chart(ctx3,{type:'bar',data:{labels:data.areaLabels||[],datasets:[{label:'Jumlah Pelanggan',data:data.areaData||[],backgroundColor:data.areaColors||['#2563eb','#16a34a','#dc2626','#f59e0b','#8b5cf6'],borderRadius:5}]},options:{indexAxis:'y',responsive:true,plugins:{legend:{display:false}},scales:{x:{beginAtZero:true,grid:{display:false}},y:{grid:{display:false}}}}})}var ctx4=document.getElementById('chartPaket');if(ctx4){ctx4=ctx4.getContext('2d');if(chartPaket)chartPaket.destroy();chartPaket=new Chart(ctx4,{type:'bar',data:{labels:data.paketLabels||[],datasets:[{label:'Pendapatan (Rp)',data:data.paketData||[],backgroundColor:data.paketColors||['#2563eb','#16a34a','#dc2626','#f59e0b','#8b5cf6','#ec4899'],borderRadius:5}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{display:false},ticks:{callback:function(value){return 'Rp '+value.toLocaleString()}}},x:{grid:{display:false}}}}})}var ctx5=document.getElementById('chartTrend');if(ctx5){ctx5=ctx5.getContext('2d');if(chartTrend)chartTrend.destroy();var gradient=ctx5.createLinearGradient(0,0,0,250);gradient.addColorStop(0,'rgba(37,99,235,0.3)');gradient.addColorStop(1,'rgba(37,99,235,0)');chartTrend=new Chart(ctx5,{type:'line',data:{labels:data.trendLabels||[],datasets:[{label:'Total Tagihan',data:data.trendData||[],borderColor:'#2563eb',backgroundColor:gradient,fill:true,tension:0.4,pointBackgroundColor:'#2563eb',pointRadius:4,pointHoverRadius:6}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{color:'rgba(0,0,0,0.05)'},ticks:{callback:function(value){return 'Rp '+value.toLocaleString()}}},x:{grid:{display:false}}}}})}var ctx6=document.getElementById('chartPerforma');if(ctx6){ctx6=ctx6.getContext('2d');if(chartPerforma)chartPerforma.destroy();chartPerforma=new Chart(ctx6,{type:'bar',data:{labels:data.performaLabels||[],datasets:[{label:'Total Pembayaran',data:data.performaData||[],backgroundColor:'#16a34a',borderRadius:5}]},options:{responsive:true,plugins:{legend:{display:false}},scales:{y:{beginAtZero:true,grid:{display:false},ticks:{callback:function(value){return 'Rp '+value.toLocaleString()}}},x:{grid:{display:false}}}}})}console.log('✅ Semua grafik berhasil dirender!')}catch(error){console.error('Error render charts:',error);showNotification('Error render grafik: '+error.message,'error')}}
+function refreshDashboard(){showNotification('Memuat ulang dashboard...','info');loadDashboardKeuangan();}
+function loadDashboardWithFilter(){var startDate=document.getElementById('filterStartDate').value;var endDate=document.getElementById('filterEndDate').value;if(!startDate&&!endDate){loadDashboardKeuangan();return}showNotification('Memuat dashboard dengan filter...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){var data=response.data;updateMetrics(data);renderCharts(data);showNotification('✅ Dashboard dengan filter dimuat!','success')}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).getDashboardDataWithFilter(startDate,endDate)}
+function resetDateFilter(){document.getElementById('filterStartDate').value='';document.getElementById('filterEndDate').value='';loadDashboardKeuangan();}
+
+// ==========================================
+// PELANGGAN
+// ==========================================
+function showPelanggan(){document.getElementById('dashboardContent').style.display='none';document.getElementById('pelangganPage').style.display='block';document.getElementById('tagihanPage').style.display='none';document.getElementById('pembayaranPage').style.display='none';document.getElementById('whatsappPage').style.display='none';document.getElementById('pengeluaranPage').style.display='none';document.getElementById('mikrotikPage').style.display='none';document.getElementById('laporanPage').style.display='none';document.getElementById('pengaturanPage').style.display='none';document.getElementById('usersPage').style.display='none';setActiveMenu(1);loadPelanggan()}
+function loadPelanggan(){document.getElementById('pelangganTable').innerHTML='<tr><td colspan="8" style="text-align:center">Memuat data...</td></tr>';google.script.run.withSuccessHandler(function(data){customerData=Array.isArray(data)?data:[];buildFilters();filterPelanggan()}).withFailureHandler(function(error){showNotification('Gagal: '+error.message,'error')}).getPelangganData()}
+function buildFilters(){var areaSelect=document.getElementById('areaFilter');var areas=[],seenArea={};for(var i=0;i<customerData.length;i++){var area=customerData[i].AREA;if(area&&!seenArea[area]){seenArea[area]=true;areas.push(area)}}areas.sort();areaSelect.innerHTML='<option value="">Semua Area</option>';for(var j=0;j<areas.length;j++){var opt=document.createElement('option');opt.value=areas[j];opt.textContent=areas[j];areaSelect.appendChild(opt)}var paketSelect=document.getElementById('paketFilter');var pakets=[],seenPaket={};for(var i=0;i<customerData.length;i++){var paket=customerData[i].PAKET;if(paket&&!seenPaket[paket]){seenPaket[paket]=true;pakets.push(paket)}}pakets.sort();paketSelect.innerHTML='<option value="">Semua Paket</option>';for(var j=0;j<pakets.length;j++){var opt=document.createElement('option');opt.value=pakets[j];opt.textContent=pakets[j];paketSelect.appendChild(opt)}var hargaSelect=document.getElementById('hargaFilter');var hargas=[],seenHarga={};for(var i=0;i<customerData.length;i++){var harga=customerData[i].HARGA;if(harga&&!seenHarga[harga]){seenHarga[harga]=true;hargas.push(harga)}}hargas.sort(function(a,b){return Number(String(a).replace(/[^0-9]/g,''))-Number(String(b).replace(/[^0-9]/g,''))});hargaSelect.innerHTML='<option value="">Semua Harga</option>';for(var j=0;j<hargas.length;j++){var opt=document.createElement('option');opt.value=hargas[j];opt.textContent=hargas[j];hargaSelect.appendChild(opt)}}
+function filterPelanggan(){var keyword=document.getElementById('pelangganSearch').value.toLowerCase().trim();var area=document.getElementById('areaFilter').value;var paket=document.getElementById('paketFilter').value;var harga=document.getElementById('hargaFilter').value;var status=document.getElementById('statusFilter').value;var filtered=[];for(var i=0;i<customerData.length;i++){var row=customerData[i];var text=(row.ID+' '+row.NAMA+' '+row.WHATSAPP+' '+row.ALAMAT+' '+row.AREA+' '+row.PAKET).toLowerCase();var matchSearch=text.indexOf(keyword)!==-1;var matchArea=!area||row.AREA===area;var matchPaket=!paket||row.PAKET===paket;var matchHarga=!harga||row.HARGA===harga;var rowStatus=String(row.STATUS||'').toUpperCase();if(rowStatus==='AKTIF')rowStatus='ON';var matchStatus=!status||rowStatus===status;if(matchSearch&&matchArea&&matchPaket&&matchHarga&&matchStatus){filtered.push(row)}}renderPelanggan(filtered);document.getElementById('jmlData').innerText=filtered.length;document.getElementById('totalData').innerText=customerData.length}
+function resetFilter(){document.getElementById('pelangganSearch').value='';document.getElementById('areaFilter').value='';document.getElementById('paketFilter').value='';document.getElementById('hargaFilter').value='';document.getElementById('statusFilter').value='';filterPelanggan()}
+function sortTable(column){if(sortColumn===column){sortOrder=sortOrder==='asc'?'desc':'asc'}else{sortColumn=column;sortOrder='asc'}customerData.sort(function(a,b){var valA=String(a[column]||'').toUpperCase();var valB=String(b[column]||'').toUpperCase();if(column==='HARGA'){valA=Number(String(a[column]||'0').replace(/[^0-9]/g,''));valB=Number(String(b[column]||'0').replace(/[^0-9]/g,''))}if(valA<valB)return sortOrder==='asc'?-1:1;if(valA>valB)return sortOrder==='asc'?1:-1;return 0});filterPelanggan();var headers=document.querySelectorAll('#pelangganPage th');headers.forEach(function(th){var text=th.textContent.replace(/ [⬍⬏]$/,'');th.textContent=text;if(text.trim()===column){th.textContent+=sortOrder==='asc'?' ⬍':' ⬏'}})}
+function renderPelanggan(data){var tbody=document.getElementById('pelangganTable');tbody.innerHTML='';if(!data||!data.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center">Data tidak ditemukan</td></tr>';return}for(var i=0;i<data.length;i++){var row=data[i];var status=String(row.STATUS||'');var upper=status.toUpperCase();if(upper==='AKTIF')upper='ON';var statusClass=upper==='ON'?'status-on':'status-off';var tr=document.createElement('tr');tr.innerHTML='<td>'+safe(row.ID)+'</td><td><strong>'+safe(row.NAMA)+'</strong></td><td>'+safe(row.WHATSAPP)+'</td><td>'+safe(row.AREA)+'</td><td>'+safe(row.PAKET)+'</td><td>'+safe(row.HARGA)+'</td><td><span class="status '+statusClass+'">'+safe(status)+'</span></td><td><button class="detail-btn" onclick="showDetail(\''+escapeAttr(row.ID)+'\')">Detail</button> <button class="success-btn" onclick="waPelanggan(\''+escapeAttr(row.ID)+'\')" style="background:#25D366;">📱 WA</button></td>';tbody.appendChild(tr)}}
+function waPelanggan(id){var row=null;for(var i=0;i<customerData.length;i++){if(String(customerData[i].ID)===String(id)){row=customerData[i];break}}if(!row){showNotification('❌ Pelanggan tidak ditemukan','error');return}var wa=String(row.WHATSAPP||'').replace(/\D/g,'');if(!wa||wa.length<10){showNotification('❌ Nomor WhatsApp tidak valid untuk '+row.NAMA,'error');return}if(!confirm('📱 Kirim notifikasi WhatsApp ke '+row.NAMA+'?\n\nNomor: '+wa+'\n\nPesan berisi tagihan terbaru akan dikirim.')){return}var tagihanTerbaru=null;for(var i=0;i<tagihanData.length;i++){if(String(tagihanData[i].ID_PELANGGAN).trim()===String(id).trim()){if(!tagihanTerbaru||tagihanTerbaru.PERIODE<tagihanData[i].PERIODE){tagihanTerbaru=tagihanData[i]}}}showNotification('📨 Mengirim notifikasi ke '+row.NAMA+'...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ Notifikasi terkirim ke '+row.NAMA,'success');loadWALog()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).kirimNotifikasiPelanggan(id,tagihanTerbaru?tagihanTerbaru.PERIODE:null)}
+function showDetail(id){var row=null;for(var i=0;i<customerData.length;i++){if(String(customerData[i].ID)===String(id)){row=customerData[i];break}}if(!row)return;var wa=String(row.WHATSAPP||'').replace(/\D/g,'');if(wa.startsWith('0'))wa='62'+wa.substring(1);var waLink=wa?'<a class="wa-btn" target="_blank" href="https://wa.me/'+wa+'">📱 Hubungi WhatsApp</a>':'';document.getElementById('detailContent').innerHTML='<div class="detail-grid">'+detailField('ID Pelanggan',row.ID)+detailField('Nama',row.NAMA)+detailField('WhatsApp',row.WHATSAPP)+detailField('Alamat',row.ALAMAT)+detailField('Area',row.AREA)+detailField('Paket',row.PAKET)+detailField('Harga',row.HARGA)+detailField('Status',row.STATUS)+detailField('Jatuh Tempo',row.JATUH_TEMPO)+detailField('Router',row.ROUTER)+detailField('PPPoE',row.PPPoE)+detailField('MAC Address',row.MAC)+detailField('SN ONU',row.SN_ONU)+detailField('OLT',row.OLT)+detailField('ODP',row.ODP)+'</div>'+waLink;document.getElementById('detailModal').style.display='block'}
+function closeDetail(){document.getElementById('detailModal').style.display='none'}
+
+// ==========================================
+// TAGIHAN
+// ==========================================
+function showTagihan(){document.getElementById('dashboardContent').style.display='none';document.getElementById('pelangganPage').style.display='none';document.getElementById('tagihanPage').style.display='block';document.getElementById('pembayaranPage').style.display='none';document.getElementById('whatsappPage').style.display='none';document.getElementById('pengeluaranPage').style.display='none';document.getElementById('mikrotikPage').style.display='none';document.getElementById('laporanPage').style.display='none';document.getElementById('pengaturanPage').style.display='none';document.getElementById('usersPage').style.display='none';setActiveMenu(2);loadDaftarPeriodeTagihan()}
+function loadDaftarPeriodeTagihan(){showNotification('Memuat periode tagihan...','info');google.script.run.withSuccessHandler(function(data){var select=document.getElementById('tagihanPeriode');select.innerHTML='';var bulanNama=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];var defaultData=[];var now=new Date();if(!Array.isArray(data)||data.length===0){for(var i=0;i<12;i++){var d=new Date(now.getFullYear(),now.getMonth()-i,1);var tahun=d.getFullYear();var bulan=d.getMonth()+1;var value=tahun+'-'+String(bulan).padStart(2,'0');defaultData.push(value)}data=defaultData}data.sort().reverse();for(var i=0;i<data.length;i++){var opt=document.createElement('option');opt.value=data[i];var match=data[i].match(/^(\d{4})-(\d{2})$/);if(match){var tahun=match[1];var bulan=Number(match[2]);opt.textContent=bulanNama[bulan-1]+' '+tahun}else{opt.textContent=data[i]}select.appendChild(opt)}var bulanSaatIni=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0');var found=false;for(var i=0;i<select.options.length;i++){if(select.options[i].value===bulanSaatIni){select.value=bulanSaatIni;found=true;break}}if(!found&&select.options.length>0){select.value=select.options[0].value}loadTagihan();showNotification('✅ Periode dimuat: '+select.options[select.selectedIndex].text,'success')}).withFailureHandler(function(error){console.error('Gagal load periode:',error);var select=document.getElementById('tagihanPeriode');select.innerHTML='';var now=new Date();var bulanNama=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];var data=[];for(var i=0;i<12;i++){var d=new Date(now.getFullYear(),now.getMonth()-i,1);var tahun=d.getFullYear();var bulan=d.getMonth()+1;var value=tahun+'-'+String(bulan).padStart(2,'0');data.push(value)}data.sort().reverse();for(var i=0;i<data.length;i++){var opt=document.createElement('option');opt.value=data[i];var match=data[i].match(/^(\d{4})-(\d{2})$/);if(match){var tahun=match[1];var bulan=Number(match[2]);opt.textContent=bulanNama[bulan-1]+' '+tahun}else{opt.textContent=data[i]}select.appendChild(opt)}if(select.options.length>0){select.value=select.options[0].value}loadTagihan()}).getDaftarPeriodeTagihan()}
+function loadTagihan(){var select=document.getElementById('tagihanPeriode');var periode=select?select.value:'';var periodeText=select?select.options[select.selectedIndex]?.text||periode:periode;if(!periode){document.getElementById('tagihanTable').innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;">⚠️ Silakan pilih periode terlebih dahulu</td></tr>';document.getElementById('totalTagihan').innerText='0';document.getElementById('tagihanLunas').innerText='0';document.getElementById('tagihanBelumBayar').innerText='0';return}document.getElementById('tagihanTable').innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;">⏳ Memuat tagihan untuk '+periodeText+'...</td></tr>';google.script.run.withSuccessHandler(function(data){tagihanData=data||[];renderTagihan(tagihanData);if(tagihanData.length===0){document.getElementById('tagihanTable').innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;">📭 Belum ada tagihan untuk '+periodeText+'<br><br>Klik <strong>➕ Generate</strong> untuk membuat tagihan.</td></tr>'}}).withFailureHandler(function(error){showNotification('❌ Gagal: '+error.message,'error');document.getElementById('tagihanTable').innerHTML='<tr><td colspan="8" style="text-align:center;padding:30px;color:#dc2626;">❌ Gagal memuat tagihan: '+error.message+'</td></tr>'}).getTagihanData(periode)}
+function renderTagihan(data){var tbody=document.getElementById('tagihanTable');var totalTagihan=document.getElementById('totalTagihan');var lunasEl=document.getElementById('tagihanLunas');var belumEl=document.getElementById('tagihanBelumBayar');tbody.innerHTML='';if(!data||!data.length){tbody.innerHTML='<tr><td colspan="8" style="text-align:center">Tidak ada data tagihan</td></tr>';totalTagihan.innerText='0';lunasEl.innerText='0';belumEl.innerText='0';return}var total=0,lunas=0,belum=0;for(var i=0;i<data.length;i++){var row=data[i];var status=String(row.STATUS||'').toUpperCase().trim();var jumlah=Number(row.JUMLAH)||0;total+=jumlah;if(status==='LUNAS'){lunas++}else{belum++}var isLunas=status==='LUNAS';var statusClass=isLunas?'status-on':'status-off';var statusText=isLunas?'LUNAS':'BELUM BAYAR';var rupiah='Rp '+jumlah.toLocaleString('id-ID');var tr=document.createElement('tr');var aksiButton='';if(!isLunas){aksiButton='<button class="success-btn" onclick="bayarTagihanRow(\''+escapeAttr(row.ID_PELANGGAN)+'\',\''+escapeAttr(row.PERIODE)+'\','+jumlah+',\''+escapeAttr(row.NAMA)+'\')" style="margin-right:5px;">💳 Bayar</button><button class="detail-btn" onclick="downloadInvoice(\''+escapeAttr(row.ID_PELANGGAN)+'\',\''+escapeAttr(row.PERIODE)+'\')" style="margin-right:5px;">📄 PDF</button><button class="thermal-btn" onclick="downloadInvoiceTeks(\''+escapeAttr(row.ID_PELANGGAN)+'\',\''+escapeAttr(row.PERIODE)+'\')">🖨️ Thermal</button>'}else{aksiButton='<span style="color:#16a34a;font-weight:bold;">✓ LUNAS</span> <button class="detail-btn" onclick="downloadInvoice(\''+escapeAttr(row.ID_PELANGGAN)+'\',\''+escapeAttr(row.PERIODE)+'\')" style="margin-right:5px;">📄 PDF</button><button class="thermal-btn" onclick="downloadInvoiceTeks(\''+escapeAttr(row.ID_PELANGGAN)+'\',\''+escapeAttr(row.PERIODE)+'\')">🖨️ Thermal</button>'}tr.innerHTML='<td>'+safe(row.ID_PEMBAYARAN||'-')+'</td><td>'+safe(row.ID_PELANGGAN||'-')+'</td><td><strong>'+safe(row.NAMA||'-')+'</strong></td><td>'+safe(row.PAKET||'-')+'</td><td>'+rupiah+'</td><td>'+safe(row.JATUH_TEMPO||'-')+'</td><td><span class="status '+statusClass+'">'+statusText+'</span></td><td>'+aksiButton+'</td>';tbody.appendChild(tr)}totalTagihan.innerText=total.toLocaleString('id-ID');lunasEl.innerText=lunas;belumEl.innerText=belum}
+function filterTagihan(){var keyword=document.getElementById('tagihanSearch').value.toLowerCase().trim();if(!keyword){renderTagihan(tagihanData);return}var filtered=[];for(var i=0;i<tagihanData.length;i++){var row=tagihanData[i];var text=((row.NAMA||'')+' '+(row.ID_PELANGGAN||'')+' '+(row.ID_PEMBAYARAN||'')).toLowerCase();if(text.indexOf(keyword)!==-1){filtered.push(row)}}renderTagihan(filtered)}
+function generateTagihanDariWeb(){var select=document.getElementById('tagihanPeriode');var periode=select.value;if(!periode){alert('⚠️ Pilih periode terlebih dahulu!\n\nSilakan pilih periode dari dropdown.');return}var match=periode.match(/^(\d{4})-(\d{2})$/);if(!match){alert('⚠️ Format periode tidak valid.\nGunakan format YYYY-MM (contoh: 2026-08)');return}var tahun=Number(match[1]);var bulan=Number(match[2]);var namaBulan=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][bulan-1];var konfirmasi=confirm('📋 GENERATE TAGIHAN\n\nPeriode: '+namaBulan+' '+tahun+'\n⚠️ Tagihan yang sudah ada tidak akan digenerate ulang.\n\nLanjutkan?');if(!konfirmasi)return;showNotification('⏳ Mengenerate tagihan '+namaBulan+' '+tahun+'...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){var pesan='✅ '+response.message;if(response.dibuat===0){pesan='ℹ️ Tidak ada tagihan baru untuk '+namaBulan+' '+tahun+'\n(Semua pelanggan sudah memiliki tagihan)'}alert(pesan);loadDaftarPeriodeTagihan();showNotification('✅ Tagihan dimuat ulang!','success')}else{alert('❌ Gagal: '+(response&&response.message?response.message:'Unknown error'));showNotification('❌ Gagal generate tagihan','error')}}).withFailureHandler(function(error){alert('❌ Error: '+error.message);showNotification('❌ Error: '+error.message,'error')}).generateTagihan(bulan,tahun)}
+function bayarTagihanRow(idPelanggan,periode,nominal,nama){if(!confirm('💳 KONFIRMASI PEMBAYARAN\n\nID Pelanggan: '+idPelanggan+'\nNama: '+nama+'\nPeriode: '+periode+'\nNominal: Rp '+nominal.toLocaleString('id-ID')+'\n\nApakah pembayaran sudah diterima?'))return;var metode=prompt('Pilih Metode Pembayaran:\n1. TUNAI\n2. TRANSFER\n3. QRIS\n4. LAINNYA\n\nKetik angka (1-4) atau nama metode:');var metodeMap={'1':'TUNAI','2':'TRANSFER','3':'QRIS','4':'LAINNYA'};var metodeFinal=metodeMap[metode]||metode||'TUNAI';metodeFinal=metodeFinal.toUpperCase();var bankTujuan='';if(metodeFinal==='TRANSFER'){var bank=prompt('Pilih Bank Tujuan Transfer:\n1. BCA\n2. BRI\n3. BNI\n4. Mandiri\n5. BSI\n6. Bank Lainnya (ketik nama bank)\n\nKetik angka (1-6) atau nama bank:');var bankMap={'1':'BCA','2':'BRI','3':'BNI','4':'Mandiri','5':'BSI','6':''};bankTujuan=bankMap[bank]||bank||'BCA';bankTujuan=bankTujuan.toUpperCase()}var kirimWA=confirm('📨 Kirim invoice ke WhatsApp pelanggan?\n\nPilih OK untuk kirim invoice ke '+nama+'\nPilih Batal jika tidak ingin mengirim.');showNotification('Memproses pembayaran...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){var pesan='✅ Pembayaran berhasil! ID: '+response.idPembayaran;if(response.invoiceSent){pesan+='\n📨 Invoice terkirim ke '+nama}else if(kirimWA){pesan+='\n⚠️ Gagal kirim invoice, cek WA_API_KEY'}showNotification(pesan,'success');loadTagihan();loadDashboardKeuangan();loadWALog()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).prosesPembayaran(idPelanggan,periode,metodeFinal,bankTujuan,nominal,kirimWA)}
+function downloadInvoice(idPelanggan,periode){showNotification('Membuat invoice PDF...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){var blob=new Blob([new Uint8Array(response.pdfBlob)],{type:'application/pdf'});var link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=response.fileName;document.body.appendChild(link);link.click();document.body.removeChild(link);URL.revokeObjectURL(link.href);showNotification('✅ '+response.message,'success')}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).downloadInvoice(idPelanggan,periode)}
+function downloadInvoiceTeks(idPelanggan,periode){showNotification('Membuat invoice thermal...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){var blob=new Blob([new Uint8Array(response.teksBlob)],{type:'text/plain;charset=utf-8'});var link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=response.fileName;document.body.appendChild(link);link.click();document.body.removeChild(link);URL.revokeObjectURL(link.href);showNotification('✅ '+response.message,'success');if(confirm('📄 Lihat preview invoice teks?')){alert(response.teks)}}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).downloadInvoiceTeks(idPelanggan,periode)}
+
+// ==========================================
+// PEMBAYARAN
+// ==========================================
+function showPembayaran(){document.getElementById('dashboardContent').style.display='none';document.getElementById('pelangganPage').style.display='none';document.getElementById('tagihanPage').style.display='none';document.getElementById('pembayaranPage').style.display='block';document.getElementById('whatsappPage').style.display='none';document.getElementById('pengeluaranPage').style.display='none';document.getElementById('mikrotikPage').style.display='none';document.getElementById('laporanPage').style.display='none';document.getElementById('pengaturanPage').style.display='none';document.getElementById('usersPage').style.display='none';setActiveMenu(3);loadPembayaran()}
+function loadPembayaran(){document.getElementById('pembayaranTable').innerHTML='<tr><td colspan="9" style="text-align:center">Memuat data pembayaran...</td></tr>';google.script.run.withSuccessHandler(function(data){renderPembayaran(data||[]);updatePembayaranStats(data||[])}).withFailureHandler(function(error){showNotification('Gagal: '+error.message,'error')}).getPembayaranData()}
+function updatePembayaranStats(data){var total=data.length;var totalNominal=0;var tunai=0;var transfer=0;for(var i=0;i<data.length;i++){var nominal=Number(data[i].NOMINAL)||0;totalNominal+=nominal;var metode=String(data[i].METODE||'').toUpperCase().trim();if(metode==='TUNAI')tunai++;else if(metode==='TRANSFER')transfer++}document.getElementById('totalPembayaran').innerText=total;document.getElementById('totalNominal').innerText='Rp '+totalNominal.toLocaleString('id-ID');document.getElementById('totalTunai').innerText=tunai;document.getElementById('totalTransfer').innerText=transfer;document.getElementById('jmlPembayaran').innerText=total}
+function renderPembayaran(data){var tbody=document.getElementById('pembayaranTable');tbody.innerHTML='';if(!data||!data.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center">Belum ada data pembayaran</td></tr>';return}for(var i=0;i<data.length;i++){var row=data[i];var tr=document.createElement('tr');var nominal=Number(row.NOMINAL)||0;var nominalFormatted='Rp '+nominal.toLocaleString('id-ID');var status=String(row.STATUS||'VALID').toUpperCase();var statusClass=status==='VALID'?'status-on':'status-off';var metode=String(row.METODE||'-').toUpperCase();var bank=String(row.BANK||'').toUpperCase();var metodeDisplay=metode;var metodeColor='';if(metode==='TUNAI'){metodeColor='color:#16a34a;font-weight:bold;';metodeDisplay='💵 TUNAI'}else if(metode==='TRANSFER'){metodeColor='color:#2563eb;font-weight:bold;';if(bank&&bank!==''){metodeDisplay='🏦 TRANSFER ('+bank+')'}else{metodeDisplay='🏦 TRANSFER'}}else if(metode==='QRIS'){metodeColor='color:#8b5cf6;font-weight:bold;';metodeDisplay='📱 QRIS'}else if(metode==='LAINNYA'){metodeColor='color:#6b7280;font-weight:bold;';metodeDisplay='📌 LAINNYA'}else{metodeDisplay=metode}tr.innerHTML='<td><strong>'+safe(row.ID_PEMBAYARAN||'-')+'</strong></td><td>'+safe(row.ID_PELANGGAN||'-')+'</td><td><strong>'+safe(row.NAMA||'-')+'</strong></td><td>'+safe(row.PERIODE||'-')+'</td><td style="font-weight:bold;color:#2563eb;">'+nominalFormatted+'</td><td style="'+metodeColor+'">'+safe(metodeDisplay)+'</td><td>'+safe(row.TGL_BAYAR||'-')+'</td><td><span class="status '+statusClass+'">'+safe(status)+'</span></td><td><button class="detail-btn" onclick="editPembayaran(\''+escapeAttr(row.ID_PEMBAYARAN)+'\')" style="margin-right:5px;">✏️ Edit</button><button class="danger-btn" onclick="hapusPembayaran(\''+escapeAttr(row.ID_PEMBAYARAN)+'\')">🗑️ Hapus</button></td>';tbody.appendChild(tr)}}
+function filterPembayaran(){var keyword=document.getElementById('bayarSearch').value.toLowerCase().trim();var rows=document.querySelectorAll('#pembayaranTable tr');for(var i=0;i<rows.length;i++){var row=rows[i];var text=row.textContent.toLowerCase();if(keyword===''){row.style.display=''}else{row.style.display=text.indexOf(keyword)!==-1?'':'none'}}}
+function editPembayaran(idPembayaran){var nama=prompt('Masukkan Nama Pelanggan:');if(nama===null)return;var periode=prompt('Masukkan Periode:');if(periode===null)return;var nominal=prompt('Masukkan Nominal:');if(nominal===null)return;var metode=prompt('Masukkan Metode (TUNAI/TRANSFER/QRIS/LAINNYA):')||'TUNAI';if(metode===null)return;metode=metode.toUpperCase();var bank='';if(metode==='TRANSFER'){bank=prompt('Masukkan Bank (BCA/BRI/BNI/Mandiri/BSI/dll):')||'';bank=bank.toUpperCase()}var status=prompt('Masukkan Status (VALID/BATAL):')||'VALID';if(status===null)return;status=status.toUpperCase();var dataBaru={NAMA:nama,PERIODE:periode,NOMINAL:Number(nominal),METODE:metode,BANK:bank,STATUS:status};if(!confirm('Update data pembayaran '+idPembayaran+'?'))return;showNotification('Mengupdate data...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success');loadPembayaran()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).editPembayaran(idPembayaran,dataBaru)}
+function hapusPembayaran(idPembayaran){if(!confirm('⚠️ Yakin ingin menghapus pembayaran '+idPembayaran+'?'))return;showNotification('Menghapus data...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success');loadPembayaran();loadTagihan();loadDashboardKeuangan()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).hapusPembayaran(idPembayaran)}
+
+// ==========================================
+// WHATSAPP
+// ==========================================
+function showWhatsapp(){document.getElementById('dashboardContent').style.display='none';document.getElementById('pelangganPage').style.display='none';document.getElementById('tagihanPage').style.display='none';document.getElementById('pembayaranPage').style.display='none';document.getElementById('whatsappPage').style.display='block';document.getElementById('pengeluaranPage').style.display='none';document.getElementById('mikrotikPage').style.display='none';document.getElementById('laporanPage').style.display='none';document.getElementById('pengaturanPage').style.display='none';document.getElementById('usersPage').style.display='none';setActiveMenu(4);loadDaftarPeriodeWA();loadWALog()}
+function loadDaftarPeriodeWA(){google.script.run.withSuccessHandler(function(data){var select=document.getElementById('waPeriode');select.innerHTML='<option value="">Pilih Periode</option>';if(Array.isArray(data)&&data.length>0){for(var i=0;i<data.length;i++){var opt=document.createElement('option');opt.value=data[i];opt.textContent=data[i];select.appendChild(opt)}}else{var now=new Date();var bulanNama=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];var bulan=now.getMonth();var tahun=now.getFullYear();for(var i=0;i<6;i++){var b=bulan-i;var t=tahun;if(b<0){b+=12;t--}var opt=document.createElement('option');opt.value=bulanNama[b]+' '+t;opt.textContent=bulanNama[b]+' '+t;select.appendChild(opt)}}}).withFailureHandler(function(error){console.error('Gagal load periode:',error)}).getDaftarPeriode()}
+function loadWALog(){document.getElementById('waLogTable').innerHTML='<tr><td colspan="4" style="text-align:center">Memuat log...</td></tr>';google.script.run.withSuccessHandler(function(data){renderWALog(data||[]);updateWAStats(data||[])}).withFailureHandler(function(error){showNotification('Gagal: '+error.message,'error')}).getWALog()}
+function renderWALog(data){var tbody=document.getElementById('waLogTable');tbody.innerHTML='';if(!data||!data.length){tbody.innerHTML='<tr><td colspan="4" style="text-align:center;padding:30px;">Belum ada log WhatsApp</td></tr>';document.getElementById('jmlWALog').innerText='0';return}for(var i=0;i<Math.min(data.length,100);i++){var row=data[i];var tr=document.createElement('tr');var status=String(row.STATUS||'').toUpperCase();var statusClass='status-off';var statusText=status;if(status==='SENT'||status==='READY'){statusClass='status-on';statusText=status==='SENT'?'SENT':'READY'}tr.innerHTML='<td>'+safe(row.TANGGAL||'-')+'</td><td>'+safe(row.NO_WHATSAPP||'-')+'</td><td style="max-width:300px;word-break:break-word;font-size:12px;">'+safe((row.PESAN||'').substring(0,80))+((row.PESAN||'').length>80?'...':'')+'</td><td><span class="status '+statusClass+'">'+safe(statusText)+'</span></td>';tbody.appendChild(tr)}if(data.length>100){var tr=document.createElement('tr');tr.innerHTML='<td colspan="4" style="text-align:center;color:#6b7280;">Menampilkan 100 dari '+data.length+' data</td>';tbody.appendChild(tr)}document.getElementById('jmlWALog').innerText=data.length}
+function updateWAStats(data){var total=data.length,success=0,failed=0;for(var i=0;i<data.length;i++){var status=String(data[i].STATUS||'').toUpperCase();if(status==='SENT'||status==='READY'){success++}else if(status.indexOf('FAILED')!==-1){failed++}}document.getElementById('waTotal').innerText=total;document.getElementById('waSuccess').innerText=success;document.getElementById('waFailed').innerText=failed}
+function kirimTagihanMassal(){var periode=document.getElementById('waPeriode').value;if(!periode){alert('Pilih periode tagihan terlebih dahulu!');return}if(!confirm('📨 Kirim tagihan periode '+periode+' ke semua pelanggan yang belum bayar?'))return;showNotification('Mengirim tagihan...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success');loadWALog()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).kirimTagihanWA(periode)}
+function kirimPengingatWA(){if(!confirm('⏰ Kirim pengingat ke pelanggan yang tagihannya sudah lewat jatuh tempo?'))return;showNotification('Mengirim pengingat...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success');loadWALog()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).kirimPengingatOtomatis()}
+function kirimSemuaPelanggan(){if(!confirm('📱 Kirim notifikasi WhatsApp ke SEMUA pelanggan?\n\n⚠️ Ini akan mengirim pesan ke semua pelanggan yang memiliki nomor WhatsApp.\n\nPastikan WA_API_KEY sudah diatur di PENGATURAN.'))return;showNotification('Mengirim notifikasi ke semua pelanggan...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success');loadWALog()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).kirimSemuaPelanggan()}
+function clearWALog(){if(!confirm('⚠️ Yakin ingin menghapus semua log WhatsApp?'))return;showNotification('Menghapus log...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success');loadWALog()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).clearWALog()}
+function testWAAdmin(){if(!confirm('🔧 Kirim pesan test ke nomor admin?'))return;showNotification('Mengirim pesan test...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ Pesan test terkirim ke admin!','success')}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).testWAAdmin()}
+
+// ==========================================
+// PENGELUARAN
+// ==========================================
+function showPengeluaran(){document.getElementById('dashboardContent').style.display='none';document.getElementById('pelangganPage').style.display='none';document.getElementById('tagihanPage').style.display='none';document.getElementById('pembayaranPage').style.display='none';document.getElementById('whatsappPage').style.display='none';document.getElementById('pengeluaranPage').style.display='block';document.getElementById('mikrotikPage').style.display='none';document.getElementById('laporanPage').style.display='none';document.getElementById('pengaturanPage').style.display='none';document.getElementById('usersPage').style.display='none';setActiveMenu(5);var today=new Date().toISOString().split('T')[0];document.getElementById('expTanggal').value=today;loadPengeluaran()}
+function loadPengeluaran(){document.getElementById('pengeluaranTable').innerHTML='<tr><td colspan="7" style="text-align:center;padding:30px;">⏳ Memuat data pengeluaran...</td></tr>';google.script.run.withSuccessHandler(function(data){pengeluaranData=data||[];renderPengeluaran(pengeluaranData);updatePengeluaranStats(pengeluaranData)}).withFailureHandler(function(error){showNotification('❌ Gagal: '+error.message,'error')}).getPengeluaranData('','')}
+function renderPengeluaran(data){var tbody=document.getElementById('pengeluaranTable');tbody.innerHTML='';if(!data||!data.length){tbody.innerHTML='<tr><td colspan="7" style="text-align:center;padding:30px;">📭 Belum ada data pengeluaran</td></tr>';document.getElementById('jmlPengeluaran').innerText='0';return}for(var i=0;i<data.length;i++){var row=data[i];var tr=document.createElement('tr');var no=i+1;var jumlah=Number(row.JUMLAH)||0;var kategori=String(row.KATEGORI||'Lainnya');var warnaKategori=getKategoriColor(kategori);tr.innerHTML='<td>'+no+'</td><td>'+safe(row.TANGGAL||'-')+'</td><td><span style="background:'+warnaKategori+';padding:4px 10px;border-radius:12px;color:white;font-size:12px;">'+safe(kategori)+'</span></td><td>'+safe(row.DESKRIPSI||'-')+'</td><td style="text-align:right;font-weight:bold;color:#dc2626;">Rp '+jumlah.toLocaleString('id-ID')+'</td><td>'+safe(row.PIC||'-')+'</td><td><button class="danger-btn" onclick="hapusPengeluaranRow('+i+')">🗑️ Hapus</button></td>';tbody.appendChild(tr)}document.getElementById('jmlPengeluaran').innerText=data.length}
+function getKategoriColor(kategori){var colors={'Operasional':'#2563eb','Gaji':'#dc2626','Internet':'#8b5cf6','Perbaikan':'#f59e0b','ATK':'#16a34a','Lainnya':'#6b7280'};return colors[kategori]||'#6b7280'}
+function updatePengeluaranStats(data){var total=0;for(var i=0;i<data.length;i++){total+=Number(data[i].JUMLAH)||0}document.getElementById('expTotal').innerText='Rp '+total.toLocaleString('id-ID');document.getElementById('expJumlahTransaksi').innerText=data.length;var rata=data.length>0?Math.round(total/data.length):0;document.getElementById('expRata').innerText='Rp '+rata.toLocaleString('id-ID')}
+function filterPengeluaran(){var keyword=document.getElementById('expSearch').value.toLowerCase().trim();var kategori=document.getElementById('expFilterKategori').value;var filtered=pengeluaranData.filter(function(row){var matchKeyword=(row.DESKRIPSI||'').toLowerCase().indexOf(keyword)!==-1||(row.KATEGORI||'').toLowerCase().indexOf(keyword)!==-1;var matchKategori=!kategori||row.KATEGORI===kategori;return matchKeyword&&matchKategori});renderPengeluaran(filtered);updatePengeluaranStats(filtered)}
+function tambahPengeluaranForm(){var tanggal=document.getElementById('expTanggal').value;var kategori=document.getElementById('expKategori').value;var deskripsi=document.getElementById('expDeskripsi').value.trim();var jumlah=document.getElementById('expJumlah').value;var pic=document.getElementById('expPIC').value.trim()||'Admin';if(!deskripsi){showNotification('⚠️ Deskripsi harus diisi!','error');return}if(!jumlah||Number(jumlah)<=0){showNotification('⚠️ Jumlah harus diisi dengan angka positif!','error');return}if(!confirm('Tambah pengeluaran:\n\nKategori: '+kategori+'\nDeskripsi: '+deskripsi+'\nJumlah: Rp '+Number(jumlah).toLocaleString('id-ID'))){return}showNotification('Menyimpan pengeluaran...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success');document.getElementById('expDeskripsi').value='';document.getElementById('expJumlah').value='';document.getElementById('expPIC').value='';loadPengeluaran();loadDashboardKeuangan()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).tambahPengeluaran(tanggal,kategori,deskripsi,jumlah,pic)}
+function tambahPengeluaranDash(){var tanggal=document.getElementById('inputTanggal').value;var kategori=document.getElementById('inputKategori').value;var deskripsi=document.getElementById('inputDeskripsi').value.trim();var jumlah=document.getElementById('inputJumlah').value;if(!deskripsi){showNotification('⚠️ Deskripsi harus diisi!','error');return}if(!jumlah||Number(jumlah)<=0){showNotification('⚠️ Jumlah harus diisi dengan angka positif!','error');return}if(!confirm('Tambah pengeluaran:\n\nKategori: '+kategori+'\nDeskripsi: '+deskripsi+'\nJumlah: Rp '+Number(jumlah).toLocaleString('id-ID'))){return}showNotification('Menyimpan pengeluaran...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success');document.getElementById('inputDeskripsi').value='';document.getElementById('inputJumlah').value='';loadPengeluaran();loadDashboardKeuangan()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).tambahPengeluaran(tanggal,kategori,deskripsi,jumlah,'')}
+function hapusPengeluaranRow(index){var row=pengeluaranData[index];if(!row)return;if(!confirm('⚠️ Yakin ingin menghapus pengeluaran?\n\nDeskripsi: '+row.DESKRIPSI+'\nJumlah: Rp '+(Number(row.JUMLAH)||0).toLocaleString('id-ID'))){return}var rowIndex=index+1;showNotification('Menghapus数据...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success');loadPengeluaran();loadDashboardKeuangan()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).hapusPengeluaran(rowIndex)}
+function clearPengeluaran(){if(!confirm('⚠️ Yakin ingin menghapus SEMUA data pengeluaran?\n\nTindakan ini tidak dapat dibatalkan!')){return}showNotification('Menghapus semua data...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success');loadPengeluaran();loadDashboardKeuangan()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).clearPengeluaran()}
+
+// ==========================================
+// MIKROTIK
+// ==========================================
+function showMikrotik(){document.getElementById('dashboardContent').style.display='none';document.getElementById('pelangganPage').style.display='none';document.getElementById('tagihanPage').style.display='none';document.getElementById('pembayaranPage').style.display='none';document.getElementById('whatsappPage').style.display='none';document.getElementById('pengeluaranPage').style.display='none';document.getElementById('mikrotikPage').style.display='block';document.getElementById('laporanPage').style.display='none';document.getElementById('pengaturanPage').style.display='none';document.getElementById('usersPage').style.display='none';setActiveMenu(6);loadMikrotikPeriode()}
+function loadMikrotikPeriode(){google.script.run.withSuccessHandler(function(data){var select=document.getElementById('mikrotikPeriode');select.innerHTML='<option value="">Pilih Periode</option>';if(Array.isArray(data)){for(var i=0;i<data.length;i++){var opt=document.createElement('option');opt.value=data[i];opt.textContent=data[i];select.appendChild(opt)}}}).withFailureHandler(function(error){console.error('Gagal load periode:',error)}).getDaftarPeriode()}
+function testMikrotik() {
+  showNotification('Testing koneksi MikroTik...', 'info');
+  
+  google.script.run
+    .withSuccessHandler(function(response) {
+      var statusEl = document.getElementById('mikrotikStatus');
+      var infoEl = document.getElementById('mikrotikInfo');
+      var detailEl = document.getElementById('mikrotikDetail');
+      
+      if (response && response.success) {
+        statusEl.innerHTML = '✅ ' + response.message;
+        statusEl.style.color = '#16a34a';
+        infoEl.style.display = 'block';
+        detailEl.textContent = 'URL: ' + response.url + '\nIdentity: ' + (response.identity || 'Unknown') + '\n\nData: ' + JSON.stringify(response.data, null, 2);
+        showNotification('✅ Koneksi MikroTik berhasil!', 'success');
+        loadPPPoEUsers();
+      } else {
+        statusEl.innerHTML = '❌ ' + (response && response.message ? response.message : 'Gagal');
+        statusEl.style.color = '#dc2626';
+        infoEl.style.display = 'block';
+        detailEl.textContent = (response && response.message ? response.message : 'Tidak ada response');
+        showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
+      }
+    })
+    .withFailureHandler(function(error) {
+      var statusEl = document.getElementById('mikrotikStatus');
+      statusEl.innerHTML = '❌ Error: ' + error.message;
+      statusEl.style.color = '#dc2626';
+      var infoEl = document.getElementById('mikrotikInfo');
+      infoEl.style.display = 'block';
+      document.getElementById('mikrotikDetail').textContent = 'Error: ' + error.message;
+      showNotification('❌ Error: ' + error.message, 'error');
+    })
+    .testMikrotikConnection();
+}
+function loadPPPoEUsers(){document.getElementById('pppoeTable').innerHTML='<tr><td colspan="3" style="text-align:center;padding:30px;">⏳ Memuat data PPPoE...</td></tr>';google.script.run.withSuccessHandler(function(response){if(response&&response.success){renderPPPoEUsers(response.data||[])}else{document.getElementById('pppoeTable').innerHTML='<tr><td colspan="3" style="text-align:center;padding:30px;color:#dc2626;">❌ Gagal memuat: '+(response&&response.message?response.message:'')+'</td></tr>'}}).withFailureHandler(function(error){document.getElementById('pppoeTable').innerHTML='<tr><td colspan="3" style="text-align:center;padding:30px;color:#dc2626;">❌ Error: '+error.message+'</td></tr>'}).getPPPoEUsers()}
+function renderPPPoEUsers(data){var tbody=document.getElementById('pppoeTable');tbody.innerHTML='';if(!data||!data.length){tbody.innerHTML='<tr><td colspan="3" style="text-align:center;padding:30px;">Tidak ada user PPPoE</td></tr>';return}for(var i=0;i<data.length;i++){var user=data[i];var tr=document.createElement('tr');var isDisabled=user.disabled===true||user.disabled==='true';var statusClass=isDisabled?'status-off':'status-on';var statusText=isDisabled?'SUSPENDED':'ACTIVE';tr.innerHTML='<td><strong>'+safe(user.name||'-')+'</strong></td><td><span class="status '+statusClass+'">'+statusText+'</span></td><td>'+(isDisabled?'<button class="success-btn" onclick="unsuspendPPPoE(\''+escapeAttr(user.name)+'\')">▶️ Unsuspend</button>':'<button class="danger-btn" onclick="suspendPPPoE(\''+escapeAttr(user.name)+'\')">⏸️ Suspend</button>')+'</td>';tbody.appendChild(tr)}}
+function suspendPPPoE(username){if(!confirm('⚠️ Suspend user PPPoE: '+username+'?\n\nPelanggan akan kehilangan akses internet.')){return}showNotification('Men-suspend '+username+'...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success');loadPPPoEUsers()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).suspendPPPoEUser(username)}
+function unsuspendPPPoE(username){if(!confirm('✅ Unsuspend user PPPoE: '+username+'?\n\nPelanggan akan dapat akses internet kembali.')){return}showNotification('Me-unsuspend '+username+'...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success');loadPPPoEUsers()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).unsuspendPPPoEUser(username)}
+function runAutoSuspend(){var periode=document.getElementById('mikrotikPeriode').value;if(!periode){alert('Pilih periode terlebih dahulu!');return}if(!confirm('⏸️ Auto Suspend pelanggan yang belum bayar di periode '+periode+'?\n\nPelanggan yang belum bayar dan sudah lewat jatuh tempo akan di-suspend.')){return}showNotification('Menjalankan auto suspend...','info');google.script.run.withSuccessHandler(function(response){var resultEl=document.getElementById('suspendResult');var detailEl=document.getElementById('suspendDetail');if(response&&response.success){resultEl.style.display='block';resultEl.style.background=response.suspended>0?'#f0fdf4':'#fefce8';detailEl.textContent=JSON.stringify(response,null,2);showNotification('✅ '+response.message,'success');loadPPPoEUsers()}else{resultEl.style.display='block';resultEl.style.background='#fef2f2';detailEl.textContent='❌ '+(response&&response.message?response.message:'Gagal');showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).autoSuspendBelumBayar(periode)}
+
+// ==========================================
+// LAPORAN
+// ==========================================
+function showLaporan(){document.getElementById('dashboardContent').style.display='none';document.getElementById('pelangganPage').style.display='none';document.getElementById('tagihanPage').style.display='none';document.getElementById('pembayaranPage').style.display='none';document.getElementById('whatsappPage').style.display='none';document.getElementById('pengeluaranPage').style.display='none';document.getElementById('mikrotikPage').style.display='none';document.getElementById('laporanPage').style.display='block';document.getElementById('pengaturanPage').style.display='none';document.getElementById('usersPage').style.display='none';setActiveMenu(7);loadDaftarPeriodeLaporan()}
+function loadDaftarPeriodeLaporan(){google.script.run.withSuccessHandler(function(data){var select=document.getElementById('laporanPeriode');select.innerHTML='<option value="">Pilih Periode</option>';if(Array.isArray(data)){for(var i=0;i<data.length;i++){var opt=document.createElement('option');opt.value=data[i];opt.textContent=data[i];select.appendChild(opt)}}}).withFailureHandler(function(error){console.error('Gagal load periode:',error)}).getDaftarPeriode()}
+function loadLaporanKeuangan(){var periode=document.getElementById('laporanPeriode').value;if(!periode){alert('Pilih periode terlebih dahulu!');return}showNotification('Memuat laporan keuangan...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){var r=response.ringkasan;document.getElementById('lapTotalTagihan').innerText='Rp '+(r.totalTagihan||0).toLocaleString('id-ID');document.getElementById('lapTotalBayar').innerText='Rp '+(r.totalBayar||0).toLocaleString('id-ID');document.getElementById('lapTotalBelum').innerText='Rp '+(r.totalBelum||0).toLocaleString('id-ID');document.getElementById('lapPersen').innerText=(r.persentaseBayar||0)+'%';document.getElementById('lapTotalPelanggan').innerText=r.totalPelanggan||0;document.getElementById('lapPelangganAktif').innerText=r.totalPelangganAktif||0;document.getElementById('lapPelangganIsolir').innerText=r.totalPelangganIsolir||0;document.getElementById('lapLunas').innerText=r.lunas||0;var tbody1=document.getElementById('rekapPaketTable');tbody1.innerHTML='';var paketKeys=Object.keys(response.rekapPaket||{});if(paketKeys.length>0){for(var i=0;i<paketKeys.length;i++){var p=paketKeys[i];var d=response.rekapPaket[p];var persen=d.total>0?Math.round((d.lunas/d.total)*100):0;var tr=document.createElement('tr');tr.innerHTML='<td><strong>'+safe(p)+'</strong></td><td style="text-align:right;">'+d.pelanggan+'</td><td style="text-align:right;">Rp '+d.total.toLocaleString('id-ID')+'</td><td style="text-align:right;">Rp '+d.lunas.toLocaleString('id-ID')+'</td><td style="text-align:right;">Rp '+d.belum.toLocaleString('id-ID')+'</td><td style="text-align:right;">'+persen+'%</td>';tbody1.appendChild(tr)}}else{tbody1.innerHTML='<tr><td colspan="6" style="text-align:center;">Tidak ada data</td></tr>'}var tbody2=document.getElementById('rekapAreaTable');tbody2.innerHTML='';var areaKeys=Object.keys(response.rekapArea||{});if(areaKeys.length>0){for(var i=0;i<areaKeys.length;i++){var a=areaKeys[i];var d=response.rekapArea[a];var tr=document.createElement('tr');tr.innerHTML='<td><strong>'+safe(a)+'</strong></td><td style="text-align:right;">'+d.total+'</td><td style="text-align:right;">'+d.aktif+'</td><td style="text-align:right;">'+d.isolir+'</td>';tbody2.appendChild(tr)}}else{tbody2.innerHTML='<tr><td colspan="4" style="text-align:center;">Tidak ada data</td></tr>'}document.getElementById('jmlLaporan').innerText=response.data?response.data.length:0;showNotification('✅ Laporan keuangan dimuat!','success')}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).getLaporanKeuangan(periode)}
+function kirimLaporanEmail(){var periode=document.getElementById('laporanPeriode').value;if(!periode){alert('Pilih periode terlebih dahulu!');return}var email=prompt('Masukkan email tujuan:',sessionStorage.getItem('email')||'');if(!email)return;if(!confirm('Kirim laporan '+periode+' ke '+email+'?'))return;showNotification('Mengirim laporan...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success')}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).kirimLaporanBulanan(periode,email)}
+
+// ==========================================
+// PENGATURAN
+// ==========================================
+function showPengaturan(){document.getElementById('dashboardContent').style.display='none';document.getElementById('pelangganPage').style.display='none';document.getElementById('tagihanPage').style.display='none';document.getElementById('pembayaranPage').style.display='none';document.getElementById('whatsappPage').style.display='none';document.getElementById('pengeluaranPage').style.display='none';document.getElementById('mikrotikPage').style.display='none';document.getElementById('laporanPage').style.display='none';document.getElementById('pengaturanPage').style.display='block';document.getElementById('usersPage').style.display='none';setActiveMenu(8);loadPengaturan()}
+function loadPengaturan(){google.script.run.withSuccessHandler(function(data){document.getElementById('pengaturanStatus').textContent=JSON.stringify(data,null,2);document.getElementById('setPeriode').value=data.PERIODE_AKTIF||'';document.getElementById('setDenda').value=data.DENDA_PER_HARI||'';document.getElementById('setWAKey').value=data.WA_API_KEY||'';document.getElementById('setWAAdmin').value=data.WA_ADMIN||'';document.getElementById('setTempo').value=data.TANGGAL_JATUH_TEMPO||'';document.getElementById('setEmail').value=data.EMAIL_LAPORAN||'';document.getElementById('setMikrotikIP').value=data.MIKROTIK_IP||'';document.getElementById('setMikrotikUser').value=data.MIKROTIK_USER||'';document.getElementById('setMikrotikPass').value=data.MIKROTIK_PASS||'';document.getElementById('setMikrotikEnable').value=data.MIKROTIK_ENABLED||'FALSE'}).withFailureHandler(function(error){showNotification('Gagal: '+error.message,'error')}).getPengaturan()}
+function savePengaturan(key,value){if(!key)return;google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success');loadPengaturan()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).updatePengaturan(key,value)}
+function setupAutoTrigger(){if(!confirm('Buat trigger auto generate tagihan setiap tanggal 1?'))return;google.script.run.withSuccessHandler(function(message){showNotification('✅ '+message,'success')}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).setupTrigger()}
+function setupTriggerLaporan(){if(!confirm('Buat trigger laporan bulanan setiap tanggal 1 jam 08:00?'))return;google.script.run.withSuccessHandler(function(message){showNotification('✅ '+message,'success')}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).setupTriggerLaporan()}
+function exportPelangganExcel(){showNotification('Membuat file Excel pelanggan...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){var blob=new Blob([new Uint8Array(response.blob)],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});var link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=response.fileName;document.body.appendChild(link);link.click();document.body.removeChild(link);URL.revokeObjectURL(link.href);showNotification('✅ '+response.message,'success')}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).exportPelangganExcel()}
+function exportTagihanExcel(){var periode=document.getElementById('tagihanPeriode').value;if(!periode){alert('Pilih periode terlebih dahulu!');return}var match=periode.match(/^(\d{4})-(\d{2})$/);var namaPeriode=periode;if(match){var tahun=match[1];var bulan=Number(match[2]);var namaBulan=['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'][bulan-1];namaPeriode=namaBulan+' '+tahun}if(!confirm('Export data tagihan untuk periode '+namaPeriode+'?'))return;showNotification('Membuat file Excel tagihan...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){var blob=new Blob([new Uint8Array(response.blob)],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});var link=document.createElement('a');link.href=URL.createObjectURL(blob);link.download=response.fileName;document.body.appendChild(link);link.click();document.body.removeChild(link);URL.revokeObjectURL(link.href);showNotification('✅ '+response.message,'success')}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).exportTagihanExcel(namaPeriode)}
+
+// ==========================================
+// MANAJEMEN USER
+// ==========================================
+function showUsers(){document.getElementById('dashboardContent').style.display='none';document.getElementById('pelangganPage').style.display='none';document.getElementById('tagihanPage').style.display='none';document.getElementById('pembayaranPage').style.display='none';document.getElementById('whatsappPage').style.display='none';document.getElementById('pengeluaranPage').style.display='none';document.getElementById('mikrotikPage').style.display='none';document.getElementById('laporanPage').style.display='none';document.getElementById('pengaturanPage').style.display='none';document.getElementById('usersPage').style.display='block';setActiveMenu(9);loadUsers()}
+function loadUsers(){document.getElementById('usersTable').innerHTML='<tr><td colspan="5" style="text-align:center;padding:30px;">⏳ Memuat data user...</td></tr>';google.script.run.withSuccessHandler(function(data){renderUsers(data||[])}).withFailureHandler(function(error){showNotification('❌ Gagal: '+error.message,'error')}).getUsers()}
+function renderUsers(data){var tbody=document.getElementById('usersTable');tbody.innerHTML='';if(!data||!data.length){tbody.innerHTML='<tr><td colspan="5" style="text-align:center;padding:30px;">Belum ada user</td></tr>';document.getElementById('jmlUsers').innerText='0';return}for(var i=0;i<data.length;i++){var row=data[i];var tr=document.createElement('tr');var statusClass=row.status==='AKTIF'?'status-on':'status-off';var levelColor=row.level==='ADMINISTRATOR'?'#8b5cf6':(row.level==='ADMIN'?'#2563eb':'#f59e0b');tr.innerHTML='<td><strong>'+safe(row.username)+'</strong></td><td>'+safe(row.nama)+'</td><td><span style="background:'+levelColor+';padding:4px 12px;border-radius:12px;color:white;font-size:12px;font-weight:600;">'+safe(row.level)+'</span></td><td><span class="status '+statusClass+'">'+safe(row.status)+'</span></td><td><button class="detail-btn" onclick="editUser(\''+escapeAttr(row.username)+'\')" style="margin-right:5px;">✏️ Edit</button><button class="danger-btn" onclick="deleteUser(\''+escapeAttr(row.username)+'\')">🗑️ Hapus</button></td>';tbody.appendChild(tr)}document.getElementById('jmlUsers').innerText=data.length}
+function saveUser(){var username=document.getElementById('userUsername').value.trim();var password=document.getElementById('userPassword').value.trim();var nama=document.getElementById('userNama').value.trim();var level=document.getElementById('userLevel').value;var status=document.getElementById('userStatus').value;if(!username){showNotification('⚠️ Username harus diisi!','error');return}if(!password){showNotification('⚠️ Password harus diisi!','error');return}if(!nama){showNotification('⚠️ Nama harus diisi!','error');return}if(!confirm('Simpan user '+username+'?'))return;showNotification('Menyimpan user...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success');resetUserForm();loadUsers()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).saveUser(username,password,nama,level,status)}
+function editUser(username){google.script.run.withSuccessHandler(function(users){for(var i=0;i<users.length;i++){if(users[i].username===username){document.getElementById('userUsername').value=users[i].username;document.getElementById('userPassword').value=users[i].password;document.getElementById('userNama').value=users[i].nama;document.getElementById('userLevel').value=users[i].level;document.getElementById('userStatus').value=users[i].status;break}}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).getUsers()}
+function deleteUser(username){if(!confirm('⚠️ Yakin ingin menghapus user '+username+'?')){return}showNotification('Menghapus user...','info');google.script.run.withSuccessHandler(function(response){if(response&&response.success){showNotification('✅ '+response.message,'success');loadUsers()}else{showNotification('❌ '+(response&&response.message?response.message:'Gagal'),'error')}}).withFailureHandler(function(error){showNotification('❌ Error: '+error.message,'error')}).deleteUser(username)}
+function resetUserForm(){document.getElementById('userUsername').value='';document.getElementById('userPassword').value='';document.getElementById('userNama').value='';document.getElementById('userLevel').value='ADMIN';document.getElementById('userStatus').value='AKTIF'}
+
+// ==========================================
+// START
+// ==========================================
+window.onload=function(){loadTheme();var loggedIn=sessionStorage.getItem('login');if(loggedIn==='true'){document.getElementById('loginPage').style.display='none';document.getElementById('dashboardPage').style.display='block';document.getElementById('userName').innerText=sessionStorage.getItem('nama')||'Administrator';showDashboard()}else{document.getElementById('loginPage').style.display='flex';document.getElementById('dashboardPage').style.display='none'}}
+// ==========================================
+// CEK KONFIGURASI MIKROTIK
+// ==========================================
+function cekKonfigurasi() {
+  showNotification('Memeriksa konfigurasi MikroTik...', 'info');
+  
+  google.script.run
+    .withSuccessHandler(function(response) {
+      var statusEl = document.getElementById('mikrotikStatus');
+      var infoEl = document.getElementById('mikrotikInfo');
+      var detailEl = document.getElementById('mikrotikDetail');
+      
+      if (response && response.success) {
+        statusEl.innerHTML = '📋 ' + response.message;
+        statusEl.style.color = '#2563eb';
+        infoEl.style.display = 'block';
+        detailEl.textContent = JSON.stringify(response.config, null, 2);
+        showNotification('✅ Konfigurasi ditemukan!', 'success');
+      } else {
+        statusEl.innerHTML = '❌ ' + (response && response.message ? response.message : 'Gagal');
+        statusEl.style.color = '#dc2626';
+        showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
+      }
+    })
+    .withFailureHandler(function(error) {
+      showNotification('❌ Error: ' + error.message, 'error');
+    })
+    .cekKonfigurasiMikrotik();
+}
+
+// ==========================================
+// SETUP DEFAULT MIKROTIK
+// ==========================================
+function setupDefaultMikrotik() {
+  if (!confirm('⚙️ Tambahkan konfigurasi default MikroTik ke sheet PENGATURAN?')) {
+    return;
+  }
+  
+  showNotification('Menambahkan konfigurasi default...', 'info');
+  
+  google.script.run
+    .withSuccessHandler(function(message) {
+      showNotification('✅ ' + message, 'success');
+      // Refresh status
+      setTimeout(function() {
+        cekKonfigurasi();
+      }, 1000);
+    })
+    .withFailureHandler(function(error) {
+      showNotification('❌ Error: ' + error.message, 'error');
+    })
+    .setupMikrotikDefault();
+}
+// ==========================================
+// FORCE ENABLE MIKROTIK
+// ==========================================
+function forceEnableMikrotik() {
+  if (!confirm('⚡ Force Enable MikroTik?\n\n' +
+               'Tindakan ini akan mengubah MIKROTIK_ENABLED = TRUE di sheet PENGATURAN.\n\n' +
+               'Lanjutkan?')) {
+    return;
+  }
+  
+  showNotification('Memaksa aktifkan MikroTik...', 'info');
+  
+  google.script.run
+    .withSuccessHandler(function(response) {
+      if (response && response.success) {
+        showNotification('✅ ' + response.message, 'success');
+        // Refresh status setelah 1 detik
+        setTimeout(function() {
+          cekKonfigurasi();
+        }, 1000);
+      } else {
+        showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
+      }
+    })
+    .withFailureHandler(function(error) {
+      showNotification('❌ Error: ' + error.message, 'error');
+    })
+    .forceEnableMikrotik();
+}
+</script>
+</body>
+</html>
