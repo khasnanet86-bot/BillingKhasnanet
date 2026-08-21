@@ -714,24 +714,12 @@ function setActiveMenu(index) {
 // SHOW SIDEBAR BY LEVEL
 // ==========================================
 function showSidebarByLevel() {
-    var level = sessionStorage.getItem('level') || '';
-    document.getElementById('menuWhatsapp').style.display = 'none';
-    document.getElementById('menuPengeluaran').style.display = 'none';
-    document.getElementById('menuPengaturan').style.display = 'none';
-    document.getElementById('menuUsers').style.display = 'none';
-    document.getElementById('menuMikrotik').style.display = 'none';
-
-    if (level === 'ADMINISTRATOR') {
-        document.getElementById('menuWhatsapp').style.display = 'block';
-        document.getElementById('menuPengeluaran').style.display = 'block';
-        document.getElementById('menuPengaturan').style.display = 'block';
-        document.getElementById('menuUsers').style.display = 'block';
-        document.getElementById('menuMikrotik').style.display = 'block';
-    } else if (level === 'ADMIN') {
-        document.getElementById('menuWhatsapp').style.display = 'block';
-        document.getElementById('menuPengeluaran').style.display = 'block';
-        document.getElementById('menuMikrotik').style.display = 'block';
-    }
+    // TAMPILKAN SEMUA MENU - TANPA BATASAN LEVEL
+    document.getElementById('menuWhatsapp').style.display = 'block';
+    document.getElementById('menuPengeluaran').style.display = 'block';
+    document.getElementById('menuPengaturan').style.display = 'block';
+    document.getElementById('menuUsers').style.display = 'block';
+    document.getElementById('menuMikrotik').style.display = 'block';
 }
 
 // ==========================================
