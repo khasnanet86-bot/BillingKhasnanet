@@ -554,7 +554,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 // ==========================================
 // 🔧 KONFIGURASI - GANTI DENGAN URL WEB APP ANDA
 // ==========================================
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyaGrSydk2fW4XWwrkn_YrWFgnhBpPbVzcLWdJV57pntgj7wRvBSGlM1YhD6O449TrIJw/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzNHzW1tcYb3WPCtuaS4Ps1iymkHNFeS4KBYjihBvwFKPm0LhUkeOl1HQ6YEivPcGv0PQ/exec';
 // Ganti URL di atas dengan URL Web App Anda!
 
 // ==========================================
@@ -2510,24 +2510,22 @@ function downloadInvoice(idPelanggan, periode) {
     showNotification('📄 Membuat invoice PDF...', 'info');
     callWebApp('downloadInvoice', { idPelanggan: idPelanggan, periode: periode }, function(response) {
         if (response && response.success) {
-            // Konversi base64 ke blob
-            var byteCharacters = atob(response.pdfBase64);
-            var byteNumbers = new Array(byteCharacters.length);
-            for (var i = 0; i < byteCharacters.length; i++) {
-                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            try {
+                var byteArray = new Uint8Array(response.pdfBytes);
+                var blob = new Blob([byteArray], { type: 'application/pdf' });
+                
+                var link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = response.fileName || 'invoice.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+                
+                showNotification('✅ ' + response.message, 'success');
+            } catch (e) {
+                showNotification('❌ Error: ' + e.message, 'error');
             }
-            var byteArray = new Uint8Array(byteNumbers);
-            var blob = new Blob([byteArray], { type: 'application/pdf' });
-            
-            var link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = response.fileName || 'invoice.pdf';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(link.href);
-            
-            showNotification('✅ ' + response.message, 'success');
         } else {
             showNotification('❌ ' + (response && response.message ? response.message : 'Gagal membuat PDF'), 'error');
         }
@@ -2541,20 +2539,19 @@ function downloadInvoiceTeks(idPelanggan, periode) {
     showNotification('🖨️ Membuat invoice thermal...', 'info');
     callWebApp('downloadInvoiceTeks', { idPelanggan: idPelanggan, periode: periode }, function(response) {
         if (response && response.success) {
-            var blob = new Blob([response.teks], { type: 'text/plain;charset=utf-8' });
-            var link = document.createElement('a');
-            link.href = URL.createObjectURL(blob);
-            link.download = response.fileName || 'invoice_thermal.txt';
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            URL.revokeObjectURL(link.href);
-            
-            showNotification('✅ ' + response.message, 'success');
-            
-            // Tampilkan preview
-            if (confirm('📄 Lihat preview invoice thermal?')) {
-                alert(response.teks);
+            try {
+                var blob = new Blob([response.teks], { type: 'text/plain;charset=utf-8' });
+                var link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = response.fileName || 'invoice_thermal.txt';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+                
+                showNotification('✅ ' + response.message, 'success');
+            } catch (e) {
+                showNotification('❌ Error: ' + e.message, 'error');
             }
         } else {
             showNotification('❌ ' + (response && response.message ? response.message : 'Gagal membuat thermal'), 'error');
