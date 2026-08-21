@@ -554,7 +554,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 // ==========================================
 // 🔧 KONFIGURASI - GANTI DENGAN URL WEB APP ANDA
 // ==========================================
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbys575M1meZV7qgyzGnnn8oFzUsyK9PiEqdcrRoPZjZrXbKc4DBL0JQAYJeNJilJ7bhuw/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyaGrSydk2fW4XWwrkn_YrWFgnhBpPbVzcLWdJV57pntgj7wRvBSGlM1YhD6O449TrIJw/exec';
 // Ganti URL di atas dengan URL Web App Anda!
 
 // ==========================================
@@ -1516,16 +1516,24 @@ function renderTagihan(data) {
         
         var tr = document.createElement('tr');
         
+        // TOMBOL AKSI: INVOICE PDF + THERMAL + BAYAR (jika belum lunas)
         var aksiButton = '';
+        
+        // Tombol Invoice PDF (untuk semua)
+        aksiButton += '<button class="detail-btn" onclick="downloadInvoice(\'' + escapeAttr(row.ID_PELANGGAN) + '\',\'' + escapeAttr(row.PERIODE) + '\')" style="margin-right:5px;background:#2563eb;">📄 PDF</button>';
+        
+        // Tombol Thermal (untuk semua)
+        aksiButton += '<button class="thermal-btn" onclick="downloadInvoiceTeks(\'' + escapeAttr(row.ID_PELANGGAN) + '\',\'' + escapeAttr(row.PERIODE) + '\')" style="margin-right:5px;">🖨️ Thermal</button>';
+        
+        // Tombol Bayar (hanya jika belum lunas dan bukan collector)
         if (!isLunas) {
-            // Collector tidak boleh membayar, hanya melihat
-            if (level === 'COLLECTOR') {
-                aksiButton = '<span style="color:#6b7280;font-size:12px;">(Read Only)</span>';
+            if (level !== 'COLLECTOR') {
+                aksiButton += '<button class="success-btn" onclick="bayarTagihanRow(\'' + escapeAttr(row.ID_PELANGGAN) + '\',\'' + escapeAttr(row.PERIODE) + '\',' + jumlah + ',\'' + escapeAttr(row.NAMA) + '\')" style="margin-right:5px;">💳 Bayar</button>';
             } else {
-                aksiButton = '<button class="success-btn" onclick="bayarTagihanRow(\'' + escapeAttr(row.ID_PELANGGAN) + '\',\'' + escapeAttr(row.PERIODE) + '\',' + jumlah + ',\'' + escapeAttr(row.NAMA) + '\')" style="margin-right:5px;">💳 Bayar</button>';
+                aksiButton += '<span style="color:#6b7280;font-size:12px;">(Read Only)</span>';
             }
         } else {
-            aksiButton = '<span style="color:#16a34a;font-weight:bold;">✓ LUNAS</span>';
+            aksiButton += '<span style="color:#16a34a;font-weight:bold;">✓ LUNAS</span>';
         }
         
         tr.innerHTML = '<td>' + safe(row.ID_PEMBAYARAN || '-') + '</td><td>' + safe(row.ID_PELANGGAN || '-') + '</td><td><strong>' + safe(row.NAMA || '-') + '</strong></td><td>' + safe(row.PAKET || '-') + '</td><td>' + rupiah + '</td><td>' + safe(row.JATUH_TEMPO || '-') + '</td><td><span class="status ' + statusClass + '">' + statusText + '</span></td><td>' + aksiButton + '</td>';
@@ -2495,6 +2503,64 @@ window.onload = function() {
         document.getElementById('dashboardPage').style.display = 'none';
     }
 };
+  // ==========================================
+// DOWNLOAD INVOICE PDF
+// ==========================================
+function downloadInvoice(idPelanggan, periode) {
+    showNotification('📄 Membuat invoice PDF...', 'info');
+    callWebApp('downloadInvoice', { idPelanggan: idPelanggan, periode: periode }, function(response) {
+        if (response && response.success) {
+            // Konversi base64 ke blob
+            var byteCharacters = atob(response.pdfBase64);
+            var byteNumbers = new Array(byteCharacters.length);
+            for (var i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            var byteArray = new Uint8Array(byteNumbers);
+            var blob = new Blob([byteArray], { type: 'application/pdf' });
+            
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = response.fileName || 'invoice.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+            
+            showNotification('✅ ' + response.message, 'success');
+        } else {
+            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal membuat PDF'), 'error');
+        }
+    });
+}
+
+// ==========================================
+// DOWNLOAD INVOICE THERMAL (Teks)
+// ==========================================
+function downloadInvoiceTeks(idPelanggan, periode) {
+    showNotification('🖨️ Membuat invoice thermal...', 'info');
+    callWebApp('downloadInvoiceTeks', { idPelanggan: idPelanggan, periode: periode }, function(response) {
+        if (response && response.success) {
+            var blob = new Blob([response.teks], { type: 'text/plain;charset=utf-8' });
+            var link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = response.fileName || 'invoice_thermal.txt';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(link.href);
+            
+            showNotification('✅ ' + response.message, 'success');
+            
+            // Tampilkan preview
+            if (confirm('📄 Lihat preview invoice thermal?')) {
+                alert(response.teks);
+            }
+        } else {
+            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal membuat thermal'), 'error');
+        }
+    });
+}
 </script>
 </body>
 </html>
