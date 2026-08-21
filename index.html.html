@@ -335,6 +335,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
   <div class="layout">
     <div class="sidebar">
+      <div class="sidebar" id="sidebar">
       <div class="menu active" onclick="showDashboard()">🏠 <span>Dashboard</span></div>
       <div class="menu" onclick="showPelanggan()">👥 <span>Pelanggan</span></div>
       <div class="menu" onclick="showTagihan()">🧾 <span>Tagihan</span></div>
@@ -2513,7 +2514,7 @@ window.onload = function() {
         document.getElementById('dashboardPage').style.display = 'none';
     }
 };
-  // ==========================================
+// ==========================================
 // HAMBURGER MENU - BUKA/TUTUP SIDEBAR
 // ==========================================
 function toggleSidebar() {
@@ -2521,13 +2522,27 @@ function toggleSidebar() {
     var overlay = document.getElementById('sidebarOverlay');
     var btn = document.getElementById('hamburgerBtn');
     
-    sidebar.classList.toggle('open');
-    overlay.classList.toggle('active');
+    // Cek apakah sidebar ada
+    if (!sidebar) {
+        console.log('Sidebar tidak ditemukan!');
+        return;
+    }
     
-    if (sidebar.classList.contains('open')) {
-        btn.textContent = '✕';
-    } else {
-        btn.textContent = '☰';
+    // Toggle class open
+    sidebar.classList.toggle('open');
+    
+    // Toggle overlay
+    if (overlay) {
+        overlay.classList.toggle('active');
+    }
+    
+    // Ganti icon tombol
+    if (btn) {
+        if (sidebar.classList.contains('open')) {
+            btn.textContent = '✕';
+        } else {
+            btn.textContent = '☰';
+        }
     }
 }
 
@@ -2536,14 +2551,27 @@ function closeSidebar() {
     var overlay = document.getElementById('sidebarOverlay');
     var btn = document.getElementById('hamburgerBtn');
     
-    sidebar.classList.remove('open');
-    overlay.classList.remove('active');
-    btn.textContent = '☰';
+    if (sidebar) {
+        sidebar.classList.remove('open');
+    }
+    if (overlay) {
+        overlay.classList.remove('active');
+    }
+    if (btn) {
+        btn.textContent = '☰';
+    }
 }
 
 // Tutup sidebar saat layar di-resize ke ukuran desktop
 window.addEventListener('resize', function() {
     if (window.innerWidth > 768) {
+        closeSidebar();
+    }
+});
+
+// Tutup sidebar saat tombol ESC ditekan
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
         closeSidebar();
     }
 });
