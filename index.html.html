@@ -739,9 +739,30 @@ function showSidebarByLevel() {
         document.getElementById('menuPengeluaran').style.display = 'block';
         document.getElementById('menuMikrotik').style.display = 'block';
     } else if (level === 'COLLECTOR') {
-        // COLLECTOR: hanya menu Tagihan (untuk melihat daftar belum bayar)
-        document.getElementById('menuWhatsapp').style.display = 'block'; // opsional
-        // Menu lain tidak muncul
+        // COLLECTOR: HANYA menu Pelanggan dan Tagihan
+        // Tidak ada menu Pembayaran, Laporan, dll
+        // Menu Pelanggan dan Tagihan sudah selalu muncul (tidak perlu diubah)
+    }} else if (level === 'COLLECTOR') {
+    // COLLECTOR: sembunyikan menu yang tidak boleh diakses
+    document.getElementById('menuWhatsapp').style.display = 'none';
+    document.getElementById('menuPengeluaran').style.display = 'none';
+    document.getElementById('menuPengaturan').style.display = 'none';
+    document.getElementById('menuUsers').style.display = 'none';
+    document.getElementById('menuMikrotik').style.display = 'none';
+    
+    // Sembunyikan menu Pembayaran dan Laporan dari sidebar
+    var menus = document.querySelectorAll('.menu');
+    for (var i = 0; i < menus.length; i++) {
+        var text = menus[i].textContent || '';
+        if (text.indexOf('Pembayaran') !== -1 || 
+            text.indexOf('Laporan') !== -1 ||
+            text.indexOf('WhatsApp') !== -1 ||
+            text.indexOf('Pengeluaran') !== -1 ||
+            text.indexOf('Pengaturan') !== -1 ||
+            text.indexOf('MikroTik') !== -1 ||
+            text.indexOf('Manajemen User') !== -1) {
+            menus[i].style.display = 'none';
+        }
     }
 }
 
@@ -841,11 +862,27 @@ function updateKeuangan(data) {
         document.getElementById('metricPemasukan').innerText = '****';
         document.getElementById('metricPengeluaran').innerText = '****';
         document.getElementById('metricLaba').innerText = '****';
-        document.getElementById('metricPersentase').innerText = '****%';
+        document.getElementById('metricPersentase').innerText = '****';
         document.getElementById('metricTotalPelanggan').innerText = data.totalPelanggan || 0;
         document.getElementById('metricAktif').innerText = data.aktif || 0;
         return;
     }
+    
+    // Kode normal untuk ADMIN dan ADMINISTRATOR
+    var pemasukan = data.pemasukan || 0;
+    var pengeluaran = data.totalPengeluaran || 0;
+    var laba = data.labaBersih || 0;
+    var persen = data.persentaseLaba || 0;
+    
+    document.getElementById('metricPemasukan').innerText = 'Rp ' + pemasukan.toLocaleString('id-ID');
+    document.getElementById('metricPengeluaran').innerText = 'Rp ' + pengeluaran.toLocaleString('id-ID');
+    var labaEl = document.getElementById('metricLaba');
+    labaEl.innerText = 'Rp ' + laba.toLocaleString('id-ID');
+    labaEl.style.color = laba >= 0 ? '#16a34a' : '#dc2626';
+    document.getElementById('metricPersentase').innerText = persen + '%';
+    document.getElementById('metricTotalPelanggan').innerText = data.totalPelanggan || 0;
+    document.getElementById('metricAktif').innerText = data.aktif || 0;
+}
     
     // Kode normal untuk ADMIN dan ADMINISTRATOR
     var pemasukan = data.pemasukan || 0;
@@ -1503,6 +1540,7 @@ function renderTagihan(data) {
         var statusClass = isLunas ? 'status-on' : 'status-off';
         var statusText = isLunas ? 'LUNAS' : 'BELUM BAYAR';
         var level = sessionStorage.getItem('level') || '';
+var level = sessionStorage.getItem('level') || '';
 var rupiah = '';
 if (level === 'COLLECTOR') {
     rupiah = '****'; // Sembunyikan nominal untuk collector
