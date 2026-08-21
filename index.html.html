@@ -554,7 +554,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 // ==========================================
 // 🔧 KONFIGURASI - GANTI DENGAN URL WEB APP ANDA
 // ==========================================
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzNHzW1tcYb3WPCtuaS4Ps1iymkHNFeS4KBYjihBvwFKPm0LhUkeOl1HQ6YEivPcGv0PQ/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwMkWdXq3u-WwyxQwa16SDjVwIZ9qPSJPbZhuf9KT0sujblWk-anR7uzlnP6fQBgKkF/exec';
 // Ganti URL di atas dengan URL Web App Anda!
 
 // ==========================================
@@ -2508,12 +2508,18 @@ window.onload = function() {
 // ==========================================
 function downloadInvoice(idPelanggan, periode) {
     showNotification('📄 Membuat invoice PDF...', 'info');
-    callWebApp('downloadInvoice', { idPelanggan: idPelanggan, periode: periode }, function(response) {
+    
+    callWebApp('downloadInvoice', { 
+        idPelanggan: idPelanggan, 
+        periode: periode 
+    }, function(response) {
         if (response && response.success) {
             try {
+                // Konversi byte array ke blob
                 var byteArray = new Uint8Array(response.pdfBytes);
                 var blob = new Blob([byteArray], { type: 'application/pdf' });
                 
+                // Buat link download
                 var link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
                 link.download = response.fileName || 'invoice.pdf';
@@ -2524,6 +2530,7 @@ function downloadInvoice(idPelanggan, periode) {
                 
                 showNotification('✅ ' + response.message, 'success');
             } catch (e) {
+                console.error('Error download:', e);
                 showNotification('❌ Error: ' + e.message, 'error');
             }
         } else {
