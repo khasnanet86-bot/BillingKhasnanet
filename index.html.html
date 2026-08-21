@@ -718,22 +718,30 @@ function setActiveMenu(index) {
 // ==========================================
 function showSidebarByLevel() {
     var level = sessionStorage.getItem('level') || '';
+    
+    // Sembunyikan semua menu dulu
     document.getElementById('menuWhatsapp').style.display = 'none';
     document.getElementById('menuPengeluaran').style.display = 'none';
     document.getElementById('menuPengaturan').style.display = 'none';
     document.getElementById('menuUsers').style.display = 'none';
     document.getElementById('menuMikrotik').style.display = 'none';
-
+    
     if (level === 'ADMINISTRATOR') {
+        // ADMINISTRATOR: semua menu muncul
         document.getElementById('menuWhatsapp').style.display = 'block';
         document.getElementById('menuPengeluaran').style.display = 'block';
         document.getElementById('menuPengaturan').style.display = 'block';
         document.getElementById('menuUsers').style.display = 'block';
         document.getElementById('menuMikrotik').style.display = 'block';
     } else if (level === 'ADMIN') {
+        // ADMIN: menu terbatas
         document.getElementById('menuWhatsapp').style.display = 'block';
         document.getElementById('menuPengeluaran').style.display = 'block';
         document.getElementById('menuMikrotik').style.display = 'block';
+    } else if (level === 'COLLECTOR') {
+        // COLLECTOR: hanya menu Tagihan (untuk melihat daftar belum bayar)
+        document.getElementById('menuWhatsapp').style.display = 'block'; // opsional
+        // Menu lain tidak muncul
     }
 }
 
@@ -826,6 +834,20 @@ function loadDashboardKeuangan() {
 }
 
 function updateKeuangan(data) {
+    var level = sessionStorage.getItem('level') || '';
+    
+    if (level === 'COLLECTOR') {
+        // Sembunyikan semua nominal untuk collector
+        document.getElementById('metricPemasukan').innerText = '****';
+        document.getElementById('metricPengeluaran').innerText = '****';
+        document.getElementById('metricLaba').innerText = '****';
+        document.getElementById('metricPersentase').innerText = '****%';
+        document.getElementById('metricTotalPelanggan').innerText = data.totalPelanggan || 0;
+        document.getElementById('metricAktif').innerText = data.aktif || 0;
+        return;
+    }
+    
+    // Kode normal untuk ADMIN dan ADMINISTRATOR
     var pemasukan = data.pemasukan || 0;
     var pengeluaran = data.totalPengeluaran || 0;
     var laba = data.labaBersih || 0;
@@ -833,11 +855,9 @@ function updateKeuangan(data) {
     
     document.getElementById('metricPemasukan').innerText = 'Rp ' + pemasukan.toLocaleString('id-ID');
     document.getElementById('metricPengeluaran').innerText = 'Rp ' + pengeluaran.toLocaleString('id-ID');
-    
     var labaEl = document.getElementById('metricLaba');
     labaEl.innerText = 'Rp ' + laba.toLocaleString('id-ID');
     labaEl.style.color = laba >= 0 ? '#16a34a' : '#dc2626';
-    
     document.getElementById('metricPersentase').innerText = persen + '%';
     document.getElementById('metricTotalPelanggan').innerText = data.totalPelanggan || 0;
     document.getElementById('metricAktif').innerText = data.aktif || 0;
@@ -1482,7 +1502,13 @@ function renderTagihan(data) {
         var isLunas = status === 'LUNAS';
         var statusClass = isLunas ? 'status-on' : 'status-off';
         var statusText = isLunas ? 'LUNAS' : 'BELUM BAYAR';
-        var rupiah = 'Rp ' + jumlah.toLocaleString('id-ID');
+        var level = sessionStorage.getItem('level') || '';
+var rupiah = '';
+if (level === 'COLLECTOR') {
+    rupiah = '****'; // Sembunyikan nominal untuk collector
+} else {
+    rupiah = 'Rp ' + jumlah.toLocaleString('id-ID');
+}
         var tr = document.createElement('tr');
         
         var aksiButton = '';
