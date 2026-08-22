@@ -7,43 +7,8 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6f9;color:#1f2937;}button,input,select{font-family:inherit;}
-
-:root {
-  --bg-primary: #f4f6f9;
-  --bg-card: #ffffff;
-  --bg-sidebar: #ffffff;
-  --bg-header: #111827;
-  --text-primary: #1f2937;
-  --text-secondary: #6b7280;
-  --text-header: #ffffff;
-  --border-color: #e5e7eb;
-  --shadow-color: rgba(0,0,0,0.06);
-  --input-bg: #ffffff;
-  --input-border: #d1d5db;
-  --hover-bg: #f3f4f6;
-  --table-header: #f3f4f6;
-  --table-border: #e5e7eb;
-  --card-shadow: 0 4px 20px rgba(0,0,0,0.06);
-}
-
-[data-theme="dark"] {
-  --bg-primary: #0f172a;
-  --bg-card: #1e293b;
-  --bg-sidebar: #1e293b;
-  --bg-header: #0f172a;
-  --text-primary: #e2e8f0;
-  --text-secondary: #94a3b8;
-  --text-header: #ffffff;
-  --border-color: #334155;
-  --shadow-color: rgba(0,0,0,0.3);
-  --input-bg: #1e293b;
-  --input-border: #334155;
-  --hover-bg: #334155;
-  --table-header: #1e293b;
-  --table-border: #334155;
-  --card-shadow: 0 4px 20px rgba(0,0,0,0.3);
-}
-
+:root{--bg-primary:#f4f6f9;--bg-card:#ffffff;--bg-sidebar:#ffffff;--bg-header:#111827;--text-primary:#1f2937;--text-secondary:#6b7280;--text-header:#ffffff;--border-color:#e5e7eb;--shadow-color:rgba(0,0,0,0.06);--input-bg:#ffffff;--input-border:#d1d5db;--hover-bg:#f3f4f6;--table-header:#f3f4f6;--table-border:#e5e7eb;--card-shadow:0 4px 20px rgba(0,0,0,0.06);}
+[data-theme="dark"]{--bg-primary:#0f172a;--bg-card:#1e293b;--bg-sidebar:#1e293b;--bg-header:#0f172a;--text-primary:#e2e8f0;--text-secondary:#94a3b8;--text-header:#ffffff;--border-color:#334155;--shadow-color:rgba(0,0,0,0.3);--input-bg:#1e293b;--input-border:#334155;--hover-bg:#334155;--table-header:#1e293b;--table-border:#334155;--card-shadow:0 4px 20px rgba(0,0,0,0.3);}
 body{background:var(--bg-primary);color:var(--text-primary);transition:background .3s,color .3s}
 .header{background:var(--bg-header);color:var(--text-header)}
 .sidebar{background:var(--bg-sidebar);border-right:1px solid var(--border-color)}
@@ -76,7 +41,6 @@ body{background:var(--bg-primary);color:var(--text-primary);transition:backgroun
 [data-theme="dark"] .notification-success{background:#064e3b;color:#86efac;border-color:#16a34a}
 [data-theme="dark"] .notification-error{background:#7f1d1d;color:#fca5a5;border-color:#dc2626}
 [data-theme="dark"] .notification-info{background:#1e3a5f;color:#93c5fd;border-color:#2563eb}
-
 #loginPage{min-height:100vh;display:flex;justify-content:center;align-items:center;background:linear-gradient(135deg,#0f172a 0%,#1e3a5f 30%,#2563eb 70%,#7c3aed 100%);background-size:400% 400%;animation:gradientBG 15s ease infinite;padding:20px;position:relative;overflow:hidden;}
 @keyframes gradientBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
 .login-bubble{position:absolute;border-radius:50%;background:rgba(255,255,255,0.05);animation:floatBubble 20s infinite ease-in-out;pointer-events:none;}
@@ -203,7 +167,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 #mikrotikPage th{background:#f3f4f6;padding:13px;text-align:left;font-size:13px;font-weight:600;color:#374151;border-bottom:2px solid #e5e7eb}
 #mikrotikPage td{padding:13px;border-bottom:1px solid #f3f4f6;font-size:14px;vertical-align:middle}
 #mikrotikPage tr:hover{background:#f9fafb}
-
 .metric-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:15px;margin-bottom:25px}
 .metric-card{padding:20px;border-radius:16px;transition:all .3s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden;cursor:default;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,.15);border:none}
 .metric-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 12px 40px rgba(0,0,0,.25)}
@@ -224,7 +187,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 .metric-card:nth-child(6)::after{content:'✅';position:absolute;right:10px;bottom:10px;font-size:50px;opacity:.15}
 [data-theme="dark"] .metric-card{box-shadow:0 4px 20px rgba(0,0,0,.4)}
 [data-theme="dark"] .metric-card:hover{box-shadow:0 12px 40px rgba(0,0,0,.5)}
-
 @media(max-width:1200px){.metric-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:900px){.metric-grid{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:repeat(2,1fr)}.sidebar{width:70px}.menu span{display:none}.dashboard-grid{grid-template-columns:1fr}.dashboard-grid .full-width{grid-column:1}}
 @media(max-width:600px){.metric-grid{grid-template-columns:1fr}.metric-card .metric-value{font-size:22px}.metric-card .metric-icon{font-size:26px}.dashboard-card .chart-container{height:180px}.dashboard-card .chart-container.tall{height:200px}.header{padding:0 15px}.header-title{font-size:16px}.sidebar{display:block; width:100%; position:relative; height:auto; max-height:80vh; overflow-y:auto; padding:10px;}.content{padding:15px}.cards{grid-template-columns:1fr}.card{padding:15px}.card-number{font-size:24px}.detail-grid{grid-template-columns:1fr}.toolbar{flex-direction:column}.search{min-width:auto}}
@@ -336,57 +298,35 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         <div class="info-data">Menampilkan: <span id="jmlData">0</span> dari <span id="totalData">0</span> pelanggan</div>
       </div>
 
-<div id="tambahPelangganPage" style="display:none;">
-  <h2>➕ Tambah Pelanggan Baru</h2>
-  <div class="card" style="padding:20px;margin-bottom:20px;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;">Nama Lengkap *</label>
-        <input id="inputNama" class="search" placeholder="Nama Pelanggan">
+      <div id="tambahPelangganPage" style="display:none;">
+        <h2>➕ Tambah Pelanggan Baru</h2>
+        <div class="card" style="padding:20px;margin-bottom:20px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+            <div><label style="font-weight:bold;display:block;margin-bottom:5px;">Nama Lengkap *</label><input id="inputNama" class="search" placeholder="Nama Pelanggan"></div>
+            <div><label style="font-weight:bold;display:block;margin-bottom:5px;">WhatsApp *</label><input id="inputWhatsapp" class="search" placeholder="628123456789"></div>
+            <div><label style="font-weight:bold;display:block;margin-bottom:5px;">Alamat</label><input id="inputAlamat" class="search" placeholder="Alamat Lengkap"></div>
+            <div><label style="font-weight:bold;display:block;margin-bottom:5px;">Area</label><input id="inputArea" class="search" placeholder="Area"></div>
+            <div><label style="font-weight:bold;display:block;margin-bottom:5px;">Paket</label>
+              <select id="inputPaket" class="filter" style="width:100%;">
+                <option value="5 Mbps">5 Mbps</option>
+                <option value="10 Mbps">10 Mbps</option>
+                <option value="20 Mbps">20 Mbps</option>
+                <option value="50 Mbps">50 Mbps</option>
+                <option value="100 Mbps">100 Mbps</option>
+              </select>
+            </div>
+            <div><label style="font-weight:bold;display:block;margin-bottom:5px;">Harga (Rp)</label><input id="inputHarga" class="search" type="number" placeholder="150000"></div>
+            <div><label style="font-weight:bold;display:block;margin-bottom:5px;">Username PPPoE</label><input id="inputPPPoE" class="search" placeholder="username@pppoe"></div>
+            <div><label style="font-weight:bold;display:block;margin-bottom:5px;">Password PPPoE</label><input id="inputPassword" class="search" type="password" placeholder="password"></div>
+          </div>
+          <div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap;">
+            <button class="success-btn" onclick="tambahPelanggan()">💾 Simpan Pelanggan</button>
+            <button class="success-btn" onclick="tambahPelangganDanInvoice()" style="background:#8b5cf6;">📨 Simpan & Kirim Invoice</button>
+            <button class="reset-btn" onclick="resetFormPelanggan()">↺ Reset</button>
+          </div>
+          <div id="formPelangganMessage" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
+        </div>
       </div>
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;">WhatsApp *</label>
-        <input id="inputWhatsapp" class="search" placeholder="628123456789">
-      </div>
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;">Alamat</label>
-        <input id="inputAlamat" class="search" placeholder="Alamat Lengkap">
-      </div>
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;">Area</label>
-        <input id="inputArea" class="search" placeholder="Area">
-      </div>
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;">Paket</label>
-        <select id="inputPaket" class="filter" style="width:100%;">
-          <option value="5 Mbps">5 Mbps</option>
-          <option value="10 Mbps">10 Mbps</option>
-          <option value="20 Mbps">20 Mbps</option>
-          <option value="50 Mbps">50 Mbps</option>
-          <option value="100 Mbps">100 Mbps</option>
-        </select>
-      </div>
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;">Harga (Rp)</label>
-        <input id="inputHarga" class="search" type="number" placeholder="150000">
-      </div>
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;">Username PPPoE</label>
-        <input id="inputPPPoE" class="search" placeholder="username@pppoe">
-      </div>
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;">Password PPPoE</label>
-        <input id="inputPassword" class="search" type="password" placeholder="password">
-      </div>
-    </div>
-    <div style="margin-top:15px;display:flex;gap:10px;flex-wrap:wrap;">
-      <button class="success-btn" onclick="tambahPelanggan()">💾 Simpan Pelanggan</button>
-      <button class="success-btn" onclick="tambahPelangganDanInvoice()" style="background:#8b5cf6;">📨 Simpan & Kirim Invoice</button>
-      <button class="reset-btn" onclick="resetFormPelanggan()">↺ Reset</button>
-    </div>
-    <div id="formPelangganMessage" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
-  </div>
-</div>
 
       <div id="tagihanPage" style="display:none;">
         <h2>🧾 Tagihan</h2>
@@ -584,7 +524,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 // 🔧 KONFIGURASI - GANTI DENGAN URL WEB APP ANDA
 // ==========================================
 var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbz3kjLEc3ZoQ1Gz-48fhx4Ej4wPr5RXthUHjO0UjwSL6Hh5cfnTmN2j73Ol0To2R81BDQ/exec';
-// Ganti URL di atas dengan URL Web App Anda!
 
 function callWebApp(action, params, callback) {
     var url = WEB_APP_URL + '?action=' + action;
@@ -748,15 +687,141 @@ function showSidebarByLevel() {
 }
 
 // ==========================================
-// VARIABLES
+// TAMBAH PELANGGAN - FUNGSI (DIDEFINISIKAN DI AWAL)
+// ==========================================
+function showTambahPelanggan() {
+    var pages = ['dashboardContent', 'pelangganPage', 'tagihanPage', 'pembayaranPage', 
+                 'whatsappPage', 'pengeluaranPage', 'mikrotikPage', 'laporanPage', 
+                 'pengaturanPage', 'usersPage'];
+    for (var i = 0; i < pages.length; i++) {
+        var el = document.getElementById(pages[i]);
+        if (el) el.style.display = 'none';
+    }
+    var page = document.getElementById('tambahPelangganPage');
+    if (page) page.style.display = 'block';
+    var menus = document.querySelectorAll('.menu');
+    for (var i = 0; i < menus.length; i++) {
+        var text = menus[i].textContent || '';
+        if (text.indexOf('Tambah Pelanggan') !== -1) {
+            menus[i].classList.add('active');
+        } else {
+            menus[i].classList.remove('active');
+        }
+    }
+}
+
+function resetFormPelanggan() {
+    document.getElementById('inputNama').value = '';
+    document.getElementById('inputWhatsapp').value = '';
+    document.getElementById('inputAlamat').value = '';
+    document.getElementById('inputArea').value = '';
+    document.getElementById('inputPaket').value = '10 Mbps';
+    document.getElementById('inputHarga').value = '';
+    document.getElementById('inputPPPoE').value = '';
+    document.getElementById('inputPassword').value = '';
+    var msg = document.getElementById('formPelangganMessage');
+    if (msg) msg.innerText = '';
+}
+
+function tambahPelanggan() {
+    var msg = document.getElementById('formPelangganMessage');
+    if (!msg) return;
+    var nama = document.getElementById('inputNama');
+    var whatsapp = document.getElementById('inputWhatsapp');
+    var alamat = document.getElementById('inputAlamat');
+    var area = document.getElementById('inputArea');
+    var paket = document.getElementById('inputPaket');
+    var harga = document.getElementById('inputHarga');
+    var pppoe = document.getElementById('inputPPPoE');
+    var password = document.getElementById('inputPassword');
+    if (!nama || !whatsapp || !harga) {
+        msg.innerText = '⚠️ Form tidak lengkap!';
+        msg.style.color = '#dc2626';
+        return;
+    }
+    var data = {
+        nama: nama.value.trim(),
+        whatsapp: whatsapp.value.trim(),
+        alamat: alamat ? alamat.value.trim() : '',
+        area: area ? area.value.trim() : '',
+        paket: paket ? paket.value : '10 Mbps',
+        harga: harga.value,
+        pppoe: pppoe ? pppoe.value.trim() : '',
+        password: password ? password.value.trim() : ''
+    };
+    if (!data.nama) { msg.innerText = '⚠️ Nama harus diisi!'; msg.style.color = '#dc2626'; return; }
+    if (!data.whatsapp) { msg.innerText = '⚠️ WhatsApp harus diisi!'; msg.style.color = '#dc2626'; return; }
+    if (!data.harga || Number(data.harga) <= 0) { msg.innerText = '⚠️ Harga harus diisi dengan angka positif!'; msg.style.color = '#dc2626'; return; }
+    msg.innerText = '⏳ Menyimpan pelanggan...';
+    msg.style.color = '#2563eb';
+    callWebApp('tambahPelanggan', data, function(response) {
+        if (response && response.success) {
+            msg.innerText = '✅ ' + response.message;
+            msg.style.color = '#16a34a';
+            resetFormPelanggan();
+            if (typeof loadPelanggan === 'function') loadPelanggan();
+            if (typeof showNotification === 'function') showNotification('✅ ' + response.message, 'success');
+        } else {
+            msg.innerText = '❌ ' + (response && response.message ? response.message : 'Gagal');
+            msg.style.color = '#dc2626';
+            if (typeof showNotification === 'function') showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
+        }
+    });
+}
+
+function tambahPelangganDanInvoice() {
+    var msg = document.getElementById('formPelangganMessage');
+    if (!msg) return;
+    var nama = document.getElementById('inputNama');
+    var whatsapp = document.getElementById('inputWhatsapp');
+    var alamat = document.getElementById('inputAlamat');
+    var area = document.getElementById('inputArea');
+    var paket = document.getElementById('inputPaket');
+    var harga = document.getElementById('inputHarga');
+    var pppoe = document.getElementById('inputPPPoE');
+    var password = document.getElementById('inputPassword');
+    if (!nama || !whatsapp || !harga) {
+        msg.innerText = '⚠️ Form tidak lengkap!';
+        msg.style.color = '#dc2626';
+        return;
+    }
+    var data = {
+        nama: nama.value.trim(),
+        whatsapp: whatsapp.value.trim(),
+        alamat: alamat ? alamat.value.trim() : '',
+        area: area ? area.value.trim() : '',
+        paket: paket ? paket.value : '10 Mbps',
+        harga: harga.value,
+        pppoe: pppoe ? pppoe.value.trim() : '',
+        password: password ? password.value.trim() : ''
+    };
+    if (!data.nama) { msg.innerText = '⚠️ Nama harus diisi!'; msg.style.color = '#dc2626'; return; }
+    if (!data.whatsapp) { msg.innerText = '⚠️ WhatsApp harus diisi!'; msg.style.color = '#dc2626'; return; }
+    if (!data.harga || Number(data.harga) <= 0) { msg.innerText = '⚠️ Harga harus diisi dengan angka positif!'; msg.style.color = '#dc2626'; return; }
+    msg.innerText = '⏳ Menyimpan pelanggan dan membuat invoice...';
+    msg.style.color = '#2563eb';
+    callWebApp('tambahPelangganDanInvoice', data, function(response) {
+        if (response && response.success) {
+            msg.innerText = '✅ ' + response.message + (response.idTagihan ? ' - Invoice: ' + response.idTagihan : '');
+            msg.style.color = '#16a34a';
+            resetFormPelanggan();
+            if (typeof loadPelanggan === 'function') loadPelanggan();
+            if (typeof showNotification === 'function') showNotification('✅ ' + response.message, 'success');
+        } else {
+            msg.innerText = '❌ ' + (response && response.message ? response.message : 'Gagal');
+            msg.style.color = '#dc2626';
+            if (typeof showNotification === 'function') showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
+        }
+    });
+}
+
+// ==========================================
+// VARIABLES DAN FUNGSI LAINNYA (LANJUTAN)
 // ==========================================
 var customerData = [], tagihanData = [], pengeluaranData = [];
 var chartStatusPelanggan = null, chartStatusBayar = null, chartArea = null, chartPaket = null, chartTrend = null, chartPerforma = null, chartPengeluaran = null;
 var sortColumn = '', sortOrder = 'asc', nominalVisible = true;
 
-// ==========================================
-// DASHBOARD
-// ==========================================
 function showDashboard() {
     document.getElementById('dashboardContent').style.display = 'block';
     document.getElementById('pelangganPage').style.display = 'none';
@@ -874,18 +939,9 @@ function updateChartsKeuangan(data) {
             type: 'doughnut',
             data: {
                 labels: labels.length ? labels : ['Belum ada data'],
-                datasets: [{
-                    data: values.length ? values : [1],
-                    backgroundColor: colors.slice(0, labels.length || 1),
-                    borderWidth: 2,
-                    borderColor: '#fff'
-                }]
+                datasets: [{ data: values.length ? values : [1], backgroundColor: colors.slice(0, labels.length || 1), borderWidth: 2, borderColor: '#fff' }]
             },
-            options: {
-                responsive: true,
-                plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } },
-                cutout: '65%'
-            }
+            options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } }, cutout: '65%' }
         });
     }
 }
@@ -2218,135 +2274,6 @@ function resetUserForm() {
     document.getElementById('userNama').value = '';
     document.getElementById('userLevel').value = 'ADMIN';
     document.getElementById('userStatus').value = 'AKTIF';
-}
-
-// ==========================================
-// TAMBAH PELANGGAN
-// ==========================================
-function showTambahPelanggan() {
-    var pages = ['dashboardContent', 'pelangganPage', 'tagihanPage', 'pembayaranPage', 
-                 'whatsappPage', 'pengeluaranPage', 'mikrotikPage', 'laporanPage', 
-                 'pengaturanPage', 'usersPage'];
-    for (var i = 0; i < pages.length; i++) {
-        var el = document.getElementById(pages[i]);
-        if (el) el.style.display = 'none';
-    }
-    var page = document.getElementById('tambahPelangganPage');
-    if (page) page.style.display = 'block';
-    var menus = document.querySelectorAll('.menu');
-    for (var i = 0; i < menus.length; i++) {
-        var text = menus[i].textContent || '';
-        if (text.indexOf('Tambah Pelanggan') !== -1) {
-            menus[i].classList.add('active');
-        } else {
-            menus[i].classList.remove('active');
-        }
-    }
-}
-
-function resetFormPelanggan() {
-    document.getElementById('inputNama').value = '';
-    document.getElementById('inputWhatsapp').value = '';
-    document.getElementById('inputAlamat').value = '';
-    document.getElementById('inputArea').value = '';
-    document.getElementById('inputPaket').value = '10 Mbps';
-    document.getElementById('inputHarga').value = '';
-    document.getElementById('inputPPPoE').value = '';
-    document.getElementById('inputPassword').value = '';
-    var msg = document.getElementById('formPelangganMessage');
-    if (msg) msg.innerText = '';
-}
-
-function tambahPelanggan() {
-    var msg = document.getElementById('formPelangganMessage');
-    if (!msg) return;
-    var nama = document.getElementById('inputNama');
-    var whatsapp = document.getElementById('inputWhatsapp');
-    var alamat = document.getElementById('inputAlamat');
-    var area = document.getElementById('inputArea');
-    var paket = document.getElementById('inputPaket');
-    var harga = document.getElementById('inputHarga');
-    var pppoe = document.getElementById('inputPPPoE');
-    var password = document.getElementById('inputPassword');
-    if (!nama || !whatsapp || !harga) {
-        msg.innerText = '⚠️ Form tidak lengkap!';
-        msg.style.color = '#dc2626';
-        return;
-    }
-    var data = {
-        nama: nama.value.trim(),
-        whatsapp: whatsapp.value.trim(),
-        alamat: alamat ? alamat.value.trim() : '',
-        area: area ? area.value.trim() : '',
-        paket: paket ? paket.value : '10 Mbps',
-        harga: harga.value,
-        pppoe: pppoe ? pppoe.value.trim() : '',
-        password: password ? password.value.trim() : ''
-    };
-    if (!data.nama) { msg.innerText = '⚠️ Nama harus diisi!'; msg.style.color = '#dc2626'; return; }
-    if (!data.whatsapp) { msg.innerText = '⚠️ WhatsApp harus diisi!'; msg.style.color = '#dc2626'; return; }
-    if (!data.harga || Number(data.harga) <= 0) { msg.innerText = '⚠️ Harga harus diisi dengan angka positif!'; msg.style.color = '#dc2626'; return; }
-    msg.innerText = '⏳ Menyimpan pelanggan...';
-    msg.style.color = '#2563eb';
-    callWebApp('tambahPelanggan', data, function(response) {
-        if (response && response.success) {
-            msg.innerText = '✅ ' + response.message;
-            msg.style.color = '#16a34a';
-            resetFormPelanggan();
-            if (typeof loadPelanggan === 'function') loadPelanggan();
-            if (typeof showNotification === 'function') showNotification('✅ ' + response.message, 'success');
-        } else {
-            msg.innerText = '❌ ' + (response && response.message ? response.message : 'Gagal');
-            msg.style.color = '#dc2626';
-            if (typeof showNotification === 'function') showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
-        }
-    });
-}
-
-function tambahPelangganDanInvoice() {
-    var msg = document.getElementById('formPelangganMessage');
-    if (!msg) return;
-    var nama = document.getElementById('inputNama');
-    var whatsapp = document.getElementById('inputWhatsapp');
-    var alamat = document.getElementById('inputAlamat');
-    var area = document.getElementById('inputArea');
-    var paket = document.getElementById('inputPaket');
-    var harga = document.getElementById('inputHarga');
-    var pppoe = document.getElementById('inputPPPoE');
-    var password = document.getElementById('inputPassword');
-    if (!nama || !whatsapp || !harga) {
-        msg.innerText = '⚠️ Form tidak lengkap!';
-        msg.style.color = '#dc2626';
-        return;
-    }
-    var data = {
-        nama: nama.value.trim(),
-        whatsapp: whatsapp.value.trim(),
-        alamat: alamat ? alamat.value.trim() : '',
-        area: area ? area.value.trim() : '',
-        paket: paket ? paket.value : '10 Mbps',
-        harga: harga.value,
-        pppoe: pppoe ? pppoe.value.trim() : '',
-        password: password ? password.value.trim() : ''
-    };
-    if (!data.nama) { msg.innerText = '⚠️ Nama harus diisi!'; msg.style.color = '#dc2626'; return; }
-    if (!data.whatsapp) { msg.innerText = '⚠️ WhatsApp harus diisi!'; msg.style.color = '#dc2626'; return; }
-    if (!data.harga || Number(data.harga) <= 0) { msg.innerText = '⚠️ Harga harus diisi dengan angka positif!'; msg.style.color = '#dc2626'; return; }
-    msg.innerText = '⏳ Menyimpan pelanggan dan membuat invoice...';
-    msg.style.color = '#2563eb';
-    callWebApp('tambahPelangganDanInvoice', data, function(response) {
-        if (response && response.success) {
-            msg.innerText = '✅ ' + response.message + (response.idTagihan ? ' - Invoice: ' + response.idTagihan : '');
-            msg.style.color = '#16a34a';
-            resetFormPelanggan();
-            if (typeof loadPelanggan === 'function') loadPelanggan();
-            if (typeof showNotification === 'function') showNotification('✅ ' + response.message, 'success');
-        } else {
-            msg.innerText = '❌ ' + (response && response.message ? response.message : 'Gagal');
-            msg.style.color = '#dc2626';
-            if (typeof showNotification === 'function') showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
-        }
-    });
 }
 
 // ==========================================
