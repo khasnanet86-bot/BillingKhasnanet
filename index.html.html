@@ -2543,8 +2543,7 @@ function resetUserForm() {
     document.getElementById('userNama').value = '';
     document.getElementById('userLevel').value = 'ADMIN';
     document.getElementById('userStatus').value = 'AKTIF';
-}
-  // ==========================================
+}// ==========================================
 // TAMBAH PELANGGAN
 // ==========================================
 function showTambahPelanggan() {
@@ -2560,7 +2559,6 @@ function showTambahPelanggan() {
     document.getElementById('usersPage').style.display = 'none';
     document.getElementById('tambahPelangganPage').style.display = 'block';
     
-    // Set active menu (cari index menu tambah pelanggan)
     var menus = document.querySelectorAll('.menu');
     for (var i = 0; i < menus.length; i++) {
         var text = menus[i].textContent || '';
