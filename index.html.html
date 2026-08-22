@@ -8,9 +8,6 @@
 <style>
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:#f4f6f9;color:#1f2937;}button,input,select{font-family:inherit;}
 
-/* ========================================== */
-/* DARK MODE - VARIABEL                      */
-/* ========================================== */
 :root {
   --bg-primary: #f4f6f9;
   --bg-card: #ffffff;
@@ -207,7 +204,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 #mikrotikPage td{padding:13px;border-bottom:1px solid #f3f4f6;font-size:14px;vertical-align:middle}
 #mikrotikPage tr:hover{background:#f9fafb}
 
-/* FULL COLOR GRADIENT METRIC CARDS */
 .metric-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:15px;margin-bottom:25px}
 .metric-card{padding:20px;border-radius:16px;transition:all .3s cubic-bezier(0.4,0,0.2,1);position:relative;overflow:hidden;cursor:default;color:#fff;box-shadow:0 4px 20px rgba(0,0,0,.15);border:none}
 .metric-card:hover{transform:translateY(-6px) scale(1.02);box-shadow:0 12px 40px rgba(0,0,0,.25)}
@@ -236,9 +232,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 </head>
 <body>
 
-<!-- ========================================== -->
-<!-- LOGIN PAGE -->
-<!-- ========================================== -->
 <div id="loginPage">
   <div class="login-bubble"></div><div class="login-bubble"></div><div class="login-bubble"></div><div class="login-bubble"></div><div class="login-bubble"></div>
   <div class="login-box" id="loginBox">
@@ -251,9 +244,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
   </div>
 </div>
 
-<!-- ========================================== -->
-<!-- DASHBOARD PAGE -->
-<!-- ========================================== -->
 <div id="dashboardPage">
   <div class="header">
     <div style="display:flex;align-items:center;gap:10px;">
@@ -283,7 +273,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
     </div>
     <div class="content">
       
-      <!-- DASHBOARD -->
       <div id="dashboardContent">
         <h2>📊 Dashboard</h2>
         <div class="toolbar" style="background:white;padding:18px;border-radius:14px;margin-bottom:20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
@@ -299,7 +288,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
           <input type="date" id="filterEndDate" class="filter filter-date" onchange="loadDashboardWithFilter()">
           <button class="reset-btn" onclick="resetDateFilter()">↺ Reset</button>
         </div>
-        <!-- METRIC CARDS -->
         <div class="metric-grid">
           <div class="metric-card"><span class="metric-icon">💰</span><div class="metric-value" id="metricPemasukan">Rp 0</div><div class="metric-label">Total Pemasukan</div></div>
           <div class="metric-card"><span class="metric-icon">📤</span><div class="metric-value" id="metricPengeluaran">Rp 0</div><div class="metric-label">Total Pengeluaran</div></div>
@@ -328,7 +316,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         </div>
       </div>
 
-      <!-- PELANGGAN -->
       <div id="pelangganPage">
         <h2>Data Pelanggan</h2>
         <div class="toolbar">
@@ -348,9 +335,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         </div>
         <div class="info-data">Menampilkan: <span id="jmlData">0</span> dari <span id="totalData">0</span> pelanggan</div>
       </div>
-<!-- ========================================== -->
-<!-- TAMBAH PELANGGAN -->
-<!-- ========================================== -->
+
 <div id="tambahPelangganPage" style="display:none;">
   <h2>➕ Tambah Pelanggan Baru</h2>
   <div class="card" style="padding:20px;margin-bottom:20px;">
@@ -402,8 +387,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
     <div id="formPelangganMessage" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
   </div>
 </div>
-      
-      <!-- TAGIHAN -->
+
       <div id="tagihanPage" style="display:none;">
         <h2>🧾 Tagihan</h2>
         <div class="toolbar">
@@ -426,7 +410,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         </div>
       </div>
 
-      <!-- PEMBAYARAN -->
       <div id="pembayaranPage" style="display:none;">
         <h2>💳 Pembayaran</h2>
         <div class="toolbar">
@@ -442,7 +425,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         <div class="info-data">Total: <span id="jmlPembayaran">0</span> data pembayaran</div>
       </div>
 
-      <!-- WHATSAPP -->
       <div id="whatsappPage" style="display:none;">
         <h2>📱 WhatsApp</h2>
         <div class="toolbar">
@@ -467,7 +449,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         <div class="info-data">Total: <span id="jmlWALog">0</span> data log</div>
       </div>
 
-      <!-- PENGELUARAN -->
       <div id="pengeluaranPage" style="display:none;">
         <h2>📋 Pengeluaran</h2>
         <div class="card" style="padding:20px;margin-bottom:20px;">
@@ -501,7 +482,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         <div class="info-data">Total: <span id="jmlPengeluaran">0</span> data</div>
       </div>
 
-      <!-- MIKROTIK -->
       <div id="mikrotikPage" style="display:none;">
         <h2>🔧 Integrasi MikroTik</h2>
         <div class="card" style="padding:20px;margin-bottom:20px;">
@@ -518,7 +498,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         </div>
       </div>
 
-      <!-- LAPORAN -->
       <div id="laporanPage" style="display:none;">
         <h2>📊 Laporan Keuangan</h2>
         <div class="toolbar">
@@ -545,7 +524,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         <div class="info-data">Total: <span id="jmlLaporan">0</span> data</div>
       </div>
 
-      <!-- PENGATURAN -->
       <div id="pengaturanPage" style="display:none;">
         <h2>⚙️ Pengaturan</h2>
         <div class="toolbar" style="flex-direction:column;gap:15px;align-items:stretch;">
@@ -565,7 +543,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         <div style="margin-top:20px;background:white;padding:20px;border-radius:14px;"><h3>Status Pengaturan</h3><pre id="pengaturanStatus" style="background:#f9fafb;padding:15px;border-radius:8px;overflow-x:auto;font-size:13px;">Memuat...</pre></div>
       </div>
 
-      <!-- MANAJEMEN USER -->
       <div id="usersPage" style="display:none;">
         <h2>👤 Manajemen User</h2>
         <div class="card" style="padding:20px;margin-bottom:20px;">
@@ -593,9 +570,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
   </div>
 </div>
 
-<!-- ========================================== -->
-<!-- MODAL DETAIL -->
-<!-- ========================================== -->
 <div id="detailModal" class="modal">
   <div class="modal-box">
     <div class="modal-header"><h2>Detail Pelanggan</h2><button class="close" onclick="closeDetail()">X</button></div>
@@ -605,9 +579,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 
 <div id="notificationContainer"></div>
 
-<!-- ========================================== -->
-<!-- JAVASCRIPT - MODIFIED FOR VERCEL + WEB APP -->
-<!-- ========================================== -->
 <script>
 // ==========================================
 // 🔧 KONFIGURASI - GANTI DENGAN URL WEB APP ANDA
@@ -615,9 +586,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbz3kjLEc3ZoQ1Gz-48fhx4Ej4wPr5RXthUHjO0UjwSL6Hh5cfnTmN2j73Ol0To2R81BDQ/exec';
 // Ganti URL di atas dengan URL Web App Anda!
 
-// ==========================================
-// FUNGSI PANGGIL WEB APP
-// ==========================================
 function callWebApp(action, params, callback) {
     var url = WEB_APP_URL + '?action=' + action;
     for (var key in params) {
@@ -625,7 +593,6 @@ function callWebApp(action, params, callback) {
             url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
         }
     }
-    
     fetch(url)
         .then(function(response) { return response.json(); })
         .then(function(data) {
@@ -637,9 +604,6 @@ function callWebApp(action, params, callback) {
         });
 }
 
-// ==========================================
-// NOTIFICATION
-// ==========================================
 function showNotification(message, type) {
     var container = document.getElementById('notificationContainer');
     var div = document.createElement('div');
@@ -667,9 +631,6 @@ function detailField(label, value) {
     return '<div class="detail-item"><div class="detail-label">' + label + '</div><div class="detail-value">' + safe(value) + '</div></div>';
 }
 
-// ==========================================
-// DARK MODE
-// ==========================================
 function toggleDarkMode() {
     var html = document.documentElement;
     var btn = document.getElementById('darkToggleBtn');
@@ -698,9 +659,6 @@ function loadTheme() {
     }
 }
 
-// ==========================================
-// LOGIN
-// ==========================================
 function login() {
     var username = document.getElementById('username').value.trim();
     var password = document.getElementById('password').value;
@@ -738,8 +696,6 @@ function login() {
             
             message.innerText = '';
             showNotification('🎉 Selamat datang, ' + (response.nama || username) + '!', 'success');
-            
-            // Panggil showDashboard setelah login berhasil
             showDashboard();
         } else {
             message.innerText = '❌ ' + (response && response.message ? response.message : 'Login gagal');
@@ -770,20 +726,13 @@ function setActiveMenu(index) {
     }
 }
 
-// ==========================================
-// SHOW SIDEBAR BY LEVEL - MODIFIED FOR COLLECTOR
-// ==========================================
 function showSidebarByLevel() {
     var level = sessionStorage.getItem('level') || '';
-    
-    // Sembunyikan semua menu tambahan dulu
     var menuIds = ['menuWhatsapp', 'menuPengeluaran', 'menuPengaturan', 'menuUsers', 'menuMikrotik'];
     for (var i = 0; i < menuIds.length; i++) {
         var el = document.getElementById(menuIds[i]);
         if (el) el.style.display = 'none';
     }
-    
-    // Tampilkan menu berdasarkan level
     if (level === 'ADMINISTRATOR') {
         for (var i = 0; i < menuIds.length; i++) {
             var el = document.getElementById(menuIds[i]);
@@ -795,10 +744,6 @@ function showSidebarByLevel() {
             var el = document.getElementById(adminMenus[i]);
             if (el) el.style.display = 'block';
         }
-    } else if (level === 'COLLECTOR') {
-        // COLLECTOR: HANYA menu Pelanggan dan Tagihan yang muncul
-        // Semua menu tambahan sudah disembunyikan di atas
-        // Menu Pelanggan dan Tagihan tetap muncul (default)
     }
 }
 
@@ -878,7 +823,6 @@ function applyNominalVisibility() {
 function loadDashboardKeuangan() {
     var startDate = document.getElementById('filterStartDate') ? document.getElementById('filterStartDate').value : '';
     var endDate = document.getElementById('filterEndDate') ? document.getElementById('filterEndDate').value : '';
-    
     callWebApp('getDashboardKeuangan', { startDate: startDate, endDate: endDate }, function(response) {
         if (response && response.success) {
             updateKeuangan(response);
@@ -892,7 +836,6 @@ function loadDashboardKeuangan() {
 
 function updateKeuangan(data) {
     var level = sessionStorage.getItem('level') || '';
-    
     var pemasukan = data.pemasukan || 0;
     var pengeluaran = data.totalPengeluaran || 0;
     var laba = data.labaBersih || 0;
@@ -900,7 +843,6 @@ function updateKeuangan(data) {
     var totalPelanggan = data.totalPelanggan || 0;
     var aktif = data.aktif || 0;
     
-    // Untuk COLLECTOR: sembunyikan semua nominal
     if (level === 'COLLECTOR') {
         document.getElementById('metricPemasukan').innerText = '****';
         document.getElementById('metricPengeluaran').innerText = '****';
@@ -910,8 +852,6 @@ function updateKeuangan(data) {
         document.getElementById('metricAktif').innerText = aktif;
         return;
     }
-    
-    // Untuk ADMIN dan ADMINISTRATOR: tampilkan nominal
     document.getElementById('metricPemasukan').innerText = 'Rp ' + pemasukan.toLocaleString('id-ID');
     document.getElementById('metricPengeluaran').innerText = 'Rp ' + pengeluaran.toLocaleString('id-ID');
     var labaEl = document.getElementById('metricLaba');
@@ -943,12 +883,7 @@ function updateChartsKeuangan(data) {
             },
             options: {
                 responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                        labels: { usePointStyle: true, padding: 20 }
-                    }
-                },
+                plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } },
                 cutout: '65%'
             }
         });
@@ -976,7 +911,6 @@ function updateMetrics(data) {
 
 function renderCharts(data) {
     try {
-        // Chart Status Pelanggan
         var ctx1 = document.getElementById('chartStatusPelanggan');
         if (ctx1) {
             ctx1 = ctx1.getContext('2d');
@@ -985,27 +919,11 @@ function renderCharts(data) {
                 type: 'doughnut',
                 data: {
                     labels: ['Aktif', 'Isolir'],
-                    datasets: [{
-                        data: [data.areaData ? data.areaData[0] || 0 : 0, data.areaData ? data.areaData[1] || 0 : 0],
-                        backgroundColor: ['#16a34a', '#dc2626'],
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
+                    datasets: [{ data: [data.areaData ? data.areaData[0] || 0 : 0, data.areaData ? data.areaData[1] || 0 : 0], backgroundColor: ['#16a34a', '#dc2626'], borderWidth: 2, borderColor: '#fff' }]
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { usePointStyle: true, padding: 20 }
-                        }
-                    },
-                    cutout: '70%'
-                }
+                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } }, cutout: '70%' }
             });
         }
-
-        // Chart Status Bayar
         var ctx2 = document.getElementById('chartStatusBayar');
         if (ctx2) {
             ctx2 = ctx2.getContext('2d');
@@ -1014,86 +932,31 @@ function renderCharts(data) {
                 type: 'doughnut',
                 data: {
                     labels: data.statusBayarLabels || ['Lunas', 'Belum Bayar'],
-                    datasets: [{
-                        data: data.statusBayar || [0, 0],
-                        backgroundColor: data.statusBayarColors || ['#16a34a', '#f59e0b'],
-                        borderWidth: 2,
-                        borderColor: '#fff'
-                    }]
+                    datasets: [{ data: data.statusBayar || [0, 0], backgroundColor: data.statusBayarColors || ['#16a34a', '#f59e0b'], borderWidth: 2, borderColor: '#fff' }]
                 },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'bottom',
-                            labels: { usePointStyle: true, padding: 20 }
-                        }
-                    },
-                    cutout: '70%'
-                }
+                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, padding: 20 } } }, cutout: '70%' }
             });
         }
-
-        // Chart Area
         var ctx3 = document.getElementById('chartArea');
         if (ctx3) {
             ctx3 = ctx3.getContext('2d');
             if (chartArea) chartArea.destroy();
             chartArea = new Chart(ctx3, {
                 type: 'bar',
-                data: {
-                    labels: data.areaLabels || [],
-                    datasets: [{
-                        label: 'Jumlah Pelanggan',
-                        data: data.areaData || [],
-                        backgroundColor: data.areaColors || ['#2563eb', '#16a34a', '#dc2626', '#f59e0b', '#8b5cf6'],
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    indexAxis: 'y',
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { beginAtZero: true, grid: { display: false } },
-                        y: { grid: { display: false } }
-                    }
-                }
+                data: { labels: data.areaLabels || [], datasets: [{ label: 'Jumlah Pelanggan', data: data.areaData || [], backgroundColor: data.areaColors || ['#2563eb', '#16a34a', '#dc2626', '#f59e0b', '#8b5cf6'], borderRadius: 5 }] },
+                options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } }, scales: { x: { beginAtZero: true, grid: { display: false } }, y: { grid: { display: false } } } }
             });
         }
-
-        // Chart Paket
         var ctx4 = document.getElementById('chartPaket');
         if (ctx4) {
             ctx4 = ctx4.getContext('2d');
             if (chartPaket) chartPaket.destroy();
             chartPaket = new Chart(ctx4, {
                 type: 'bar',
-                data: {
-                    labels: data.paketLabels || [],
-                    datasets: [{
-                        label: 'Pendapatan (Rp)',
-                        data: data.paketData || [],
-                        backgroundColor: data.paketColors || ['#2563eb', '#16a34a', '#dc2626', '#f59e0b', '#8b5cf6', '#ec4899'],
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { display: false },
-                            ticks: { callback: function(value) { return 'Rp ' + value.toLocaleString(); } }
-                        },
-                        x: { grid: { display: false } }
-                    }
-                }
+                data: { labels: data.paketLabels || [], datasets: [{ label: 'Pendapatan (Rp)', data: data.paketData || [], backgroundColor: data.paketColors || ['#2563eb', '#16a34a', '#dc2626', '#f59e0b', '#8b5cf6', '#ec4899'], borderRadius: 5 }] },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { display: false }, ticks: { callback: function(value) { return 'Rp ' + value.toLocaleString(); } } }, x: { grid: { display: false } } } }
             });
         }
-
-        // Chart Trend
         var ctx5 = document.getElementById('chartTrend');
         if (ctx5) {
             ctx5 = ctx5.getContext('2d');
@@ -1103,66 +966,20 @@ function renderCharts(data) {
             gradient.addColorStop(1, 'rgba(37,99,235,0)');
             chartTrend = new Chart(ctx5, {
                 type: 'line',
-                data: {
-                    labels: data.trendLabels || [],
-                    datasets: [{
-                        label: 'Total Tagihan',
-                        data: data.trendData || [],
-                        borderColor: '#2563eb',
-                        backgroundColor: gradient,
-                        fill: true,
-                        tension: 0.4,
-                        pointBackgroundColor: '#2563eb',
-                        pointRadius: 4,
-                        pointHoverRadius: 6
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { color: 'rgba(0,0,0,0.05)' },
-                            ticks: { callback: function(value) { return 'Rp ' + value.toLocaleString(); } }
-                        },
-                        x: { grid: { display: false } }
-                    }
-                }
+                data: { labels: data.trendLabels || [], datasets: [{ label: 'Total Tagihan', data: data.trendData || [], borderColor: '#2563eb', backgroundColor: gradient, fill: true, tension: 0.4, pointBackgroundColor: '#2563eb', pointRadius: 4, pointHoverRadius: 6 }] },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { callback: function(value) { return 'Rp ' + value.toLocaleString(); } } }, x: { grid: { display: false } } } }
             });
         }
-
-        // Chart Performa
         var ctx6 = document.getElementById('chartPerforma');
         if (ctx6) {
             ctx6 = ctx6.getContext('2d');
             if (chartPerforma) chartPerforma.destroy();
             chartPerforma = new Chart(ctx6, {
                 type: 'bar',
-                data: {
-                    labels: data.performaLabels || [],
-                    datasets: [{
-                        label: 'Total Pembayaran',
-                        data: data.performaData || [],
-                        backgroundColor: '#16a34a',
-                        borderRadius: 5
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            grid: { display: false },
-                            ticks: { callback: function(value) { return 'Rp ' + value.toLocaleString(); } }
-                        },
-                        x: { grid: { display: false } }
-                    }
-                }
+                data: { labels: data.performaLabels || [], datasets: [{ label: 'Total Pembayaran', data: data.performaData || [], backgroundColor: '#16a34a', borderRadius: 5 }] },
+                options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true, grid: { display: false }, ticks: { callback: function(value) { return 'Rp ' + value.toLocaleString(); } } }, x: { grid: { display: false } } } }
             });
         }
-
         console.log('✅ Semua grafik berhasil dirender!');
     } catch (error) {
         console.error('Error render charts:', error);
@@ -1178,10 +995,7 @@ function refreshDashboard() {
 function loadDashboardWithFilter() {
     var startDate = document.getElementById('filterStartDate').value;
     var endDate = document.getElementById('filterEndDate').value;
-    if (!startDate && !endDate) {
-        loadDashboardKeuangan();
-        return;
-    }
+    if (!startDate && !endDate) { loadDashboardKeuangan(); return; }
     showNotification('Memuat dashboard dengan filter...', 'info');
     callWebApp('getDashboardDataWithFilter', { startDate: startDate, endDate: endDate }, function(response) {
         if (response && response.success) {
@@ -1246,7 +1060,6 @@ function buildFilters() {
         opt.textContent = areas[j];
         areaSelect.appendChild(opt);
     }
-
     var paketSelect = document.getElementById('paketFilter');
     var pakets = [], seenPaket = {};
     for (var i = 0; i < customerData.length; i++) {
@@ -1264,7 +1077,6 @@ function buildFilters() {
         opt.textContent = pakets[j];
         paketSelect.appendChild(opt);
     }
-
     var hargaSelect = document.getElementById('hargaFilter');
     var hargas = [], seenHarga = {};
     for (var i = 0; i < customerData.length; i++) {
@@ -1292,7 +1104,6 @@ function filterPelanggan() {
     var paket = document.getElementById('paketFilter').value;
     var harga = document.getElementById('hargaFilter').value;
     var status = document.getElementById('statusFilter').value;
-
     var filtered = [];
     for (var i = 0; i < customerData.length; i++) {
         var row = customerData[i];
@@ -1379,11 +1190,9 @@ function showDetail(id) {
         }
     }
     if (!row) return;
-
     var wa = String(row.WHATSAPP || '').replace(/\D/g, '');
     if (wa.startsWith('0')) wa = '62' + wa.substring(1);
     var waLink = wa ? '<a class="wa-btn" target="_blank" href="https://wa.me/' + wa + '">📱 Hubungi WhatsApp</a>' : '';
-
     document.getElementById('detailContent').innerHTML = '<div class="detail-grid">' +
         detailField('ID Pelanggan', row.ID) +
         detailField('Nama', row.NAMA) +
@@ -1401,7 +1210,6 @@ function showDetail(id) {
         detailField('OLT', row.OLT) +
         detailField('ODP', row.ODP) +
         '</div>' + waLink;
-
     document.getElementById('detailModal').style.display = 'block';
 }
 
@@ -1466,7 +1274,6 @@ function loadDaftarPeriodeTagihan() {
         var bulanNama = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
         var defaultData = [];
         var now = new Date();
-        
         if (!Array.isArray(data) || data.length === 0) {
             for (var i = 0; i < 12; i++) {
                 var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
@@ -1512,7 +1319,6 @@ function loadTagihan() {
     var select = document.getElementById('tagihanPeriode');
     var periode = select ? select.value : '';
     var periodeText = select ? select.options[select.selectedIndex]?.text || periode : periode;
-
     if (!periode) {
         document.getElementById('tagihanTable').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;">⚠️ Silakan pilih periode terlebih dahulu</td></tr>';
         document.getElementById('totalTagihan').innerText = '0';
@@ -1520,9 +1326,7 @@ function loadTagihan() {
         document.getElementById('tagihanBelumBayar').innerText = '0';
         return;
     }
-
     document.getElementById('tagihanTable').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;">⏳ Memuat tagihan untuk ' + periodeText + '...</td></tr>';
-    
     callWebApp('getTagihanData', { periode: periode }, function(data) {
         tagihanData = data || [];
         renderTagihan(tagihanData);
@@ -1537,7 +1341,6 @@ function renderTagihan(data) {
     var totalTagihan = document.getElementById('totalTagihan');
     var lunasEl = document.getElementById('tagihanLunas');
     var belumEl = document.getElementById('tagihanBelumBayar');
-
     tbody.innerHTML = '';
     if (!data || !data.length) {
         tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Tidak ada data tagihan</td></tr>';
@@ -1546,44 +1349,22 @@ function renderTagihan(data) {
         belumEl.innerText = '0';
         return;
     }
-
     var total = 0, lunas = 0, belum = 0;
     var level = sessionStorage.getItem('level') || '';
-    
     for (var i = 0; i < data.length; i++) {
         var row = data[i];
         var status = String(row.STATUS || '').toUpperCase().trim();
         var jumlah = Number(row.JUMLAH) || 0;
         total += jumlah;
-        if (status === 'LUNAS') {
-            lunas++;
-        } else {
-            belum++;
-        }
+        if (status === 'LUNAS') { lunas++; } else { belum++; }
         var isLunas = status === 'LUNAS';
         var statusClass = isLunas ? 'status-on' : 'status-off';
         var statusText = isLunas ? 'LUNAS' : 'BELUM BAYAR';
-        
-        // Untuk COLLECTOR: sembunyikan nominal
-        var rupiah = '';
-        if (level === 'COLLECTOR') {
-            rupiah = '****';
-        } else {
-            rupiah = 'Rp ' + jumlah.toLocaleString('id-ID');
-        }
-        
+        var rupiah = (level === 'COLLECTOR') ? '****' : 'Rp ' + jumlah.toLocaleString('id-ID');
         var tr = document.createElement('tr');
-        
-        // TOMBOL AKSI: INVOICE PDF + THERMAL + BAYAR (jika belum lunas)
         var aksiButton = '';
-        
-        // Tombol Invoice PDF (untuk semua)
         aksiButton += '<button class="detail-btn" onclick="downloadInvoice(\'' + escapeAttr(row.ID_PELANGGAN) + '\',\'' + escapeAttr(row.PERIODE) + '\')" style="margin-right:5px;background:#2563eb;">📄 PDF</button>';
-        
-        // Tombol Thermal (untuk semua)
         aksiButton += '<button class="thermal-btn" onclick="downloadInvoiceTeks(\'' + escapeAttr(row.ID_PELANGGAN) + '\',\'' + escapeAttr(row.PERIODE) + '\')" style="margin-right:5px;">🖨️ Thermal</button>';
-        
-        // Tombol Bayar (hanya jika belum lunas dan bukan collector)
         if (!isLunas) {
             if (level !== 'COLLECTOR') {
                 aksiButton += '<button class="success-btn" onclick="bayarTagihanRow(\'' + escapeAttr(row.ID_PELANGGAN) + '\',\'' + escapeAttr(row.PERIODE) + '\',' + jumlah + ',\'' + escapeAttr(row.NAMA) + '\')" style="margin-right:5px;">💳 Bayar</button>';
@@ -1593,7 +1374,6 @@ function renderTagihan(data) {
         } else {
             aksiButton += '<span style="color:#16a34a;font-weight:bold;">✓ LUNAS</span>';
         }
-        
         tr.innerHTML = '<td>' + safe(row.ID_PEMBAYARAN || '-') + '</td><td>' + safe(row.ID_PELANGGAN || '-') + '</td><td><strong>' + safe(row.NAMA || '-') + '</strong></td><td>' + safe(row.PAKET || '-') + '</td><td>' + rupiah + '</td><td>' + safe(row.JATUH_TEMPO || '-') + '</td><td><span class="status ' + statusClass + '">' + statusText + '</span></td><td>' + aksiButton + '</td>';
         tbody.appendChild(tr);
     }
@@ -1604,17 +1384,12 @@ function renderTagihan(data) {
 
 function filterTagihan() {
     var keyword = document.getElementById('tagihanSearch').value.toLowerCase().trim();
-    if (!keyword) {
-        renderTagihan(tagihanData);
-        return;
-    }
+    if (!keyword) { renderTagihan(tagihanData); return; }
     var filtered = [];
     for (var i = 0; i < tagihanData.length; i++) {
         var row = tagihanData[i];
         var text = ((row.NAMA || '') + ' ' + (row.ID_PELANGGAN || '') + ' ' + (row.ID_PEMBAYARAN || '')).toLowerCase();
-        if (text.indexOf(keyword) !== -1) {
-            filtered.push(row);
-        }
+        if (text.indexOf(keyword) !== -1) { filtered.push(row); }
     }
     renderTagihan(filtered);
 }
@@ -1622,30 +1397,18 @@ function filterTagihan() {
 function generateTagihanDariWeb() {
     var select = document.getElementById('tagihanPeriode');
     var periode = select.value;
-    if (!periode) {
-        alert('⚠️ Pilih periode terlebih dahulu!');
-        return;
-    }
+    if (!periode) { alert('⚠️ Pilih periode terlebih dahulu!'); return; }
     var match = periode.match(/^(\d{4})-(\d{2})$/);
-    if (!match) {
-        alert('⚠️ Format periode tidak valid.');
-        return;
-    }
+    if (!match) { alert('⚠️ Format periode tidak valid.'); return; }
     var tahun = Number(match[1]);
     var bulan = Number(match[2]);
     var namaBulan = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'][bulan - 1];
-
-    if (!confirm('📋 GENERATE TAGIHAN\n\nPeriode: ' + namaBulan + ' ' + tahun + '\n⚠️ Tagihan yang sudah ada tidak akan digenerate ulang.\n\nLanjutkan?')) {
-        return;
-    }
-
+    if (!confirm('📋 GENERATE TAGIHAN\n\nPeriode: ' + namaBulan + ' ' + tahun + '\n⚠️ Tagihan yang sudah ada tidak akan digenerate ulang.\n\nLanjutkan?')) { return; }
     showNotification('⏳ Mengenerate tagihan ' + namaBulan + ' ' + tahun + '...', 'info');
     callWebApp('generateTagihan', { bulan: bulan, tahun: tahun }, function(response) {
         if (response && response.success) {
             var pesan = '✅ ' + response.message;
-            if (response.dibuat === 0) {
-                pesan = 'ℹ️ Tidak ada tagihan baru untuk ' + namaBulan + ' ' + tahun;
-            }
+            if (response.dibuat === 0) { pesan = 'ℹ️ Tidak ada tagihan baru untuk ' + namaBulan + ' ' + tahun; }
             alert(pesan);
             loadDaftarPeriodeTagihan();
             showNotification('✅ Tagihan dimuat ulang!', 'success');
@@ -1657,9 +1420,7 @@ function generateTagihanDariWeb() {
 }
 
 function bayarTagihanRow(idPelanggan, periode, nominal, nama) {
-    if (!confirm('💳 KONFIRMASI PEMBAYARAN\n\nID Pelanggan: ' + idPelanggan + '\nNama: ' + nama + '\nPeriode: ' + periode + '\nNominal: Rp ' + nominal.toLocaleString('id-ID') + '\n\nApakah pembayaran sudah diterima?')) {
-        return;
-    }
+    if (!confirm('💳 KONFIRMASI PEMBAYARAN\n\nID Pelanggan: ' + idPelanggan + '\nNama: ' + nama + '\nPeriode: ' + periode + '\nNominal: Rp ' + nominal.toLocaleString('id-ID') + '\n\nApakah pembayaran sudah diterima?')) { return; }
     var metode = prompt('Pilih Metode Pembayaran:\n1. TUNAI\n2. TRANSFER\n3. QRIS\n4. LAINNYA\n\nKetik angka (1-4) atau nama metode:');
     var metodeMap = { '1': 'TUNAI', '2': 'TRANSFER', '3': 'QRIS', '4': 'LAINNYA' };
     var metodeFinal = metodeMap[metode] || metode || 'TUNAI';
@@ -1672,7 +1433,6 @@ function bayarTagihanRow(idPelanggan, periode, nominal, nama) {
         bankTujuan = bankTujuan.toUpperCase();
     }
     var kirimWA = confirm('📨 Kirim invoice ke WhatsApp pelanggan?\n\nPilih OK untuk kirim invoice ke ' + nama);
-
     showNotification('Memproses pembayaran...', 'info');
     callWebApp('prosesPembayaran', {
         idPelanggan: idPelanggan,
@@ -1684,9 +1444,7 @@ function bayarTagihanRow(idPelanggan, periode, nominal, nama) {
     }, function(response) {
         if (response && response.success) {
             var pesan = '✅ Pembayaran berhasil! ID: ' + response.idPembayaran;
-            if (response.invoiceSent) {
-                pesan += '\n📨 Invoice terkirim ke ' + nama;
-            }
+            if (response.invoiceSent) { pesan += '\n📨 Invoice terkirim ke ' + nama; }
             showNotification(pesan, 'success');
             loadTagihan();
             loadDashboardKeuangan();
@@ -1726,19 +1484,14 @@ function loadPembayaran() {
 function updatePembayaranStats(data) {
     var total = data.length;
     var totalNominal = 0;
-    for (var i = 0; i < data.length; i++) {
-        totalNominal += Number(data[i].NOMINAL) || 0;
-    }
+    for (var i = 0; i < data.length; i++) { totalNominal += Number(data[i].NOMINAL) || 0; }
     document.getElementById('jmlPembayaran').innerText = total;
 }
 
 function renderPembayaran(data) {
     var tbody = document.getElementById('pembayaranTable');
     tbody.innerHTML = '';
-    if (!data || !data.length) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center">Belum ada data pembayaran</td></tr>';
-        return;
-    }
+    if (!data || !data.length) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center">Belum ada data pembayaran</td></tr>'; return; }
     for (var i = 0; i < data.length; i++) {
         var row = data[i];
         var tr = document.createElement('tr');
@@ -1749,19 +1502,10 @@ function renderPembayaran(data) {
         var metode = String(row.METODE || '-').toUpperCase();
         var bank = String(row.BANK || '').toUpperCase();
         var metodeDisplay = metode;
-        if (metode === 'TUNAI') {
-            metodeDisplay = '💵 TUNAI';
-        } else if (metode === 'TRANSFER') {
-            if (bank && bank !== '') {
-                metodeDisplay = '🏦 TRANSFER (' + bank + ')';
-            } else {
-                metodeDisplay = '🏦 TRANSFER';
-            }
-        } else if (metode === 'QRIS') {
-            metodeDisplay = '📱 QRIS';
-        } else if (metode === 'LAINNYA') {
-            metodeDisplay = '📌 LAINNYA';
-        }
+        if (metode === 'TUNAI') { metodeDisplay = '💵 TUNAI'; }
+        else if (metode === 'TRANSFER') { metodeDisplay = bank ? '🏦 TRANSFER (' + bank + ')' : '🏦 TRANSFER'; }
+        else if (metode === 'QRIS') { metodeDisplay = '📱 QRIS'; }
+        else if (metode === 'LAINNYA') { metodeDisplay = '📌 LAINNYA'; }
         tr.innerHTML = '<td><strong>' + safe(row.ID_PEMBAYARAN || '-') + '</strong></td><td>' + safe(row.ID_PELANGGAN || '-') + '</td><td><strong>' + safe(row.NAMA || '-') + '</strong></td><td>' + safe(row.PERIODE || '-') + '</td><td style="font-weight:bold;color:#2563eb;">' + nominalFormatted + '</td><td>' + safe(metodeDisplay) + '</td><td>' + safe(row.TGL_BAYAR || '-') + '</td><td><span class="status ' + statusClass + '">' + safe(status) + '</span></td><td><button class="danger-btn" onclick="hapusPembayaran(\'' + escapeAttr(row.ID_PEMBAYARAN) + '\')">🗑️ Hapus</button></td>';
         tbody.appendChild(tr);
     }
@@ -1773,11 +1517,7 @@ function filterPembayaran() {
     for (var i = 0; i < rows.length; i++) {
         var row = rows[i];
         var text = row.textContent.toLowerCase();
-        if (keyword === '') {
-            row.style.display = '';
-        } else {
-            row.style.display = text.indexOf(keyword) !== -1 ? '' : 'none';
-        }
+        row.style.display = (keyword === '' || text.indexOf(keyword) !== -1) ? '' : 'none';
     }
 }
 
@@ -1864,12 +1604,8 @@ function renderWALog(data) {
         var row = data[i];
         var tr = document.createElement('tr');
         var status = String(row.STATUS || '').toUpperCase();
-        var statusClass = 'status-off';
-        var statusText = status;
-        if (status === 'SENT' || status === 'READY') {
-            statusClass = 'status-on';
-            statusText = status === 'SENT' ? 'SENT' : 'READY';
-        }
+        var statusClass = (status === 'SENT' || status === 'READY') ? 'status-on' : 'status-off';
+        var statusText = (status === 'SENT' || status === 'READY') ? status : 'FAILED';
         tr.innerHTML = '<td>' + safe(row.TANGGAL || '-') + '</td><td>' + safe(row.NO_WHATSAPP || '-') + '</td><td style="max-width:300px;word-break:break-word;font-size:12px;">' + safe((row.PESAN || '').substring(0, 80)) + ((row.PESAN || '').length > 80 ? '...' : '') + '</td><td><span class="status ' + statusClass + '">' + safe(statusText) + '</span></td>';
         tbody.appendChild(tr);
     }
@@ -1885,11 +1621,8 @@ function updateWAStats(data) {
     var total = data.length, success = 0, failed = 0;
     for (var i = 0; i < data.length; i++) {
         var status = String(data[i].STATUS || '').toUpperCase();
-        if (status === 'SENT' || status === 'READY') {
-            success++;
-        } else if (status.indexOf('FAILED') !== -1) {
-            failed++;
-        }
+        if (status === 'SENT' || status === 'READY') { success++; }
+        else if (status.indexOf('FAILED') !== -1) { failed++; }
     }
     document.getElementById('waTotal').innerText = total;
     document.getElementById('waSuccess').innerText = success;
@@ -1898,10 +1631,7 @@ function updateWAStats(data) {
 
 function kirimTagihanMassal() {
     var periode = document.getElementById('waPeriode').value;
-    if (!periode) {
-        alert('Pilih periode tagihan terlebih dahulu!');
-        return;
-    }
+    if (!periode) { alert('Pilih periode tagihan terlebih dahulu!'); return; }
     if (!confirm('📨 Kirim tagihan periode ' + periode + ' ke semua pelanggan yang belum bayar?')) return;
     showNotification('Mengirim tagihan...', 'info');
     callWebApp('kirimTagihanWA', { periode: periode }, function(response) {
@@ -2008,30 +1738,16 @@ function renderPengeluaran(data) {
         var no = i + 1;
         var jumlah = Number(row.JUMLAH) || 0;
         var kategori = String(row.KATEGORI || 'Lainnya');
-        var warnaKategori = getKategoriColor(kategori);
+        var warnaKategori = {'Operasional':'#2563eb','Gaji':'#dc2626','Internet':'#8b5cf6','Perbaikan':'#f59e0b','ATK':'#16a34a','Lainnya':'#6b7280'}[kategori] || '#6b7280';
         tr.innerHTML = '<td>' + no + '</td><td>' + safe(row.TANGGAL || '-') + '</td><td><span style="background:' + warnaKategori + ';padding:4px 10px;border-radius:12px;color:white;font-size:12px;">' + safe(kategori) + '</span></td><td>' + safe(row.DESKRIPSI || '-') + '</td><td style="text-align:right;font-weight:bold;color:#dc2626;">Rp ' + jumlah.toLocaleString('id-ID') + '</td><td>' + safe(row.PIC || '-') + '</td><td><button class="danger-btn" onclick="hapusPengeluaranRow(' + i + ')">🗑️ Hapus</button></td>';
         tbody.appendChild(tr);
     }
     document.getElementById('jmlPengeluaran').innerText = data.length;
 }
 
-function getKategoriColor(kategori) {
-    var colors = {
-        'Operasional': '#2563eb',
-        'Gaji': '#dc2626',
-        'Internet': '#8b5cf6',
-        'Perbaikan': '#f59e0b',
-        'ATK': '#16a34a',
-        'Lainnya': '#6b7280'
-    };
-    return colors[kategori] || '#6b7280';
-}
-
 function updatePengeluaranStats(data) {
     var total = 0;
-    for (var i = 0; i < data.length; i++) {
-        total += Number(data[i].JUMLAH) || 0;
-    }
+    for (var i = 0; i < data.length; i++) { total += Number(data[i].JUMLAH) || 0; }
     document.getElementById('expTotal').innerText = 'Rp ' + total.toLocaleString('id-ID');
     document.getElementById('expJumlahTransaksi').innerText = data.length;
     var rata = data.length > 0 ? Math.round(total / data.length) : 0;
@@ -2056,20 +1772,9 @@ function tambahPengeluaranForm() {
     var deskripsi = document.getElementById('expDeskripsi').value.trim();
     var jumlah = document.getElementById('expJumlah').value;
     var pic = document.getElementById('expPIC').value.trim() || 'Admin';
-
-    if (!deskripsi) {
-        showNotification('⚠️ Deskripsi harus diisi!', 'error');
-        return;
-    }
-    if (!jumlah || Number(jumlah) <= 0) {
-        showNotification('⚠️ Jumlah harus diisi dengan angka positif!', 'error');
-        return;
-    }
-
-    if (!confirm('Tambah pengeluaran:\n\nKategori: ' + kategori + '\nDeskripsi: ' + deskripsi + '\nJumlah: Rp ' + Number(jumlah).toLocaleString('id-ID'))) {
-        return;
-    }
-
+    if (!deskripsi) { showNotification('⚠️ Deskripsi harus diisi!', 'error'); return; }
+    if (!jumlah || Number(jumlah) <= 0) { showNotification('⚠️ Jumlah harus diisi dengan angka positif!', 'error'); return; }
+    if (!confirm('Tambah pengeluaran:\n\nKategori: ' + kategori + '\nDeskripsi: ' + deskripsi + '\nJumlah: Rp ' + Number(jumlah).toLocaleString('id-ID'))) { return; }
     showNotification('Menyimpan pengeluaran...', 'info');
     callWebApp('tambahPengeluaran', {
         tanggal: tanggal,
@@ -2096,16 +1801,8 @@ function tambahPengeluaranDash() {
     var kategori = document.getElementById('inputKategori').value;
     var deskripsi = document.getElementById('inputDeskripsi').value.trim();
     var jumlah = document.getElementById('inputJumlah').value;
-
-    if (!deskripsi) {
-        showNotification('⚠️ Deskripsi harus diisi!', 'error');
-        return;
-    }
-    if (!jumlah || Number(jumlah) <= 0) {
-        showNotification('⚠️ Jumlah harus diisi dengan angka positif!', 'error');
-        return;
-    }
-
+    if (!deskripsi) { showNotification('⚠️ Deskripsi harus diisi!', 'error'); return; }
+    if (!jumlah || Number(jumlah) <= 0) { showNotification('⚠️ Jumlah harus diisi dengan angka positif!', 'error'); return; }
     showNotification('Menyimpan pengeluaran...', 'info');
     callWebApp('tambahPengeluaran', {
         tanggal: tanggal,
@@ -2129,9 +1826,7 @@ function tambahPengeluaranDash() {
 function hapusPengeluaranRow(index) {
     var row = pengeluaranData[index];
     if (!row) return;
-    if (!confirm('⚠️ Yakin ingin menghapus pengeluaran?\n\nDeskripsi: ' + row.DESKRIPSI + '\nJumlah: Rp ' + (Number(row.JUMLAH) || 0).toLocaleString('id-ID'))) {
-        return;
-    }
+    if (!confirm('⚠️ Yakin ingin menghapus pengeluaran?\n\nDeskripsi: ' + row.DESKRIPSI + '\nJumlah: Rp ' + (Number(row.JUMLAH) || 0).toLocaleString('id-ID'))) { return; }
     var rowIndex = index + 1;
     showNotification('Menghapus data...', 'info');
     callWebApp('hapusPengeluaran', { rowIndex: rowIndex }, function(response) {
@@ -2146,9 +1841,7 @@ function hapusPengeluaranRow(index) {
 }
 
 function clearPengeluaran() {
-    if (!confirm('⚠️ Yakin ingin menghapus SEMUA data pengeluaran?\n\nTindakan ini tidak dapat dibatalkan!')) {
-        return;
-    }
+    if (!confirm('⚠️ Yakin ingin menghapus SEMUA data pengeluaran?\n\nTindakan ini tidak dapat dibatalkan!')) { return; }
     showNotification('Menghapus semua data...', 'info');
     callWebApp('clearPengeluaran', {}, function(response) {
         if (response && response.success) {
@@ -2162,7 +1855,7 @@ function clearPengeluaran() {
 }
 
 // ==========================================
-// MIKROTIK (Sederhana)
+// MIKROTIK
 // ==========================================
 function showMikrotik() {
     document.getElementById('dashboardContent').style.display = 'none';
@@ -2184,7 +1877,6 @@ function testMikrotik() {
         var statusEl = document.getElementById('mikrotikStatus');
         var infoEl = document.getElementById('mikrotikInfo');
         var detailEl = document.getElementById('mikrotikDetail');
-
         if (response && response.success) {
             statusEl.innerHTML = '✅ ' + response.message;
             statusEl.style.color = '#16a34a';
@@ -2207,7 +1899,6 @@ function cekKonfigurasi() {
         var statusEl = document.getElementById('mikrotikStatus');
         var infoEl = document.getElementById('mikrotikInfo');
         var detailEl = document.getElementById('mikrotikDetail');
-
         if (response && response.success) {
             statusEl.innerHTML = '📋 ' + response.message;
             statusEl.style.color = '#2563eb';
@@ -2223,9 +1914,7 @@ function cekKonfigurasi() {
 }
 
 function forceEnableMikrotik() {
-    if (!confirm('⚡ Force Enable MikroTik?\n\nTindakan ini akan mengubah MIKROTIK_ENABLED = TRUE di sheet PENGATURAN.\n\nLanjutkan?')) {
-        return;
-    }
+    if (!confirm('⚡ Force Enable MikroTik?\n\nTindakan ini akan mengubah MIKROTIK_ENABLED = TRUE di sheet PENGATURAN.\n\nLanjutkan?')) { return; }
     showNotification('Memaksa aktifkan MikroTik...', 'info');
     callWebApp('forceEnableMikrotik', {}, function(response) {
         if (response && response.success) {
@@ -2272,10 +1961,7 @@ function loadDaftarPeriodeLaporan() {
 
 function loadLaporanKeuangan() {
     var periode = document.getElementById('laporanPeriode').value;
-    if (!periode) {
-        alert('Pilih periode terlebih dahulu!');
-        return;
-    }
+    if (!periode) { alert('Pilih periode terlebih dahulu!'); return; }
     showNotification('Memuat laporan keuangan...', 'info');
     callWebApp('getLaporanKeuangan', { periode: periode }, function(response) {
         if (response && response.success) {
@@ -2288,7 +1974,6 @@ function loadLaporanKeuangan() {
             document.getElementById('lapPelangganAktif').innerText = r.totalPelangganAktif || 0;
             document.getElementById('lapPelangganIsolir').innerText = r.totalPelangganIsolir || 0;
             document.getElementById('lapLunas').innerText = r.lunas || 0;
-
             var tbody1 = document.getElementById('rekapPaketTable');
             tbody1.innerHTML = '';
             var paketKeys = Object.keys(response.rekapPaket || {});
@@ -2304,7 +1989,6 @@ function loadLaporanKeuangan() {
             } else {
                 tbody1.innerHTML = '<tr><td colspan="6" style="text-align:center;">Tidak ada data</td></tr>';
             }
-
             var tbody2 = document.getElementById('rekapAreaTable');
             tbody2.innerHTML = '';
             var areaKeys = Object.keys(response.rekapArea || {});
@@ -2319,7 +2003,6 @@ function loadLaporanKeuangan() {
             } else {
                 tbody2.innerHTML = '<tr><td colspan="4" style="text-align:center;">Tidak ada data</td></tr>';
             }
-
             document.getElementById('jmlLaporan').innerText = response.data ? response.data.length : 0;
             showNotification('✅ Laporan keuangan dimuat!', 'success');
         } else {
@@ -2330,10 +2013,7 @@ function loadLaporanKeuangan() {
 
 function kirimLaporanEmail() {
     var periode = document.getElementById('laporanPeriode').value;
-    if (!periode) {
-        alert('Pilih periode terlebih dahulu!');
-        return;
-    }
+    if (!periode) { alert('Pilih periode terlebih dahulu!'); return; }
     var email = prompt('Masukkan email tujuan:', sessionStorage.getItem('email') || '');
     if (!email) return;
     if (!confirm('Kirim laporan ' + periode + ' ke ' + email + '?')) return;
@@ -2420,10 +2100,7 @@ function exportPelangganExcel() {
 
 function exportTagihanExcel() {
     var periode = document.getElementById('tagihanPeriode').value;
-    if (!periode) {
-        alert('Pilih periode terlebih dahulu!');
-        return;
-    }
+    if (!periode) { alert('Pilih periode terlebih dahulu!'); return; }
     if (!confirm('Export data tagihan untuk periode ' + periode + '?')) return;
     showNotification('Membuat file Excel tagihan...', 'info');
     callWebApp('exportTagihanExcel', { periode: periode }, function(response) {
@@ -2485,11 +2162,9 @@ function saveUser() {
     var nama = document.getElementById('userNama').value.trim();
     var level = document.getElementById('userLevel').value;
     var status = document.getElementById('userStatus').value;
-
     if (!username) { showNotification('⚠️ Username harus diisi!', 'error'); return; }
     if (!password) { showNotification('⚠️ Password harus diisi!', 'error'); return; }
     if (!nama) { showNotification('⚠️ Nama harus diisi!', 'error'); return; }
-
     if (!confirm('Simpan user ' + username + '?')) return;
     showNotification('Menyimpan user...', 'info');
     callWebApp('saveUser', {
@@ -2546,85 +2221,7 @@ function resetUserForm() {
 }
 
 // ==========================================
-// START
-// ==========================================
-window.onload = function() {
-    loadTheme();
-    var loggedIn = sessionStorage.getItem('login');
-    if (loggedIn === 'true') {
-        document.getElementById('loginPage').style.display = 'none';
-        document.getElementById('dashboardPage').style.display = 'block';
-        document.getElementById('userName').innerText = sessionStorage.getItem('nama') || 'Administrator';
-        showDashboard();
-    } else {
-        document.getElementById('loginPage').style.display = 'flex';
-        document.getElementById('dashboardPage').style.display = 'none';
-    }
-};
-  // ==========================================
-// DOWNLOAD INVOICE PDF
-// ==========================================
-function downloadInvoice(idPelanggan, periode) {
-    showNotification('📄 Membuat invoice PDF...', 'info');
-    
-    callWebApp('downloadInvoice', { 
-        idPelanggan: idPelanggan, 
-        periode: periode 
-    }, function(response) {
-        if (response && response.success) {
-            try {
-                // Konversi byte array ke blob
-                var byteArray = new Uint8Array(response.pdfBytes);
-                var blob = new Blob([byteArray], { type: 'application/pdf' });
-                
-                // Buat link download
-                var link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = response.fileName || 'invoice.pdf';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(link.href);
-                
-                showNotification('✅ ' + response.message, 'success');
-            } catch (e) {
-                console.error('Error download:', e);
-                showNotification('❌ Error: ' + e.message, 'error');
-            }
-        } else {
-            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal membuat PDF'), 'error');
-        }
-    });
-}
-
-// ==========================================
-// DOWNLOAD INVOICE THERMAL (Teks)
-// ==========================================
-function downloadInvoiceTeks(idPelanggan, periode) {
-    showNotification('🖨️ Membuat invoice thermal...', 'info');
-    callWebApp('downloadInvoiceTeks', { idPelanggan: idPelanggan, periode: periode }, function(response) {
-        if (response && response.success) {
-            try {
-                var blob = new Blob([response.teks], { type: 'text/plain;charset=utf-8' });
-                var link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = response.fileName || 'invoice_thermal.txt';
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                URL.revokeObjectURL(link.href);
-                
-                showNotification('✅ ' + response.message, 'success');
-            } catch (e) {
-                showNotification('❌ Error: ' + e.message, 'error');
-            }
-        } else {
-            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal membuat thermal'), 'error');
-        }
-    });
-}
-  // ==========================================
-// TAMBAH PELANGGAN - FUNGSI
+// TAMBAH PELANGGAN
 // ==========================================
 function showTambahPelanggan() {
     var pages = ['dashboardContent', 'pelangganPage', 'tagihanPage', 'pembayaranPage', 
@@ -2636,7 +2233,6 @@ function showTambahPelanggan() {
     }
     var page = document.getElementById('tambahPelangganPage');
     if (page) page.style.display = 'block';
-    
     var menus = document.querySelectorAll('.menu');
     for (var i = 0; i < menus.length; i++) {
         var text = menus[i].textContent || '';
@@ -2664,7 +2260,6 @@ function resetFormPelanggan() {
 function tambahPelanggan() {
     var msg = document.getElementById('formPelangganMessage');
     if (!msg) return;
-    
     var nama = document.getElementById('inputNama');
     var whatsapp = document.getElementById('inputWhatsapp');
     var alamat = document.getElementById('inputAlamat');
@@ -2673,13 +2268,11 @@ function tambahPelanggan() {
     var harga = document.getElementById('inputHarga');
     var pppoe = document.getElementById('inputPPPoE');
     var password = document.getElementById('inputPassword');
-    
     if (!nama || !whatsapp || !harga) {
         msg.innerText = '⚠️ Form tidak lengkap!';
         msg.style.color = '#dc2626';
         return;
     }
-    
     var data = {
         nama: nama.value.trim(),
         whatsapp: whatsapp.value.trim(),
@@ -2690,14 +2283,11 @@ function tambahPelanggan() {
         pppoe: pppoe ? pppoe.value.trim() : '',
         password: password ? password.value.trim() : ''
     };
-    
     if (!data.nama) { msg.innerText = '⚠️ Nama harus diisi!'; msg.style.color = '#dc2626'; return; }
     if (!data.whatsapp) { msg.innerText = '⚠️ WhatsApp harus diisi!'; msg.style.color = '#dc2626'; return; }
     if (!data.harga || Number(data.harga) <= 0) { msg.innerText = '⚠️ Harga harus diisi dengan angka positif!'; msg.style.color = '#dc2626'; return; }
-    
     msg.innerText = '⏳ Menyimpan pelanggan...';
     msg.style.color = '#2563eb';
-    
     callWebApp('tambahPelanggan', data, function(response) {
         if (response && response.success) {
             msg.innerText = '✅ ' + response.message;
@@ -2716,7 +2306,6 @@ function tambahPelanggan() {
 function tambahPelangganDanInvoice() {
     var msg = document.getElementById('formPelangganMessage');
     if (!msg) return;
-    
     var nama = document.getElementById('inputNama');
     var whatsapp = document.getElementById('inputWhatsapp');
     var alamat = document.getElementById('inputAlamat');
@@ -2725,13 +2314,11 @@ function tambahPelangganDanInvoice() {
     var harga = document.getElementById('inputHarga');
     var pppoe = document.getElementById('inputPPPoE');
     var password = document.getElementById('inputPassword');
-    
     if (!nama || !whatsapp || !harga) {
         msg.innerText = '⚠️ Form tidak lengkap!';
         msg.style.color = '#dc2626';
         return;
     }
-    
     var data = {
         nama: nama.value.trim(),
         whatsapp: whatsapp.value.trim(),
@@ -2742,14 +2329,11 @@ function tambahPelangganDanInvoice() {
         pppoe: pppoe ? pppoe.value.trim() : '',
         password: password ? password.value.trim() : ''
     };
-    
     if (!data.nama) { msg.innerText = '⚠️ Nama harus diisi!'; msg.style.color = '#dc2626'; return; }
     if (!data.whatsapp) { msg.innerText = '⚠️ WhatsApp harus diisi!'; msg.style.color = '#dc2626'; return; }
     if (!data.harga || Number(data.harga) <= 0) { msg.innerText = '⚠️ Harga harus diisi dengan angka positif!'; msg.style.color = '#dc2626'; return; }
-    
     msg.innerText = '⏳ Menyimpan pelanggan dan membuat invoice...';
     msg.style.color = '#2563eb';
-    
     callWebApp('tambahPelangganDanInvoice', data, function(response) {
         if (response && response.success) {
             msg.innerText = '✅ ' + response.message + (response.idTagihan ? ' - Invoice: ' + response.idTagihan : '');
@@ -2764,6 +2348,74 @@ function tambahPelangganDanInvoice() {
         }
     });
 }
+
+// ==========================================
+// DOWNLOAD INVOICE PDF
+// ==========================================
+function downloadInvoice(idPelanggan, periode) {
+    showNotification('📄 Membuat invoice PDF...', 'info');
+    callWebApp('downloadInvoice', { idPelanggan: idPelanggan, periode: periode }, function(response) {
+        if (response && response.success) {
+            try {
+                var byteArray = new Uint8Array(response.pdfBytes);
+                var blob = new Blob([byteArray], { type: 'application/pdf' });
+                var link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = response.fileName || 'invoice.pdf';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+                showNotification('✅ ' + response.message, 'success');
+            } catch (e) {
+                console.error('Error download:', e);
+                showNotification('❌ Error: ' + e.message, 'error');
+            }
+        } else {
+            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal membuat PDF'), 'error');
+        }
+    });
+}
+
+function downloadInvoiceTeks(idPelanggan, periode) {
+    showNotification('🖨️ Membuat invoice thermal...', 'info');
+    callWebApp('downloadInvoiceTeks', { idPelanggan: idPelanggan, periode: periode }, function(response) {
+        if (response && response.success) {
+            try {
+                var blob = new Blob([response.teks], { type: 'text/plain;charset=utf-8' });
+                var link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = response.fileName || 'invoice_thermal.txt';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+                showNotification('✅ ' + response.message, 'success');
+            } catch (e) {
+                showNotification('❌ Error: ' + e.message, 'error');
+            }
+        } else {
+            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal membuat thermal'), 'error');
+        }
+    });
+}
+
+// ==========================================
+// START
+// ==========================================
+window.onload = function() {
+    loadTheme();
+    var loggedIn = sessionStorage.getItem('login');
+    if (loggedIn === 'true') {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('dashboardPage').style.display = 'block';
+        document.getElementById('userName').innerText = sessionStorage.getItem('nama') || 'Administrator';
+        showDashboard();
+    } else {
+        document.getElementById('loginPage').style.display = 'flex';
+        document.getElementById('dashboardPage').style.display = 'none';
+    }
+};
 </script>
 </body>
 </html>
