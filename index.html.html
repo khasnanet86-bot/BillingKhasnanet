@@ -693,25 +693,19 @@ function showSidebarByLevel() {
 // ==========================================
 // TAMBAH PELANGGAN - FUNGSI (SUDAH BENAR)
 // ==========================================
-function showTambahPelanggan() {
-    var pages = ['dashboardContent', 'pelangganPage', 'tagihanPage', 'pembayaranPage', 
-                 'whatsappPage', 'pengeluaranPage', 'mikrotikPage', 'laporanPage', 
-                 'pengaturanPage', 'usersPage'];
-    for (var i = 0; i < pages.length; i++) {
-        var el = document.getElementById(pages[i]);
-        if (el) el.style.display = 'none';
-    }
-    var page = document.getElementById('tambahPelangganPage');
-    if (page) page.style.display = 'block';
-    var menus = document.querySelectorAll('.menu');
-    for (var i = 0; i < menus.length; i++) {
-        var text = menus[i].textContent || '';
-        if (text.indexOf('Tambah Pelanggan') !== -1) {
-            menus[i].classList.add('active');
-        } else {
-            menus[i].classList.remove('active');
-        }
-    }
+ffunction showTambahPelanggan() {
+    document.getElementById('dashboardContent').style.display = 'none';
+    document.getElementById('pelangganPage').style.display = 'none';
+    document.getElementById('tagihanPage').style.display = 'none';
+    document.getElementById('pembayaranPage').style.display = 'none';
+    document.getElementById('whatsappPage').style.display = 'none';
+    document.getElementById('pengeluaranPage').style.display = 'none';
+    document.getElementById('mikrotikPage').style.display = 'none';
+    document.getElementById('laporanPage').style.display = 'none';
+    document.getElementById('pengaturanPage').style.display = 'none';
+    document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'block';
+    setActiveMenu(10);
 }
 
 function resetFormPelanggan() {
@@ -849,6 +843,7 @@ function showDashboard() {
     document.getElementById('laporanPage').style.display = 'none';
     document.getElementById('pengaturanPage').style.display = 'none';
     document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
     setActiveMenu(0);
     showSidebarByLevel();
     nominalVisible = true;
@@ -1101,6 +1096,7 @@ function showPelanggan() {
     document.getElementById('laporanPage').style.display = 'none';
     document.getElementById('pengaturanPage').style.display = 'none';
     document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
     setActiveMenu(1);
     loadPelanggan();
 }
@@ -1334,9 +1330,10 @@ function showTagihan() {
     document.getElementById('laporanPage').style.display = 'none';
     document.getElementById('pengaturanPage').style.display = 'none';
     document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
     setActiveMenu(2);
     loadDaftarPeriodeTagihan();
-}
+}}
 
 function loadDaftarPeriodeTagihan() {
     showNotification('Memuat periode tagihan...', 'info');
@@ -1541,6 +1538,7 @@ function showPembayaran() {
     document.getElementById('laporanPage').style.display = 'none';
     document.getElementById('pengaturanPage').style.display = 'none';
     document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
     setActiveMenu(3);
     loadPembayaran();
 }
@@ -1624,6 +1622,8 @@ function showWhatsapp() {
     document.getElementById('usersPage').style.display = 'none';
     document.getElementById('tambahPelangganPage').style.display = 'none';
     setActiveMenu(4);
+    loadDaftarPeriodeWA();
+    loadWALog();
 }
 
 function loadDaftarPeriodeWA() {
@@ -1780,6 +1780,7 @@ function showPengeluaran() {
     document.getElementById('laporanPage').style.display = 'none';
     document.getElementById('pengaturanPage').style.display = 'none';
     document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
     setActiveMenu(5);
     var today = new Date().toISOString().split('T')[0];
     document.getElementById('expTanggal').value = today;
@@ -1939,6 +1940,7 @@ function showMikrotik() {
     document.getElementById('laporanPage').style.display = 'none';
     document.getElementById('pengaturanPage').style.display = 'none';
     document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
     setActiveMenu(6);
 }
 
@@ -2011,6 +2013,7 @@ function showLaporan() {
     document.getElementById('laporanPage').style.display = 'block';
     document.getElementById('pengaturanPage').style.display = 'none';
     document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
     setActiveMenu(7);
     loadDaftarPeriodeLaporan();
 }
@@ -2112,6 +2115,7 @@ function showPengaturan() {
     document.getElementById('laporanPage').style.display = 'none';
     document.getElementById('pengaturanPage').style.display = 'block';
     document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
     setActiveMenu(8);
     loadPengaturan();
 }
@@ -2197,6 +2201,7 @@ function showUsers() {
     document.getElementById('laporanPage').style.display = 'none';
     document.getElementById('pengaturanPage').style.display = 'none';
     document.getElementById('usersPage').style.display = 'block';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
     setActiveMenu(9);
     loadUsers();
 }
