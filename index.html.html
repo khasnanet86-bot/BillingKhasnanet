@@ -271,12 +271,12 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
     <div class="sidebar">
       <div class="menu active" onclick="showDashboard()">🏠 <span>Dashboard</span></div>
       <div class="menu" onclick="showPelanggan()">👥 <span>Pelanggan</span></div>
+      <div class="menu" onclick="showTambahPelanggan()">➕ <span>Tambah Pelanggan</span></div>
       <div class="menu" onclick="showTagihan()">🧾 <span>Tagihan</span></div>
       <div class="menu" onclick="showPembayaran()">💳 <span>Pembayaran</span></div>
       <div class="menu" id="menuWhatsapp" style="display:none;" onclick="showWhatsapp()">📱 <span>WhatsApp</span></div>
       <div class="menu" id="menuPengeluaran" style="display:none;" onclick="showPengeluaran()">📋 <span>Pengeluaran</span></div>
       <div class="menu" onclick="showLaporan()">📊 <span>Laporan</span></div>
-      <div class="menu" onclick="showTambahPelanggan()">➕ <span>Tambah Pelanggan</span></div>
       <div class="menu" id="menuMikrotik" style="display:none;" onclick="showMikrotik()">🔧 <span>MikroTik</span></div>
       <div class="menu" id="menuPengaturan" style="display:none;" onclick="showPengaturan()">⚙️ <span>Pengaturan</span></div>
       <div class="menu" id="menuUsers" style="display:none;" onclick="showUsers()">👤 <span>Manajemen User</span></div>
@@ -348,7 +348,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         </div>
         <div class="info-data">Menampilkan: <span id="jmlData">0</span> dari <span id="totalData">0</span> pelanggan</div>
       </div>
-    <!-- ========================================== -->
+<!-- ========================================== -->
 <!-- TAMBAH PELANGGAN -->
 <!-- ========================================== -->
 <div id="tambahPelangganPage" style="display:none;">
@@ -402,7 +402,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
     <div id="formPelangganMessage" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
   </div>
 </div>
-
+      
       <!-- TAGIHAN -->
       <div id="tagihanPage" style="display:none;">
         <h2>🧾 Tagihan</h2>
@@ -2543,8 +2543,9 @@ function resetUserForm() {
     document.getElementById('userNama').value = '';
     document.getElementById('userLevel').value = 'ADMIN';
     document.getElementById('userStatus').value = 'AKTIF';
-}// ==========================================
-// TAMBAH PELANGGAN
+}
+// ==========================================
+// TAMBAH PELANGGAN - FUNGSI
 // ==========================================
 function showTambahPelanggan() {
     document.getElementById('dashboardContent').style.display = 'none';
@@ -2652,8 +2653,7 @@ function tambahPelangganDanInvoice() {
             showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
         }
     });
-}
-
+}  
 // ==========================================
 // START
 // ==========================================
