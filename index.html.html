@@ -221,18 +221,18 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
   </div>
   <div class="layout">
     <div class="sidebar">
-      <div class="menu active" onclick="showDashboard()">🏠 <span>Dashboard</span></div>
-      <div class="menu" onclick="showPelanggan()">👥 <span>Pelanggan</span></div>
-      <div class="menu" onclick="showTambahPelanggan()">➕ <span>Tambah Pelanggan</span></div>
-      <div class="menu" onclick="showTagihan()">🧾 <span>Tagihan</span></div>
-      <div class="menu" onclick="showPembayaran()">💳 <span>Pembayaran</span></div>
-      <div class="menu" id="menuWhatsapp" style="display:none;" onclick="showWhatsapp()">📱 <span>WhatsApp</span></div>
-      <div class="menu" id="menuPengeluaran" style="display:none;" onclick="showPengeluaran()">📋 <span>Pengeluaran</span></div>
-      <div class="menu" onclick="showLaporan()">📊 <span>Laporan</span></div>
-      <div class="menu" id="menuMikrotik" style="display:none;" onclick="showMikrotik()">🔧 <span>MikroTik</span></div>
-      <div class="menu" id="menuPengaturan" style="display:none;" onclick="showPengaturan()">⚙️ <span>Pengaturan</span></div>
-      <div class="menu" id="menuUsers" style="display:none;" onclick="showUsers()">👤 <span>Manajemen User</span></div>
-    </div>
+    <div class="menu active" id="menuDashboard" onclick="showDashboard()">🏠 <span>Dashboard</span></div>
+    <div class="menu" id="menuPelanggan" onclick="showPelanggan()">👥 <span>Pelanggan</span></div>
+    <div class="menu" id="menuTambahPelanggan" onclick="showTambahPelanggan()">➕ <span>Tambah Pelanggan</span></div>
+    <div class="menu" id="menuTagihan" onclick="showTagihan()">🧾 <span>Tagihan</span></div>
+    <div class="menu" id="menuPembayaran" onclick="showPembayaran()">💳 <span>Pembayaran</span></div>
+    <div class="menu" id="menuWhatsapp" onclick="showWhatsapp()">📱 <span>WhatsApp</span></div>
+    <div class="menu" id="menuPengeluaran" onclick="showPengeluaran()">📋 <span>Pengeluaran</span></div>
+    <div class="menu" id="menuLaporan" onclick="showLaporan()">📊 <span>Laporan</span></div>
+    <div class="menu" id="menuMikrotik" onclick="showMikrotik()">🔧 <span>MikroTik</span></div>
+    <div class="menu" id="menuPengaturan" onclick="showPengaturan()">⚙️ <span>Pengaturan</span></div>
+    <div class="menu" id="menuUsers" onclick="showUsers()">👤 <span>Manajemen User</span></div>
+</div>
     <div class="content">
       
       <div id="dashboardContent">
@@ -2345,6 +2345,19 @@ function downloadInvoiceTeks(idPelanggan, periode) {
             showNotification('❌ ' + (response && response.message ? response.message : 'Gagal membuat thermal'), 'error');
         }
     });
+}
+  // ==========================================
+// SET ACTIVE MENU
+// ==========================================
+function setActiveMenu(menuId) {
+    var menus = document.querySelectorAll('.sidebar .menu');
+    for (var i = 0; i < menus.length; i++) {
+        menus[i].classList.remove('active');
+    }
+    var target = document.getElementById(menuId);
+    if (target) {
+        target.classList.add('active');
+    }
 }
 
 // ==========================================
