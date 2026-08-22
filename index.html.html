@@ -2343,6 +2343,146 @@ window.onload = function() {
         document.getElementById('dashboardPage').style.display = 'none';
     }
 };
+  // ==========================================
+// TAMBAH PELANGGAN - FUNGSI (DITAMBAHKAN)
+// ==========================================
+function showTambahPelanggan() {
+    var pages = ['dashboardContent', 'pelangganPage', 'tagihanPage', 'pembayaranPage', 
+                 'whatsappPage', 'pengeluaranPage', 'mikrotikPage', 'laporanPage', 
+                 'pengaturanPage', 'usersPage'];
+    for (var i = 0; i < pages.length; i++) {
+        var el = document.getElementById(pages[i]);
+        if (el) el.style.display = 'none';
+    }
+    var page = document.getElementById('tambahPelangganPage');
+    if (page) page.style.display = 'block';
+    var menus = document.querySelectorAll('.menu');
+    for (var i = 0; i < menus.length; i++) {
+        var text = menus[i].textContent || '';
+        if (text.indexOf('Tambah Pelanggan') !== -1) {
+            menus[i].classList.add('active');
+        } else {
+            menus[i].classList.remove('active');
+        }
+    }
+}
+
+function resetFormPelanggan() {
+    document.getElementById('inputNama').value = '';
+    document.getElementById('inputWhatsapp').value = '';
+    document.getElementById('inputAlamat').value = '';
+    document.getElementById('inputArea').value = '';
+    document.getElementById('inputPaket').value = '10 Mbps';
+    document.getElementById('inputHarga').value = '';
+    document.getElementById('inputPPPoE').value = '';
+    document.getElementById('inputPassword').value = '';
+    var msg = document.getElementById('formPelangganMessage');
+    if (msg) msg.innerText = '';
+}
+
+function tambahPelanggan() {
+    var msg = document.getElementById('formPelangganMessage');
+    if (!msg) return;
+    
+    var nama = document.getElementById('inputNama');
+    var whatsapp = document.getElementById('inputWhatsapp');
+    var alamat = document.getElementById('inputAlamat');
+    var area = document.getElementById('inputArea');
+    var paket = document.getElementById('inputPaket');
+    var harga = document.getElementById('inputHarga');
+    var pppoe = document.getElementById('inputPPPoE');
+    var password = document.getElementById('inputPassword');
+    
+    if (!nama || !whatsapp || !harga) {
+        msg.innerText = '⚠️ Form tidak lengkap!';
+        msg.style.color = '#dc2626';
+        return;
+    }
+    
+    var data = {
+        nama: nama.value.trim(),
+        whatsapp: whatsapp.value.trim(),
+        alamat: alamat ? alamat.value.trim() : '',
+        area: area ? area.value.trim() : '',
+        paket: paket ? paket.value : '10 Mbps',
+        harga: harga.value,
+        pppoe: pppoe ? pppoe.value.trim() : '',
+        password: password ? password.value.trim() : ''
+    };
+    
+    if (!data.nama) { msg.innerText = '⚠️ Nama harus diisi!'; msg.style.color = '#dc2626'; return; }
+    if (!data.whatsapp) { msg.innerText = '⚠️ WhatsApp harus diisi!'; msg.style.color = '#dc2626'; return; }
+    if (!data.harga || Number(data.harga) <= 0) { msg.innerText = '⚠️ Harga harus diisi dengan angka positif!'; msg.style.color = '#dc2626'; return; }
+    
+    msg.innerText = '⏳ Menyimpan pelanggan...';
+    msg.style.color = '#2563eb';
+    
+    callWebApp('tambahPelanggan', data, function(response) {
+        if (response && response.success) {
+            msg.innerText = '✅ ' + response.message;
+            msg.style.color = '#16a34a';
+            resetFormPelanggan();
+            if (typeof loadPelanggan === 'function') loadPelanggan();
+            if (typeof showNotification === 'function') showNotification('✅ ' + response.message, 'success');
+        } else {
+            msg.innerText = '❌ ' + (response && response.message ? response.message : 'Gagal');
+            msg.style.color = '#dc2626';
+            if (typeof showNotification === 'function') showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
+        }
+    });
+}
+
+function tambahPelangganDanInvoice() {
+    var msg = document.getElementById('formPelangganMessage');
+    if (!msg) return;
+    
+    var nama = document.getElementById('inputNama');
+    var whatsapp = document.getElementById('inputWhatsapp');
+    var alamat = document.getElementById('inputAlamat');
+    var area = document.getElementById('inputArea');
+    var paket = document.getElementById('inputPaket');
+    var harga = document.getElementById('inputHarga');
+    var pppoe = document.getElementById('inputPPPoE');
+    var password = document.getElementById('inputPassword');
+    
+    if (!nama || !whatsapp || !harga) {
+        msg.innerText = '⚠️ Form tidak lengkap!';
+        msg.style.color = '#dc2626';
+        return;
+    }
+    
+    var data = {
+        nama: nama.value.trim(),
+        whatsapp: whatsapp.value.trim(),
+        alamat: alamat ? alamat.value.trim() : '',
+        area: area ? area.value.trim() : '',
+        paket: paket ? paket.value : '10 Mbps',
+        harga: harga.value,
+        pppoe: pppoe ? pppoe.value.trim() : '',
+        password: password ? password.value.trim() : ''
+    };
+    
+    if (!data.nama) { msg.innerText = '⚠️ Nama harus diisi!'; msg.style.color = '#dc2626'; return; }
+    if (!data.whatsapp) { msg.innerText = '⚠️ WhatsApp harus diisi!'; msg.style.color = '#dc2626'; return; }
+    if (!data.harga || Number(data.harga) <= 0) { msg.innerText = '⚠️ Harga harus diisi dengan angka positif!'; msg.style.color = '#dc2626'; return; }
+    
+    msg.innerText = '⏳ Menyimpan pelanggan dan membuat invoice...';
+    msg.style.color = '#2563eb';
+    
+    callWebApp('tambahPelangganDanInvoice', data, function(response) {
+        if (response && response.success) {
+            msg.innerText = '✅ ' + response.message + (response.idTagihan ? ' - Invoice: ' + response.idTagihan : '');
+            msg.style.color = '#16a34a';
+            resetFormPelanggan();
+            if (typeof loadPelanggan === 'function') loadPelanggan();
+            if (typeof showNotification === 'function') showNotification('✅ ' + response.message, 'success');
+        } else {
+            msg.innerText = '❌ ' + (response && response.message ? response.message : 'Gagal');
+            msg.style.color = '#dc2626';
+            if (typeof showNotification === 'function') showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
+        }
+    });
+}
 </script>
 </body>
 </html>
