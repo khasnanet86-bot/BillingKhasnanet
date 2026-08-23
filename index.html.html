@@ -523,7 +523,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 // ==========================================
 // 🔧 KONFIGURASI - GANTI DENGAN URL WEB APP ANDA
 // ==========================================
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxYvbmcBgVJTIMbSvaXDUCtf5Shwf0cLiIyzbH5QTzg6WJikZup5IEmtnAuxkFTwyYzxw/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwS2vY5ZONmBb6oPumgPLFIc8ixDxGFBSKMpx8Z5sjsXtIeLk-_3wk1ri64b66QK7gjnA/exec';
 
 function callWebApp(action, params, callback) {
     var url = WEB_APP_URL + '?action=' + action;
@@ -2376,6 +2376,25 @@ window.onload = function() {
         document.getElementById('dashboardPage').style.display = 'none';
     }
 };
+  <div id="whatsappQRCode">
+  <h3>Scan QR Code untuk menghubungkan WhatsApp</h3>
+  <img id="qrCodeImage" src="" alt="QR Code WhatsApp" />
+  <button onclick="generateQRCode()">Generate QR Code</button>
+</div>
+
+<script>
+function generateQRCode() {
+  showNotification('Meminta QR Code...', 'info');
+  callWebApp('getWhatsAppQR', {}, function(response) {
+    if (response && response.success) {
+      document.getElementById('qrCodeImage').src = response.qrImageUrl;
+      showNotification('✅ QR Code siap di-scan!', 'success');
+    } else {
+      showNotification('❌ Gagal mendapatkan QR Code', 'error');
+    }
+  });
+}
+</script>
 </script>
 </body>
 </html>
