@@ -561,50 +561,67 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
       </div>
 
       <!-- MIKROTIK -->
-      <div id="mikrotikPage" style="display:none;">
-        <h2>🔧 Integrasi MikroTik</h2>
-        <div class="cards" style="grid-template-columns:repeat(4,1fr);">
-          <div class="card" style="border-left:4px solid #8b5cf6;"><div class="card-title">Status Koneksi</div><div class="card-number" id="mikrotikStatus" style="font-size:18px;color:#6b7280;">❓ Belum di-test</div></div>
-          <div class="card" style="border-left:4px solid #16a34a;"><div class="card-title">Total User</div><div class="card-number" id="mikrotikTotalUser">0</div></div>
-          <div class="card" style="border-left:4px solid #f59e0b;"><div class="card-title">User Aktif</div><div class="card-number" id="mikrotikUserAktif">0</div></div>
-          <div class="card" style="border-left:4px solid #dc2626;"><div class="card-title">User Non-Aktif</div><div class="card-number" id="mikrotikUserNonAktif">0</div></div>
-        </div>
-        <div class="card" style="padding:20px;margin-bottom:20px;">
-          <h3 style="margin-top:0;">📡 Kontrol MikroTik</h3>
-          <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-            <button class="mikrotik-btn" onclick="testMikrotik()">🔌 Test Koneksi</button>
-            <button class="success-btn" onclick="forceEnableMikrotik()" style="background:#dc2626;">⚡ Force Enable</button>
-            <button class="detail-btn" onclick="cekKonfigurasi()" style="background:#f59e0b;">🔍 Cek Konfigurasi</button>
-            <button class="success-btn" onclick="syncMikrotikUsers()" style="background:#8b5cf6;">🔄 Sync Users</button>
-          </div>
-          <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-            <input id="mikrotikUsername" class="search" placeholder="Username PPPoE" style="min-width:200px;flex:0;">
-            <button class="detail-btn" onclick="mikrotikUserAction('enable')" style="background:#16a34a;">✅ Enable</button>
-            <button class="danger-btn" onclick="mikrotikUserAction('disable')" style="background:#dc2626;">⛔ Disable</button>
-            <button class="danger-btn" onclick="mikrotikUserAction('delete')" style="background:#6b7280;">🗑️ Delete</button>
-          </div>
-          <div id="mikrotikActionResult" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
-        </div>
-        <div class="card" style="padding:20px;margin-bottom:20px;">
-          <h3 style="margin-top:0;">📋 Daftar User MikroTik</h3>
-          <div class="toolbar">
-            <input id="mikrotikUserSearch" class="search" placeholder="🔎 Cari user..." oninput="filterMikrotikUsers()">
-            <button class="detail-btn" onclick="loadMikrotikUsers()">🔄 Refresh</button>
-          </div>
-          <div class="table-box">
-            <table>
-              <thead><tr><th>#</th><th>Username</th><th>Password</th><th>Paket</th><th>Status</th><th>Expired</th><th>Aksi</th></tr></thead>
-              <tbody id="mikrotikUserTable"><tr><td colspan="7" style="text-align:center;padding:30px;">⏳ Memuat data user MikroTik...</td></tr></tbody>
-            </table>
-          </div>
-          <div class="info-data">Total: <span id="jmlMikrotikUser">0</span> user</div>
-        </div>
-        <div class="card" style="padding:20px;">
-          <h3 style="margin-top:0;">📊 Log Aktivitas MikroTik</h3>
-          <div id="mikrotikLogContainer" class="mikrotik-status-box info"><p style="color:#6b7280;text-align:center;">Belum ada log aktivitas</p></div>
-        </div>
-      </div>
-
+<div id="mikrotikPage" style="display:none;">
+  <h2>🔧 Integrasi MikroTik</h2>
+  
+  <!-- Status Koneksi Card -->
+  <div class="cards" style="grid-template-columns:repeat(4,1fr);">
+    <div class="card" style="border-left:4px solid #8b5cf6;"><div class="card-title">Status Koneksi</div><div class="card-number" id="mikrotikStatus" style="font-size:18px;color:#6b7280;">❓ Belum di-test</div></div>
+    <div class="card" style="border-left:4px solid #16a34a;"><div class="card-title">Total User</div><div class="card-number" id="mikrotikTotalUser">0</div></div>
+    <div class="card" style="border-left:4px solid #f59e0b;"><div class="card-title">User Aktif</div><div class="card-number" id="mikrotikUserAktif">0</div></div>
+    <div class="card" style="border-left:4px solid #dc2626;"><div class="card-title">User Non-Aktif</div><div class="card-number" id="mikrotikUserNonAktif">0</div></div>
+  </div>
+  
+  <!-- Kontrol MikroTik -->
+  <div class="card" style="padding:20px;margin-bottom:20px;">
+    <h3 style="margin-top:0;">📡 Kontrol MikroTik</h3>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <button class="mikrotik-btn" onclick="testMikrotik()">🔌 Test Koneksi</button>
+      <button class="success-btn" onclick="forceEnableMikrotik()" style="background:#dc2626;">⚡ Force Enable</button>
+      <button class="detail-btn" onclick="cekKonfigurasi()" style="background:#f59e0b;">🔍 Cek Konfigurasi</button>
+      <button class="success-btn" onclick="syncMikrotikUsers()" style="background:#8b5cf6;">🔄 Sync Users</button>
+      <button class="danger-btn" onclick="forceEnableMikrotikDirect()" style="background:#dc2626;font-weight:bold;">⚡ Force Enable Direct</button>
+      <button class="detail-btn" onclick="debugMikrotik()" style="background:#6b7280;">🐛 Debug</button>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <input id="mikrotikUsername" class="search" placeholder="Username PPPoE" style="min-width:200px;flex:0;">
+      <button class="detail-btn" onclick="mikrotikUserAction('enable')" style="background:#16a34a;">✅ Enable</button>
+      <button class="danger-btn" onclick="mikrotikUserAction('disable')" style="background:#dc2626;">⛔ Disable</button>
+      <button class="danger-btn" onclick="mikrotikUserAction('delete')" style="background:#6b7280;">🗑️ Delete</button>
+    </div>
+    <div id="mikrotikActionResult" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
+  </div>
+  
+  <!-- Info Detail -->
+  <div class="card" style="padding:20px;margin-bottom:20px;">
+    <h3 style="margin-top:0;">📋 Detail Informasi</h3>
+    <div id="mikrotikInfo" style="margin-top:10px;padding:10px;background:#f9fafb;border-radius:8px;display:none;">
+      <pre id="mikrotikDetail" style="margin:0;font-size:13px;white-space:pre-wrap;"></pre>
+    </div>
+  </div>
+  
+  <!-- Daftar User MikroTik -->
+  <div class="card" style="padding:20px;margin-bottom:20px;">
+    <h3 style="margin-top:0;">📋 Daftar User MikroTik</h3>
+    <div class="toolbar">
+      <input id="mikrotikUserSearch" class="search" placeholder="🔎 Cari user..." oninput="filterMikrotikUsers()">
+      <button class="detail-btn" onclick="loadMikrotikUsers()">🔄 Refresh</button>
+    </div>
+    <div class="table-box">
+      <table>
+        <thead><tr><th>#</th><th>Username</th><th>Password</th><th>Paket</th><th>Status</th><th>Expired</th><th>Aksi</th></tr></thead>
+        <tbody id="mikrotikUserTable"><tr><td colspan="7" style="text-align:center;padding:30px;">⏳ Memuat data user MikroTik...</td></tr></tbody>
+      </table>
+    </div>
+    <div class="info-data">Total: <span id="jmlMikrotikUser">0</span> user</div>
+  </div>
+  
+  <!-- Log Aktivitas -->
+  <div class="card" style="padding:20px;">
+    <h3 style="margin-top:0;">📊 Log Aktivitas MikroTik</h3>
+    <div id="mikrotikLogContainer" class="mikrotik-status-box info"><p style="color:#6b7280;text-align:center;">Belum ada log aktivitas</p></div>
+  </div>
+</div>
       <!-- 📡 MIKROTIK PPPoE MONITOR -->
       <div id="mikrotikMonitorPage" style="display:none;">
         <h2>📡 Monitor PPPoE MikroTik</h2>
@@ -732,7 +749,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 // ==========================================
 // 🔧 KONFIGURASI
 // ==========================================
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwxpcKyZjGPUyNUCEVNBgyKNX0rK3wLTlbnCJdG9W_omIkorCC8dJO6W3KZ-BizXIhy9w/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzzoZl5YAEVmXuF37ONRB0IW8720rTdKL9QgBJ3LHNDqZ3w6A9xUvg3W6L6U2ev9DnpDA/exec';
 var WEB_APP_MONITOR_URL = 'https://script.google.com/macros/s/AKfycbz5u2WIvmlHSDRs7CDDHyh1r2kyGfecRT0kIrmVXAdGRVrhm1svG5rkE5Nz_YMGB_cN/exec';
 
 // ==========================================
@@ -2554,6 +2571,102 @@ function resetFormPelanggan() {
     document.getElementById('inputPPPoE').value = '';
     document.getElementById('inputPassword').value = '';
     document.getElementById('formPelangganMessage').innerHTML = '';
+}
+// ==========================================
+// FORCE ENABLE MIKROTIK DIRECT (PAKSA)
+// ==========================================
+function forceEnableMikrotikDirect() {
+  if (!confirm('⚡ Force Enable MikroTik Direct?\n\n' +
+               'Tindakan ini akan:\n' +
+               '1. Mengubah MIKROTIK_ENABLED = TRUE di Spreadsheet\n' +
+               '2. Menambahkan konfigurasi default (IP: 10.171.248.234, Port: 1729, User: khs)\n\n' +
+               'Lanjutkan?')) {
+    return;
+  }
+  
+  showNotification('⏳ Memaksa aktifkan MikroTik...', 'info');
+  
+  callWebApp('forceEnableMikrotikDirect', {}, function(response) {
+    if (response && response.success) {
+      showNotification('✅ ' + response.message, 'success');
+      // Refresh status setelah 1 detik
+      setTimeout(function() {
+        cekKonfigurasi();
+        loadMikrotikUsers();
+      }, 1000);
+    } else {
+      showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
+    }
+  });
+}
+
+// ==========================================
+// DEBUG MIKROTIK
+// ==========================================
+function debugMikrotik() {
+  showNotification('🐛 Menjalankan debug...', 'info');
+  
+  callWebApp('debugMikrotikEnabled', {}, function(result) {
+    var statusEl = document.getElementById('mikrotikStatus');
+    var infoEl = document.getElementById('mikrotikInfo');
+    var detailEl = document.getElementById('mikrotikDetail');
+    
+    if (result && typeof result === 'string') {
+      statusEl.innerHTML = '🐛 Debug Selesai';
+      statusEl.style.color = '#2563eb';
+      infoEl.style.display = 'block';
+      detailEl.textContent = result;
+      showNotification('✅ Debug selesai, cek detail di bawah', 'success');
+    } else if (result && result.success) {
+      var msg = result.message || 'Debug selesai';
+      statusEl.innerHTML = '🐛 Debug Selesai';
+      statusEl.style.color = '#2563eb';
+      infoEl.style.display = 'block';
+      detailEl.textContent = JSON.stringify(result.data || result, null, 2);
+      showNotification('✅ ' + msg, 'success');
+    } else {
+      statusEl.innerHTML = '❌ Debug Gagal';
+      statusEl.style.color = '#dc2626';
+      showNotification('❌ ' + (result && result.message ? result.message : 'Debug gagal'), 'error');
+    }
+  });
+}
+
+// ==========================================
+// CEK KONFIGURASI (UPDATE)
+// ==========================================
+function cekKonfigurasi() {
+  showNotification('🔍 Cek konfigurasi MikroTik...', 'info');
+  
+  callWebApp('cekKonfigurasiMikrotik', {}, function(response) {
+    if (response && response.success) {
+      var infoEl = document.getElementById('mikrotikInfo');
+      var detailEl = document.getElementById('mikrotikDetail');
+      var statusEl = document.getElementById('mikrotikStatus');
+      
+      var config = response.data || {};
+      var msg = '📋 Konfigurasi MikroTik:\n\n';
+      msg += '✅ MIKROTIK_ENABLED = ' + (config.MIKROTIK_ENABLED || 'FALSE') + '\n';
+      msg += '✅ MIKROTIK_IP = ' + (config.MIKROTIK_IP || '-') + '\n';
+      msg += '✅ MIKROTIK_PORT = ' + (config.MIKROTIK_PORT || '-') + '\n';
+      msg += '✅ MIKROTIK_USER = ' + (config.MIKROTIK_USER || '-') + '\n';
+      msg += '✅ MIKROTIK_PASS = ' + (config.MIKROTIK_PASS ? '******' : '-') + '\n';
+      
+      if (config.MIKROTIK_ENABLED === 'TRUE') {
+        statusEl.innerHTML = '✅ MikroTik ENABLED';
+        statusEl.style.color = '#16a34a';
+      } else {
+        statusEl.innerHTML = '❌ MikroTik DISABLED';
+        statusEl.style.color = '#dc2626';
+      }
+      
+      infoEl.style.display = 'block';
+      detailEl.textContent = msg;
+      showNotification('✅ Konfigurasi dimuat', 'success');
+    } else {
+      showNotification('❌ ' + (response && response.message ? response.message : 'Gagal cek konfigurasi'), 'error');
+    }
+  });
 }
 
 // ==========================================
