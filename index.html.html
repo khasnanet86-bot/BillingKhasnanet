@@ -532,13 +532,22 @@ function callWebApp(action, params, callback) {
             url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
         }
     }
+    
+    console.log('📤 Call WebApp:', url);
+    
     fetch(url)
-        .then(function(response) { return response.json(); })
+        .then(function(response) {
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
+            }
+            return response.json();
+        })
         .then(function(data) {
+            console.log('📥 Response:', data);
             if (callback) callback(data);
         })
         .catch(function(error) {
-            console.error('Error:', error);
+            console.error('❌ Fetch Error:', error);
             if (callback) callback({ success: false, message: 'Network error: ' + error.message });
         });
 }
@@ -614,7 +623,16 @@ function login() {
     message.innerText = '⏳ Memeriksa login...';
     message.className = 'login-message';
 
+    // Tambahkan timeout untuk menghindari stuck
+    var timeout = setTimeout(function() {
+        btn.classList.remove('loading');
+        message.innerText = '⏰ Waktu habis, coba lagi!';
+        message.className = 'login-message';
+        showNotification('⏰ Koneksi timeout, coba lagi', 'error');
+    }, 15000);
+
     callWebApp('login', { username: username, password: password }, function(response) {
+        clearTimeout(timeout);
         btn.classList.remove('loading');
         console.log('Hasil login:', response);
 
