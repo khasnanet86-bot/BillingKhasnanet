@@ -623,46 +623,55 @@ function login() {
     message.innerText = '⏳ Memeriksa login...';
     message.className = 'login-message';
 
-    // Tambahkan timeout untuk menghindari stuck
-    var timeout = setTimeout(function() {
-        btn.classList.remove('loading');
-        message.innerText = '⏰ Waktu habis, coba lagi!';
-        message.className = 'login-message';
-        showNotification('⏰ Koneksi timeout, coba lagi', 'error');
-    }, 15000);
+    var url = WEB_APP_URL + '?action=login';
+    url += '&username=' + encodeURIComponent(username);
+    url += '&password=' + encodeURIComponent(password);
 
-    callWebApp('login', { username: username, password: password }, function(response) {
-        clearTimeout(timeout);
-        btn.classList.remove('loading');
-        console.log('Hasil login:', response);
+    console.log('📤 Login URL:', url);
 
-        if (response && response.success) {
-            sessionStorage.setItem('login', 'true');
-            sessionStorage.setItem('nama', response.nama || '');
-            sessionStorage.setItem('level', response.level || '');
-            sessionStorage.setItem('username', response.username || '');
-            
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('dashboardPage').style.display = 'block';
-            document.getElementById('userName').innerText = response.nama || username;
-            
-            var levelDisplay = document.getElementById('userLevel');
-            if (levelDisplay) {
-                levelDisplay.innerText = ' (' + response.level + ')';
+    fetch(url)
+        .then(function(response) {
+            console.log('📥 Response status:', response.status);
+            return response.json();
+        })
+        .then(function(response) {
+            btn.classList.remove('loading');
+            console.log('📥 Login response:', response);
+
+            if (response && response.success) {
+                sessionStorage.setItem('login', 'true');
+                sessionStorage.setItem('nama', response.nama || '');
+                sessionStorage.setItem('level', response.level || '');
+                sessionStorage.setItem('username', response.username || '');
+                
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('dashboardPage').style.display = 'block';
+                document.getElementById('userName').innerText = response.nama || username;
+                
+                var levelDisplay = document.getElementById('userLevel');
+                if (levelDisplay) {
+                    levelDisplay.innerText = ' (' + response.level + ')';
+                }
+                
+                message.innerText = '';
+                showNotification('🎉 Selamat datang, ' + (response.nama || username) + '!', 'success');
+                showDashboard();
+            } else {
+                message.innerText = '❌ ' + (response && response.message ? response.message : 'Login gagal');
+                message.className = 'login-message';
+                document.getElementById('loginBox').classList.add('shake');
+                setTimeout(function() {
+                    document.getElementById('loginBox').classList.remove('shake');
+                }, 500);
             }
-            
-            message.innerText = '';
-            showNotification('🎉 Selamat datang, ' + (response.nama || username) + '!', 'success');
-            showDashboard();
-        } else {
-            message.innerText = '❌ ' + (response && response.message ? response.message : 'Login gagal');
+        })
+        .catch(function(error) {
+            btn.classList.remove('loading');
+            console.error('❌ Fetch Error:', error);
+            message.innerText = '❌ Network error: ' + error.message;
             message.className = 'login-message';
-            document.getElementById('loginBox').classList.add('shake');
-            setTimeout(function() {
-                document.getElementById('loginBox').classList.remove('shake');
-            }, 500);
-        }
-    });
+            showNotification('❌ Gagal terhubung ke server', 'error');
+        });
 }
 
 function logout() {
