@@ -190,9 +190,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 @media(max-width:1200px){.metric-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:900px){.metric-grid{grid-template-columns:repeat(2,1fr)}.cards{grid-template-columns:repeat(2,1fr)}.sidebar{width:70px}.menu span{display:none}.dashboard-grid{grid-template-columns:1fr}.dashboard-grid .full-width{grid-column:1}}
 @media(max-width:600px){.metric-grid{grid-template-columns:1fr}.metric-card .metric-value{font-size:22px}.metric-card .metric-icon{font-size:26px}.dashboard-card .chart-container{height:180px}.dashboard-card .chart-container.tall{height:200px}.header{padding:0 15px}.header-title{font-size:16px}.sidebar{display:block; width:100%; position:relative; height:auto; max-height:80vh; overflow-y:auto; padding:10px;}.content{padding:15px}.cards{grid-template-columns:1fr}.card{padding:15px}.card-number{font-size:24px}.detail-grid{grid-template-columns:1fr}.toolbar{flex-direction:column}.search{min-width:auto}}
-  /* ==========================================
-   PERBAIKAN FORM TAMBAH PELANGGAN
-   ========================================== */
 #tambahPelangganPage .card {
     background: var(--bg-card);
     border-radius: 16px;
@@ -200,11 +197,9 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
     border: 1px solid var(--border-color);
     transition: all 0.3s ease;
 }
-
 #tambahPelangganPage .card:hover {
     box-shadow: 0 6px 30px rgba(0,0,0,0.1);
 }
-
 #tambahPelangganPage label {
     font-size: 14px;
     font-weight: 600;
@@ -212,7 +207,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
     display: block;
     margin-bottom: 6px;
 }
-
 #tambahPelangganPage .search,
 #tambahPelangganPage .filter {
     border-radius: 10px;
@@ -223,19 +217,16 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
     background: var(--input-bg);
     color: var(--text-primary);
 }
-
 #tambahPelangganPage .search:focus,
 #tambahPelangganPage .filter:focus {
     border-color: #2563eb;
     box-shadow: 0 0 0 4px rgba(37,99,235,0.12);
     outline: none;
 }
-
 #tambahPelangganPage .search::placeholder {
     color: var(--text-secondary);
     opacity: 0.6;
 }
-
 #tambahPelangganPage .success-btn,
 #tambahPelangganPage .reset-btn {
     border-radius: 10px;
@@ -243,21 +234,17 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
     transition: all 0.3s ease;
     cursor: pointer;
 }
-
 #tambahPelangganPage .success-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(22,163,74,0.3);
 }
-
 #tambahPelangganPage .success-btn[style*="background:#8b5cf6"]:hover {
     box-shadow: 0 4px 15px rgba(139,92,246,0.4);
 }
-
 #tambahPelangganPage .reset-btn:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 15px rgba(107,114,128,0.3);
 }
-
 #formPelangganMessage {
     border-radius: 10px;
     padding: 12px 16px;
@@ -267,36 +254,28 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
     display: flex;
     align-items: center;
 }
-
 #formPelangganMessage .success {
     color: #16a34a;
 }
-
 #formPelangganMessage .error {
     color: #dc2626;
 }
-
 #formPelangganMessage .info {
     color: #2563eb;
 }
-
-/* Responsive untuk mobile */
 @media (max-width: 768px) {
     #tambahPelangganPage .card {
         padding: 15px !important;
     }
-    
     #tambahPelangganPage [style*="grid-template-columns:1fr 1fr"] {
         grid-template-columns: 1fr !important;
         gap: 12px !important;
     }
-    
     #tambahPelangganPage .search,
     #tambahPelangganPage .filter {
         font-size: 16px;
         padding: 14px 12px;
     }
-    
     #tambahPelangganPage .success-btn,
     #tambahPelangganPage .reset-btn {
         width: 100%;
@@ -304,7 +283,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         text-align: center;
         padding: 14px !important;
     }
-    
     #tambahPelangganPage [style*="display:flex;gap:10px;flex-wrap:wrap;"] {
         flex-direction: column;
     }
@@ -398,116 +376,96 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
       </div>
 
       <div id="pelangganPage">
-  <h2>Data Pelanggan</h2>
-  <div class="toolbar">
-    <input id="pelangganSearch" class="search" placeholder="🔎 Cari..." oninput="filterPelanggan()">
-    <select id="areaFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Area</option></select>
-    <select id="paketFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Paket</option></select>
-    <select id="hargaFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Harga</option></select>
-    <select id="statusFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Status</option><option value="ON">Aktif</option><option value="ISOLIR">Isolir</option></select>
-    
-    <!-- ===== TAMBAHKAN INI ===== -->
-    <select id="bayarFilter" class="filter" onchange="filterPelanggan()">
-      <option value="">Semua Pembayaran</option>
-      <option value="BELUM_LUNAS">🔴 Belum Lunas</option>
-      <option value="LUNAS">🟢 Sudah Lunas</option>
-    </select>
-    <button class="danger-btn" onclick="filterBelumLunas()" style="background:#dc2626;color:white;">🔴 Belum Lunas</button>
-    <!-- ===== SAMPAI SINI ===== -->
-    
-    <button class="reset-btn" onclick="resetFilter()">↺ Reset</button>
-    <button class="success-btn" onclick="exportPelangganExcel()">📊 Export Excel</button>
-  </div>
-  <!-- ... -->
-</div>
+        <h2>Data Pelanggan</h2>
+        <div class="toolbar">
+          <input id="pelangganSearch" class="search" placeholder="🔎 Cari..." oninput="filterPelanggan()">
+          <select id="areaFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Area</option></select>
+          <select id="paketFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Paket</option></select>
+          <select id="hargaFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Harga</option></select>
+          <select id="statusFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Status</option><option value="ON">Aktif</option><option value="ISOLIR">Isolir</option></select>
+          <select id="bayarFilter" class="filter" onchange="filterPelanggan()">
+            <option value="">Semua Pembayaran</option>
+            <option value="BELUM_LUNAS">🔴 Belum Lunas</option>
+            <option value="LUNAS">🟢 Sudah Lunas</option>
+          </select>
+          <button class="danger-btn" onclick="filterBelumLunas()" style="background:#dc2626;color:white;">🔴 Belum Lunas</button>
+          <button class="reset-btn" onclick="resetFilter()">↺ Reset</button>
+          <button class="success-btn" onclick="exportPelangganExcel()">📊 Export Excel</button>
+        </div>
         <div class="table-box">
-         <table>
-  <thead>
-    <tr>
-      <th onclick="sortTable('ID')">ID ⬍</th>
-      <th onclick="sortTable('NAMA')">Nama ⬍</th>
-      <th>WhatsApp</th>
-      <th onclick="sortTable('AREA')">Area ⬍</th>
-      <th onclick="sortTable('PAKET')">Paket ⬍</th>
-      <th onclick="sortTable('HARGA')">Harga ⬍</th>
-      <th onclick="sortTable('STATUS')">Status ⬍</th>
-      <th>Status Bayar</th>  <!-- TAMBAHKAN -->
-      <th>Aksi</th>
-    </tr>
-  </thead>
-  <tbody id="pelangganTable"><tr><td colspan="9" style="text-align:center">Memuat data...</td></tr></tbody>
-</table>
+          <table>
+            <thead>
+              <tr>
+                <th onclick="sortTable('ID')">ID ⬍</th>
+                <th onclick="sortTable('NAMA')">Nama ⬍</th>
+                <th>WhatsApp</th>
+                <th onclick="sortTable('AREA')">Area ⬍</th>
+                <th onclick="sortTable('PAKET')">Paket ⬍</th>
+                <th onclick="sortTable('HARGA')">Harga ⬍</th>
+                <th onclick="sortTable('STATUS')">Status ⬍</th>
+                <th>Status Bayar</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="pelangganTable"><tr><td colspan="9" style="text-align:center">Memuat data...</td></tr></tbody>
+          </table>
         </div>
         <div class="info-data">Menampilkan: <span id="jmlData">0</span> dari <span id="totalData">0</span> pelanggan</div>
       </div>
 
       <div id="tambahPelangganPage" style="display:none;">
-  <h2>➕ Tambah Pelanggan Baru</h2>
-  <div class="card" style="padding:20px;margin-bottom:20px;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
-      
-      <!-- Kolom Kiri -->
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">Nama Lengkap <span style="color:#dc2626;">*</span></label>
-        <input id="inputNama" class="search" placeholder="Nama Pelanggan" style="width:100%;">
+        <h2>➕ Tambah Pelanggan Baru</h2>
+        <div class="card" style="padding:20px;margin-bottom:20px;">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+            <div>
+              <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">Nama Lengkap <span style="color:#dc2626;">*</span></label>
+              <input id="inputNama" class="search" placeholder="Nama Pelanggan" style="width:100%;">
+            </div>
+            <div>
+              <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">WhatsApp <span style="color:#dc2626;">*</span></label>
+              <input id="inputWhatsapp" class="search" placeholder="628123456789" style="width:100%;">
+            </div>
+            <div>
+              <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">Alamat</label>
+              <input id="inputAlamat" class="search" placeholder="Alamat Lengkap" style="width:100%;">
+            </div>
+            <div>
+              <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">Area</label>
+              <input id="inputArea" class="search" placeholder="Area / Wilayah" style="width:100%;">
+            </div>
+            <div>
+              <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">Paket Internet</label>
+              <select id="inputPaket" class="filter" style="width:100%;padding:13px;">
+                <option value="5 Mbps">5 Mbps</option>
+                <option value="10 Mbps" selected>10 Mbps</option>
+                <option value="20 Mbps">20 Mbps</option>
+                <option value="50 Mbps">50 Mbps</option>
+                <option value="100 Mbps">100 Mbps</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">Harga (Rp) <span style="color:#dc2626;">*</span></label>
+              <input id="inputHarga" class="search" type="number" placeholder="150000" style="width:100%;">
+            </div>
+            <div>
+              <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">Username PPPoE</label>
+              <input id="inputPPPoE" class="search" placeholder="username@pppoe" style="width:100%;">
+            </div>
+            <div>
+              <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">Password PPPoE</label>
+              <input id="inputPassword" class="search" type="password" placeholder="password" style="width:100%;">
+            </div>
+          </div>
+          <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid #e5e7eb;padding-top:20px;">
+            <button class="success-btn" onclick="tambahPelanggan()" style="padding:12px 25px;font-size:15px;">💾 Simpan Pelanggan</button>
+            <button class="success-btn" onclick="tambahPelangganDanInvoice()" style="background:#8b5cf6;padding:12px 25px;font-size:15px;">📨 Simpan & Kirim Invoice</button>
+            <button class="reset-btn" onclick="resetFormPelanggan()" style="padding:12px 25px;font-size:15px;">↺ Reset Form</button>
+          </div>
+          <div id="formPelangganMessage" style="margin-top:15px;font-size:14px;padding:10px;border-radius:8px;background:#f9fafb;color:#6b7280;min-height:40px;">
+            <span style="color:#9ca3af;">📝 Isi data pelanggan dengan lengkap</span>
+          </div>
+        </div>
       </div>
-      
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">WhatsApp <span style="color:#dc2626;">*</span></label>
-        <input id="inputWhatsapp" class="search" placeholder="628123456789" style="width:100%;">
-      </div>
-      
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">Alamat</label>
-        <input id="inputAlamat" class="search" placeholder="Alamat Lengkap" style="width:100%;">
-      </div>
-      
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">Area</label>
-        <input id="inputArea" class="search" placeholder="Area / Wilayah" style="width:100%;">
-      </div>
-      
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">Paket Internet</label>
-        <select id="inputPaket" class="filter" style="width:100%;padding:13px;">
-          <option value="5 Mbps">5 Mbps</option>
-          <option value="10 Mbps" selected>10 Mbps</option>
-          <option value="20 Mbps">20 Mbps</option>
-          <option value="50 Mbps">50 Mbps</option>
-          <option value="100 Mbps">100 Mbps</option>
-        </select>
-      </div>
-      
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">Harga (Rp) <span style="color:#dc2626;">*</span></label>
-        <input id="inputHarga" class="search" type="number" placeholder="150000" style="width:100%;">
-      </div>
-      
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">Username PPPoE</label>
-        <input id="inputPPPoE" class="search" placeholder="username@pppoe" style="width:100%;">
-      </div>
-      
-      <div>
-        <label style="font-weight:bold;display:block;margin-bottom:5px;color:#374151;">Password PPPoE</label>
-        <input id="inputPassword" class="search" type="password" placeholder="password" style="width:100%;">
-      </div>
-      
-    </div>
-    
-    <!-- Tombol Aksi -->
-    <div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;border-top:1px solid #e5e7eb;padding-top:20px;">
-      <button class="success-btn" onclick="tambahPelanggan()" style="padding:12px 25px;font-size:15px;">💾 Simpan Pelanggan</button>
-      <button class="success-btn" onclick="tambahPelangganDanInvoice()" style="background:#8b5cf6;padding:12px 25px;font-size:15px;">📨 Simpan & Kirim Invoice</button>
-      <button class="reset-btn" onclick="resetFormPelanggan()" style="padding:12px 25px;font-size:15px;">↺ Reset Form</button>
-    </div>
-    
-    <!-- Pesan Status -->
-    <div id="formPelangganMessage" style="margin-top:15px;font-size:14px;padding:10px;border-radius:8px;background:#f9fafb;color:#6b7280;min-height:40px;">
-      <span style="color:#9ca3af;">📝 Isi data pelanggan dengan lengkap</span>
-    </div>
-  </div>
-</div>
 
       <div id="tagihanPage" style="display:none;">
         <h2>🧾 Tagihan</h2>
@@ -546,28 +504,21 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         <div class="info-data">Total: <span id="jmlPembayaran">0</span> data pembayaran</div>
       </div>
 
-      <!-- WHATSAPP -->
       <div id="whatsappPage" style="display:none;">
         <h2>📱 WhatsApp</h2>
-        
-        <!-- Tabs -->
         <div class="toolbar" style="background:white;padding:18px;border-radius:14px;margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
           <button class="detail-btn" onclick="showWhatsappQR()" style="background:#25D366;">📱 QR Code</button>
           <button class="detail-btn" onclick="showWhatsappSend()" style="background:#2563eb;">📨 Kirim Pesan</button>
           <button class="detail-btn" onclick="showWhatsappLog()" style="background:#6b7280;">📋 Log</button>
         </div>
-        
-        <!-- QR Code Section -->
         <div id="whatsappQRSection" style="display:block;">
           <div class="card" style="padding:20px;text-align:center;max-width:500px;margin:0 auto;">
             <h3 style="margin-top:0;">📱 Scan QR Code</h3>
             <p style="color:#6b7280;font-size:14px;">Masukkan nomor WhatsApp Anda, lalu scan QR Code.</p>
-            
             <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:15px;">
               <input id="qrWhatsAppNumber" class="search" placeholder="628123456789" style="max-width:250px;text-align:center;" value="628123456789">
               <button class="success-btn" onclick="generateQRCode()" style="background:#25D366;">🔄 Generate QR</button>
             </div>
-            
             <div id="qrContainer" style="margin:20px auto;max-width:250px;min-height:200px;background:#f9fafb;border-radius:12px;display:flex;align-items:center;justify-content:center;border:2px dashed #d1d5db;">
               <div id="qrPlaceholder" style="text-align:center;color:#9ca3af;">
                 <span style="font-size:48px;">📱</span>
@@ -575,7 +526,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
               </div>
               <img id="qrImage" src="" alt="QR Code" style="width:100%;display:none;border-radius:8px;">
             </div>
-            
             <div style="margin-top:15px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
               <button class="danger-btn" onclick="disconnectWhatsApp()">🔌 Putuskan</button>
             </div>
@@ -586,8 +536,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
             </div>
           </div>
         </div>
-        
-        <!-- Kirim Pesan Section -->
         <div id="whatsappSendSection" style="display:none;">
           <div class="card" style="padding:20px;margin-bottom:15px;">
             <h3 style="margin-top:0;">📨 Kirim Pesan WhatsApp</h3>
@@ -617,8 +565,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
             </div>
             <div id="waSendResult" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
           </div>
-          
-          <!-- Kirim Massal -->
           <div class="card" style="padding:20px;">
             <h3 style="margin-top:0;">📨 Kirim Massal (Broadcast)</h3>
             <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
@@ -631,8 +577,6 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
             <div id="waBroadcastResult" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
           </div>
         </div>
-        
-        <!-- Log Section -->
         <div id="whatsappLogSection" style="display:none;">
           <div class="toolbar">
             <button class="detail-btn" onclick="loadWALog()">🔄 Refresh</button>
@@ -864,7 +808,7 @@ function loadTheme() {
 }
 
 // ==========================================
-// LOGIN - VERSI LANGSUNG
+// LOGIN
 // ==========================================
 function login() {
     var username = document.getElementById('username').value.trim();
@@ -886,35 +830,23 @@ function login() {
     url += '&username=' + encodeURIComponent(username);
     url += '&password=' + encodeURIComponent(password);
 
-    console.log('📤 Login URL:', url);
-
     fetch(url)
         .then(function(response) {
-            console.log('📥 Response status:', response.status);
-            if (!response.ok) {
-                throw new Error('HTTP ' + response.status);
-            }
+            if (!response.ok) throw new Error('HTTP ' + response.status);
             return response.json();
         })
         .then(function(response) {
             btn.classList.remove('loading');
-            console.log('📥 Login response:', response);
-
             if (response && response.success) {
                 sessionStorage.setItem('login', 'true');
                 sessionStorage.setItem('nama', response.nama || '');
                 sessionStorage.setItem('level', response.level || '');
                 sessionStorage.setItem('username', response.username || '');
-                
                 document.getElementById('loginPage').style.display = 'none';
                 document.getElementById('dashboardPage').style.display = 'block';
                 document.getElementById('userName').innerText = response.nama || username;
-                
                 var levelDisplay = document.getElementById('userLevel');
-                if (levelDisplay) {
-                    levelDisplay.innerText = ' (' + response.level + ')';
-                }
-                
+                if (levelDisplay) levelDisplay.innerText = ' (' + response.level + ')';
                 message.innerText = '';
                 showNotification('🎉 Selamat datang, ' + (response.nama || username) + '!', 'success');
                 showDashboard();
@@ -929,7 +861,6 @@ function login() {
         })
         .catch(function(error) {
             btn.classList.remove('loading');
-            console.error('❌ Fetch Error:', error);
             message.innerText = '❌ Gagal terhubung ke server: ' + error.message;
             message.className = 'login-message';
             showNotification('❌ Gagal terhubung ke server', 'error');
@@ -949,9 +880,7 @@ function setActiveMenu(menuId) {
         menus[i].classList.remove('active');
     }
     var target = document.getElementById(menuId);
-    if (target) {
-        target.classList.add('active');
-    }
+    if (target) target.classList.add('active');
 }
 
 function showSidebarByLevel() {
@@ -1099,7 +1028,7 @@ function tambahPelangganDanInvoice() {
 }
 
 // ==========================================
-// VARIABLES DAN FUNGSI LAINNYA
+// VARIABLES
 // ==========================================
 var customerData = [], tagihanData = [], pengeluaranData = [];
 var chartStatusPelanggan = null, chartStatusBayar = null, chartArea = null, chartPaket = null, chartTrend = null, chartPerforma = null, chartPengeluaran = null;
@@ -1155,9 +1084,7 @@ function applyNominalVisibility() {
             if (nominalVisible) {
                 el.classList.remove('hidden-nominal');
                 var original = el.getAttribute('data-original');
-                if (original) {
-                    el.innerText = original;
-                }
+                if (original) el.innerText = original;
             } else {
                 el.classList.add('hidden-nominal');
                 if (!el.getAttribute('data-original')) {
@@ -1234,18 +1161,12 @@ function loadDashboardKeren() {
     callWebApp('getGrafikData', {}, function(response) {
         if (response && response.success) {
             var data = response.data;
-            updateMetrics(data);
             renderCharts(data);
             showNotification('✅ Dashboard dimuat!', 'success');
         } else {
             showNotification('Gagal load grafik: ' + (response && response.message ? response.message : ''), 'error');
         }
     });
-}
-
-function updateMetrics(data) {
-    var total = data.areaData ? data.areaData.reduce(function(a, b) { return a + b; }, 0) : 0;
-    var aktif = data.areaData && data.areaData.length > 0 ? data.areaData[0] || 0 : 0;
 }
 
 function renderCharts(data) {
@@ -1339,7 +1260,6 @@ function loadDashboardWithFilter() {
     callWebApp('getDashboardDataWithFilter', { startDate: startDate, endDate: endDate }, function(response) {
         if (response && response.success) {
             var data = response.data;
-            updateMetrics(data);
             renderCharts(data);
             showNotification('✅ Dashboard dengan filter dimuat!', 'success');
         } else {
@@ -1374,7 +1294,7 @@ function showPelanggan() {
 }
 
 function loadPelanggan() {
-    document.getElementById('pelangganTable').innerHTML = '<tr><td colspan="8" style="text-align:center">Memuat data...</td></tr>';
+    document.getElementById('pelangganTable').innerHTML = '<tr><td colspan="9" style="text-align:center">Memuat data...</td></tr>';
     callWebApp('getPelangganData', {}, function(data) {
         customerData = Array.isArray(data) ? data : [];
         buildFilters();
@@ -1438,13 +1358,16 @@ function buildFilters() {
     }
 }
 
+// ==========================================
+// FILTER PELANGGAN - DENGAN STATUS BAYAR
+// ==========================================
 function filterPelanggan() {
     var keyword = document.getElementById('pelangganSearch').value.toLowerCase().trim();
     var area = document.getElementById('areaFilter').value;
     var paket = document.getElementById('paketFilter').value;
     var harga = document.getElementById('hargaFilter').value;
     var status = document.getElementById('statusFilter').value;
-    var bayarFilter = document.getElementById('bayarFilter') ? document.getElementById('bayarFilter').value : ''; // TAMBAHKAN
+    var bayarFilter = document.getElementById('bayarFilter') ? document.getElementById('bayarFilter').value : '';
 
     var filtered = [];
     for (var i = 0; i < customerData.length; i++) {
@@ -1458,7 +1381,6 @@ function filterPelanggan() {
         if (rowStatus === 'AKTIF') rowStatus = 'ON';
         var matchStatus = !status || rowStatus === status;
 
-        // CEK STATUS BAYAR
         var matchBayar = true;
         if (bayarFilter) {
             var statusBayar = getStatusBayar(row.ID);
@@ -1478,19 +1400,7 @@ function filterPelanggan() {
     document.getElementById('totalData').innerText = customerData.length;
 }
 
-// FUNGSI BARU: Mendapatkan status bayar pelanggan
-function getStatusBayar(idPelanggan) {
-    if (!tagihanData || tagihanData.length === 0) return 'TIDAK_ADA';
-    for (var i = 0; i < tagihanData.length; i++) {
-        if (String(tagihanData[i].ID_PELANGGAN) === String(idPelanggan)) {
-            var status = String(tagihanData[i].STATUS || '').toUpperCase().trim();
-            return status === 'LUNAS' ? 'LUNAS' : 'BELUM_LUNAS';
-        }
-    }
-    return 'TIDAK_ADA';
-}
-
-// FUNGSI BARU: Mendapatkan status bayar pelanggan
+// FUNGSI: Mendapatkan status bayar pelanggan
 function getStatusBayar(idPelanggan) {
     if (!tagihanData || tagihanData.length === 0) return 'TIDAK_ADA';
     for (var i = 0; i < tagihanData.length; i++) {
@@ -1514,6 +1424,21 @@ function resetFilter() {
     filterPelanggan();
     showNotification('✅ Filter direset', 'info');
 }
+
+function filterBelumLunas() {
+    document.getElementById('pelangganSearch').value = '';
+    document.getElementById('areaFilter').value = '';
+    document.getElementById('paketFilter').value = '';
+    document.getElementById('hargaFilter').value = '';
+    document.getElementById('statusFilter').value = '';
+    var bayarFilter = document.getElementById('bayarFilter');
+    if (bayarFilter) {
+        bayarFilter.value = 'BELUM_LUNAS';
+    }
+    filterPelanggan();
+    showNotification('🔴 Menampilkan pelanggan yang belum lunas', 'info');
+}
+
 function sortTable(column) {
     if (sortColumn === column) {
         sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
@@ -1551,9 +1476,6 @@ function renderPelanggan(data) {
         return;
     }
     
-    // Ambil data tagihan terbaru untuk cek status bayar
-    var periode = document.getElementById('tagihanPeriode') ? document.getElementById('tagihanPeriode').value : '';
-    
     for (var i = 0; i < data.length; i++) {
         var row = data[i];
         var status = String(row.STATUS || '');
@@ -1561,12 +1483,10 @@ function renderPelanggan(data) {
         if (upper === 'AKTIF') upper = 'ON';
         var statusClass = upper === 'ON' ? 'status-on' : 'status-off';
         
-        // CEK STATUS BAYAR dari data tagihan
         var statusBayar = '❓ Tidak Ada Tagihan';
         var statusBayarClass = 'status-off';
         var tagihanRow = null;
         
-        // Cari tagihan terbaru untuk pelanggan ini
         if (tagihanData && tagihanData.length > 0) {
             for (var j = 0; j < tagihanData.length; j++) {
                 if (String(tagihanData[j].ID_PELANGGAN) === String(row.ID)) {
@@ -1576,7 +1496,6 @@ function renderPelanggan(data) {
             }
         }
         
-        // Jika ada tagihan, cek statusnya
         if (tagihanRow) {
             var statusTagihan = String(tagihanRow.STATUS || '').toUpperCase().trim();
             if (statusTagihan === 'LUNAS') {
@@ -1585,13 +1504,11 @@ function renderPelanggan(data) {
             } else {
                 statusBayar = '🔴 BELUM LUNAS';
                 statusBayarClass = 'status-off';
-                // Tampilkan jatuh tempo
                 if (tagihanRow.JATUH_TEMPO) {
                     statusBayar += ' (JT: ' + tagihanRow.JATUH_TEMPO + ')';
                 }
             }
         } else {
-            // Tidak ada tagihan, cek apakah pelanggan aktif
             if (upper === 'ON') {
                 statusBayar = '🟡 Belum ada tagihan';
                 statusBayarClass = 'status-off';
@@ -1602,10 +1519,8 @@ function renderPelanggan(data) {
         }
         
         var tr = document.createElement('tr');
-        // TAMBAHKAN WARNA BACKGROUND untuk yang belum lunas
-        var rowStyle = '';
         if (statusBayar.indexOf('BELUM LUNAS') !== -1) {
-            rowStyle = ' style="background-color: #fef2f2;"';
+            tr.style.backgroundColor = '#fef2f2';
         }
         tr.setAttribute('data-status-bayar', statusBayar);
         tr.innerHTML = '<td>' + safe(row.ID) + '</td>' +
@@ -1774,6 +1689,10 @@ function loadTagihan() {
         if (tagihanData.length === 0) {
             document.getElementById('tagihanTable').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;">📭 Belum ada tagihan untuk ' + periodeText + '<br><br>Klik <strong>➕ Generate</strong> untuk membuat tagihan.</td></tr>';
         }
+        // Refresh pelanggan untuk update status bayar
+        if (document.getElementById('pelangganPage').style.display !== 'none') {
+            filterPelanggan();
+        }
     });
 }
 
@@ -1925,8 +1844,6 @@ function loadPembayaran() {
 
 function updatePembayaranStats(data) {
     var total = data.length;
-    var totalNominal = 0;
-    for (var i = 0; i < data.length; i++) { totalNominal += Number(data[i].NOMINAL) || 0; }
     document.getElementById('jmlPembayaran').innerText = total;
 }
 
@@ -1979,7 +1896,7 @@ function hapusPembayaran(idPembayaran) {
 }
 
 // ==========================================
-// WHATSAPP - FUNGSI UTAMA
+// WHATSAPP
 // ==========================================
 function showWhatsapp() {
     document.getElementById('dashboardContent').style.display = 'none';
@@ -2869,29 +2786,6 @@ window.onload = function() {
         document.getElementById('dashboardPage').style.display = 'none';
     }
 };
-  // ==========================================
-// FILTER PELANGGAN BELUM LUNAS
-// ==========================================
-function filterBelumLunas() {
-    // Reset semua filter
-    document.getElementById('pelangganSearch').value = '';
-    document.getElementById('areaFilter').value = '';
-    document.getElementById('paketFilter').value = '';
-    document.getElementById('hargaFilter').value = '';
-    document.getElementById('statusFilter').value = '';
-    
-    // Set filter bayar ke BELUM_LUNAS
-    var bayarFilter = document.getElementById('bayarFilter');
-    if (bayarFilter) {
-        bayarFilter.value = 'BELUM_LUNAS';
-    }
-    
-    // Jalankan filter
-    filterPelanggan();
-    
-    // Tampilkan notifikasi
-    showNotification('🔴 Menampilkan pelanggan yang belum lunas', 'info');
-}
 </script>
 </body>
 </html>
