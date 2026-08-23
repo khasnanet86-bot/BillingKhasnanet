@@ -791,7 +791,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 // ==========================================
 // 🔧 KONFIGURASI - URL WEBAPP ANDA
 // ==========================================
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyfIuj1L9fB0bZprSbOHF2ezl55yX2n-_FjbqgRU553l3spssHR0HKIsii8itGJCsWBmg/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx1to4i0qF8Kr9yh5Cw0CqNuqSv2b8D7x9q-tQlXJSPkfAEZyGJ5YiMQEDz5eiwvovg/exec';
 var WEB_APP_MONITOR_URL = 'https://script.google.com/macros/s/AKfycbz5u2WIvmlHSDRs7CDDHyh1r2kyGfecRT0kIrmVXAdGRVrhm1svG5rkE5Nz_YMGB_cN/exec';
 
 // ==========================================
@@ -2988,35 +2988,53 @@ window.onload = function() {
 // ==========================================
 
 // ==========================================
-// CHECK WHATSAPP STATUS
+// CHECK WHATSAPP STATUS (FIXED)
 // ==========================================
 function checkWhatsAppStatus() {
     showNotification('🔍 Cek status WhatsApp...', 'info');
     
     callWebApp('getWhatsAppDeviceStatus', {}, function(response) {
-        console.log('📥 WA Status:', response);
+        console.log('📥 WA Status Response:', response);
         
         var statusEl = document.getElementById('waStatus');
-        if (response && response.success && response.connected) {
-            statusEl.innerHTML = '✅ WhatsApp Terhubung';
-            statusEl.style.color = '#16a34a';
-            statusEl.style.background = '#dcfce7';
-            statusEl.style.padding = '5px 15px';
-            statusEl.style.borderRadius = '20px';
-            showNotification('✅ WhatsApp terhubung!', 'success');
+        if (!statusEl) return;
+        
+        if (response && response.success) {
+            if (response.connected) {
+                statusEl.innerHTML = '✅ WhatsApp Terhubung';
+                statusEl.style.color = '#16a34a';
+                statusEl.style.background = '#dcfce7';
+                statusEl.style.padding = '5px 15px';
+                statusEl.style.borderRadius = '20px';
+                showNotification('✅ WhatsApp terhubung!', 'success');
+            } else {
+                statusEl.innerHTML = '❌ WhatsApp Belum Terhubung';
+                statusEl.style.color = '#dc2626';
+                statusEl.style.background = '#fee2e2';
+                statusEl.style.padding = '5px 15px';
+                statusEl.style.borderRadius = '20px';
+                
+                // Tampilkan pesan detail
+                var detailMsg = response.message || '';
+                if (detailMsg) {
+                    showNotification('❌ ' + detailMsg, 'error');
+                } else {
+                    showNotification('❌ WhatsApp tidak terhubung. Silakan scan QR atau pairing.', 'error');
+                }
+            }
         } else {
-            statusEl.innerHTML = '❌ WhatsApp Belum Terhubung';
+            statusEl.innerHTML = '❌ Gagal Cek Status';
             statusEl.style.color = '#dc2626';
             statusEl.style.background = '#fee2e2';
             statusEl.style.padding = '5px 15px';
             statusEl.style.borderRadius = '20px';
-            showNotification('❌ WhatsApp tidak terhubung', 'error');
+            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal cek status'), 'error');
         }
     });
 }
 
 // ==========================================
-// GENERATE PAIRING CODE
+// GENERATE PAIRING CODE (FIXED)
 // ==========================================
 function generateWhatsAppPairing() {
     showNotification('🔑 Generate pairing code...', 'info');
@@ -3027,24 +3045,52 @@ function generateWhatsAppPairing() {
         var resultDiv = document.getElementById('waPairingResult');
         var codeDiv = document.getElementById('waPairingCode');
         
+        if (resultDiv) resultDiv.style.display = 'none';
+        
         if (response && response.success && response.pairingCode) {
-            codeDiv.textContent = response.pairingCode;
-            resultDiv.style.display = 'block';
+            if (codeDiv) {
+                codeDiv.textContent = response.pairingCode;
+            }
+            if (resultDiv) {
+                resultDiv.style.display = 'block';
+                resultDiv.style.background = '#f0fdf4';
+                resultDiv.style.border = '1px solid #16a34a';
+                resultDiv.style.padding = '15px';
+                resultDiv.style.borderRadius = '8px';
+                resultDiv.style.marginTop = '10px';
+            }
             showNotification('✅ Pairing Code berhasil digenerate!', 'success');
             
             // Copy ke clipboard otomatis
-            navigator.clipboard.writeText(response.pairingCode).then(function() {
+            try {
+                navigator.clipboard.writeText(response.pairingCode);
                 showNotification('📋 Pairing Code sudah di-copy ke clipboard!', 'info');
-            });
+            } catch(e) {
+                // Fallback: select text
+                if (codeDiv) {
+                    var range = document.createRange();
+                    range.selectNode(codeDiv);
+                    window.getSelection().removeAllRanges();
+                    window.getSelection().addRange(range);
+                }
+            }
         } else {
-            resultDiv.style.display = 'none';
-            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
+            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal generate pairing'), 'error');
+            if (resultDiv) {
+                resultDiv.style.display = 'block';
+                resultDiv.style.background = '#fee2e2';
+                resultDiv.style.border = '1px solid #dc2626';
+                resultDiv.style.padding = '15px';
+                resultDiv.style.borderRadius = '8px';
+                resultDiv.style.marginTop = '10px';
+                resultDiv.innerHTML = '❌ ' + (response && response.message ? response.message : 'Gagal generate pairing code');
+            }
         }
     });
 }
 
 // ==========================================
-// GENERATE QR CODE
+// GENERATE QR CODE (FIXED)
 // ==========================================
 function generateWhatsAppQR() {
     showNotification('📱 Generate QR Code...', 'info');
@@ -3055,17 +3101,43 @@ function generateWhatsAppQR() {
         var resultDiv = document.getElementById('waQRResult');
         var imageDiv = document.getElementById('waQRImage');
         
+        if (resultDiv) resultDiv.style.display = 'none';
+        
         if (response && response.success && response.qrCode) {
-            imageDiv.innerHTML = '<img src="' + response.qrCode + '" style="max-width:250px;border-radius:8px;">';
-            resultDiv.style.display = 'block';
+            if (imageDiv) {
+                var qrUrl = response.qrCode;
+                // Jika QR berupa URL gambar
+                if (qrUrl.startsWith('http')) {
+                    imageDiv.innerHTML = '<img src="' + qrUrl + '" style="max-width:250px;border-radius:8px;border:2px solid #2563eb;padding:5px;">';
+                } else {
+                    // Jika QR berupa base64 atau text
+                    imageDiv.innerHTML = '<div style="font-size:12px;color:#6b7280;">QR Code: ' + qrUrl.substring(0, 50) + '...</div>';
+                }
+            }
+            if (resultDiv) {
+                resultDiv.style.display = 'block';
+                resultDiv.style.background = '#f0fdf4';
+                resultDiv.style.border = '1px solid #16a34a';
+                resultDiv.style.padding = '15px';
+                resultDiv.style.borderRadius = '8px';
+                resultDiv.style.marginTop = '10px';
+                resultDiv.style.textAlign = 'center';
+            }
             showNotification('✅ QR Code berhasil digenerate!', 'success');
         } else {
-            resultDiv.style.display = 'none';
-            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
+            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal generate QR'), 'error');
+            if (resultDiv) {
+                resultDiv.style.display = 'block';
+                resultDiv.style.background = '#fee2e2';
+                resultDiv.style.border = '1px solid #dc2626';
+                resultDiv.style.padding = '15px';
+                resultDiv.style.borderRadius = '8px';
+                resultDiv.style.marginTop = '10px';
+                resultDiv.innerHTML = '❌ ' + (response && response.message ? response.message : 'Gagal generate QR Code');
+            }
         }
     });
 }
-
 // ==========================================
 // SEND WHATSAPP MESSAGE
 // ==========================================
