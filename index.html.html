@@ -279,21 +279,45 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
       </div>
 
       <div id="pelangganPage">
-        <h2>Data Pelanggan</h2>
-        <div class="toolbar">
-          <input id="pelangganSearch" class="search" placeholder="🔎 Cari..." oninput="filterPelanggan()">
-          <select id="areaFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Area</option></select>
-          <select id="paketFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Paket</option></select>
-          <select id="hargaFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Harga</option></select>
-          <select id="statusFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Status</option><option value="ON">Aktif</option><option value="ISOLIR">Isolir</option></select>
-          <button class="reset-btn" onclick="resetFilter()">↺ Reset</button>
-          <button class="success-btn" onclick="exportPelangganExcel()">📊 Export Excel</button>
-        </div>
+  <h2>Data Pelanggan</h2>
+  <div class="toolbar">
+    <input id="pelangganSearch" class="search" placeholder="🔎 Cari..." oninput="filterPelanggan()">
+    <select id="areaFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Area</option></select>
+    <select id="paketFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Paket</option></select>
+    <select id="hargaFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Harga</option></select>
+    <select id="statusFilter" class="filter" onchange="filterPelanggan()"><option value="">Semua Status</option><option value="ON">Aktif</option><option value="ISOLIR">Isolir</option></select>
+    
+    <!-- ===== TAMBAHKAN INI ===== -->
+    <select id="bayarFilter" class="filter" onchange="filterPelanggan()">
+      <option value="">Semua Pembayaran</option>
+      <option value="BELUM_LUNAS">🔴 Belum Lunas</option>
+      <option value="LUNAS">🟢 Sudah Lunas</option>
+    </select>
+    <button class="danger-btn" onclick="filterBelumLunas()" style="background:#dc2626;color:white;">🔴 Belum Lunas</button>
+    <!-- ===== SAMPAI SINI ===== -->
+    
+    <button class="reset-btn" onclick="resetFilter()">↺ Reset</button>
+    <button class="success-btn" onclick="exportPelangganExcel()">📊 Export Excel</button>
+  </div>
+  <!-- ... -->
+</div>
         <div class="table-box">
-          <table>
-            <thead><tr><th onclick="sortTable('ID')">ID ⬍</th><th onclick="sortTable('NAMA')">Nama ⬍</th><th>WhatsApp</th><th onclick="sortTable('AREA')">Area ⬍</th><th onclick="sortTable('PAKET')">Paket ⬍</th><th onclick="sortTable('HARGA')">Harga ⬍</th><th onclick="sortTable('STATUS')">Status ⬍</th><th>Aksi</th></tr></thead>
-            <tbody id="pelangganTable"><tr><td colspan="8" style="text-align:center">Memuat data...</td></tr></tbody>
-          </table>
+         <table>
+  <thead>
+    <tr>
+      <th onclick="sortTable('ID')">ID ⬍</th>
+      <th onclick="sortTable('NAMA')">Nama ⬍</th>
+      <th>WhatsApp</th>
+      <th onclick="sortTable('AREA')">Area ⬍</th>
+      <th onclick="sortTable('PAKET')">Paket ⬍</th>
+      <th onclick="sortTable('HARGA')">Harga ⬍</th>
+      <th onclick="sortTable('STATUS')">Status ⬍</th>
+      <th>Status Bayar</th>  <!-- TAMBAHKAN -->
+      <th>Aksi</th>
+    </tr>
+  </thead>
+  <tbody id="pelangganTable"><tr><td colspan="9" style="text-align:center">Memuat data...</td></tr></tbody>
+</table>
         </div>
         <div class="info-data">Menampilkan: <span id="jmlData">0</span> dari <span id="totalData">0</span> pelanggan</div>
       </div>
@@ -1263,6 +1287,8 @@ function filterPelanggan() {
     var paket = document.getElementById('paketFilter').value;
     var harga = document.getElementById('hargaFilter').value;
     var status = document.getElementById('statusFilter').value;
+    var bayarFilter = document.getElementById('bayarFilter') ? document.getElementById('bayarFilter').value : ''; // TAMBAHKAN
+
     var filtered = [];
     for (var i = 0; i < customerData.length; i++) {
         var row = customerData[i];
@@ -1274,7 +1300,19 @@ function filterPelanggan() {
         var rowStatus = String(row.STATUS || '').toUpperCase();
         if (rowStatus === 'AKTIF') rowStatus = 'ON';
         var matchStatus = !status || rowStatus === status;
-        if (matchSearch && matchArea && matchPaket && matchHarga && matchStatus) {
+
+        // CEK STATUS BAYAR
+        var matchBayar = true;
+        if (bayarFilter) {
+            var statusBayar = getStatusBayar(row.ID);
+            if (bayarFilter === 'BELUM_LUNAS') {
+                matchBayar = statusBayar === 'BELUM_LUNAS';
+            } else if (bayarFilter === 'LUNAS') {
+                matchBayar = statusBayar === 'LUNAS';
+            }
+        }
+
+        if (matchSearch && matchArea && matchPaket && matchHarga && matchStatus && matchBayar) {
             filtered.push(row);
         }
     }
@@ -1283,15 +1321,42 @@ function filterPelanggan() {
     document.getElementById('totalData').innerText = customerData.length;
 }
 
+// FUNGSI BARU: Mendapatkan status bayar pelanggan
+function getStatusBayar(idPelanggan) {
+    if (!tagihanData || tagihanData.length === 0) return 'TIDAK_ADA';
+    for (var i = 0; i < tagihanData.length; i++) {
+        if (String(tagihanData[i].ID_PELANGGAN) === String(idPelanggan)) {
+            var status = String(tagihanData[i].STATUS || '').toUpperCase().trim();
+            return status === 'LUNAS' ? 'LUNAS' : 'BELUM_LUNAS';
+        }
+    }
+    return 'TIDAK_ADA';
+}
+
+// FUNGSI BARU: Mendapatkan status bayar pelanggan
+function getStatusBayar(idPelanggan) {
+    if (!tagihanData || tagihanData.length === 0) return 'TIDAK_ADA';
+    for (var i = 0; i < tagihanData.length; i++) {
+        if (String(tagihanData[i].ID_PELANGGAN) === String(idPelanggan)) {
+            var status = String(tagihanData[i].STATUS || '').toUpperCase().trim();
+            return status === 'LUNAS' ? 'LUNAS' : 'BELUM_LUNAS';
+        }
+    }
+    return 'TIDAK_ADA';
+}
+
 function resetFilter() {
     document.getElementById('pelangganSearch').value = '';
     document.getElementById('areaFilter').value = '';
     document.getElementById('paketFilter').value = '';
     document.getElementById('hargaFilter').value = '';
     document.getElementById('statusFilter').value = '';
+    if (document.getElementById('bayarFilter')) {
+        document.getElementById('bayarFilter').value = '';
+    }
     filterPelanggan();
+    showNotification('✅ Filter direset', 'info');
 }
-
 function sortTable(column) {
     if (sortColumn === column) {
         sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
@@ -1325,17 +1390,76 @@ function renderPelanggan(data) {
     var tbody = document.getElementById('pelangganTable');
     tbody.innerHTML = '';
     if (!data || !data.length) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center">Data tidak ditemukan</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align:center">Data tidak ditemukan</td></tr>';
         return;
     }
+    
+    // Ambil data tagihan terbaru untuk cek status bayar
+    var periode = document.getElementById('tagihanPeriode') ? document.getElementById('tagihanPeriode').value : '';
+    
     for (var i = 0; i < data.length; i++) {
         var row = data[i];
         var status = String(row.STATUS || '');
         var upper = status.toUpperCase();
         if (upper === 'AKTIF') upper = 'ON';
         var statusClass = upper === 'ON' ? 'status-on' : 'status-off';
+        
+        // CEK STATUS BAYAR dari data tagihan
+        var statusBayar = '❓ Tidak Ada Tagihan';
+        var statusBayarClass = 'status-off';
+        var tagihanRow = null;
+        
+        // Cari tagihan terbaru untuk pelanggan ini
+        if (tagihanData && tagihanData.length > 0) {
+            for (var j = 0; j < tagihanData.length; j++) {
+                if (String(tagihanData[j].ID_PELANGGAN) === String(row.ID)) {
+                    tagihanRow = tagihanData[j];
+                    break;
+                }
+            }
+        }
+        
+        // Jika ada tagihan, cek statusnya
+        if (tagihanRow) {
+            var statusTagihan = String(tagihanRow.STATUS || '').toUpperCase().trim();
+            if (statusTagihan === 'LUNAS') {
+                statusBayar = '✅ LUNAS';
+                statusBayarClass = 'status-on';
+            } else {
+                statusBayar = '🔴 BELUM LUNAS';
+                statusBayarClass = 'status-off';
+                // Tampilkan jatuh tempo
+                if (tagihanRow.JATUH_TEMPO) {
+                    statusBayar += ' (JT: ' + tagihanRow.JATUH_TEMPO + ')';
+                }
+            }
+        } else {
+            // Tidak ada tagihan, cek apakah pelanggan aktif
+            if (upper === 'ON') {
+                statusBayar = '🟡 Belum ada tagihan';
+                statusBayarClass = 'status-off';
+            } else {
+                statusBayar = '⏸️ Nonaktif';
+                statusBayarClass = 'status-off';
+            }
+        }
+        
         var tr = document.createElement('tr');
-        tr.innerHTML = '<td>' + safe(row.ID) + '</td><td><strong>' + safe(row.NAMA) + '</strong></td><td>' + safe(row.WHATSAPP) + '</td><td>' + safe(row.AREA) + '</td><td>' + safe(row.PAKET) + '</td><td>' + safe(row.HARGA) + '</td><td><span class="status ' + statusClass + '">' + safe(status) + '</span></td><td><button class="detail-btn" onclick="showDetail(\'' + escapeAttr(row.ID) + '\')">Detail</button> <button class="success-btn" onclick="waPelanggan(\'' + escapeAttr(row.ID) + '\')" style="background:#25D366;">📱 WA</button></td>';
+        // TAMBAHKAN WARNA BACKGROUND untuk yang belum lunas
+        var rowStyle = '';
+        if (statusBayar.indexOf('BELUM LUNAS') !== -1) {
+            rowStyle = ' style="background-color: #fef2f2;"';
+        }
+        tr.setAttribute('data-status-bayar', statusBayar);
+        tr.innerHTML = '<td>' + safe(row.ID) + '</td>' +
+                       '<td><strong>' + safe(row.NAMA) + '</strong></td>' +
+                       '<td>' + safe(row.WHATSAPP) + '</td>' +
+                       '<td>' + safe(row.AREA) + '</td>' +
+                       '<td>' + safe(row.PAKET) + '</td>' +
+                       '<td>' + safe(row.HARGA) + '</td>' +
+                       '<td><span class="status ' + statusClass + '">' + safe(status) + '</span></td>' +
+                       '<td><span class="status ' + statusBayarClass + '">' + safe(statusBayar) + '</span></td>' +
+                       '<td><button class="detail-btn" onclick="showDetail(\'' + escapeAttr(row.ID) + '\')">Detail</button> <button class="success-btn" onclick="waPelanggan(\'' + escapeAttr(row.ID) + '\')" style="background:#25D366;">📱 WA</button></td>';
         tbody.appendChild(tr);
     }
 }
@@ -2588,6 +2712,29 @@ window.onload = function() {
         document.getElementById('dashboardPage').style.display = 'none';
     }
 };
+  // ==========================================
+// FILTER PELANGGAN BELUM LUNAS
+// ==========================================
+function filterBelumLunas() {
+    // Reset semua filter
+    document.getElementById('pelangganSearch').value = '';
+    document.getElementById('areaFilter').value = '';
+    document.getElementById('paketFilter').value = '';
+    document.getElementById('hargaFilter').value = '';
+    document.getElementById('statusFilter').value = '';
+    
+    // Set filter bayar ke BELUM_LUNAS
+    var bayarFilter = document.getElementById('bayarFilter');
+    if (bayarFilter) {
+        bayarFilter.value = 'BELUM_LUNAS';
+    }
+    
+    // Jalankan filter
+    filterPelanggan();
+    
+    // Tampilkan notifikasi
+    showNotification('🔴 Menampilkan pelanggan yang belum lunas', 'info');
+}
 </script>
 </body>
 </html>
