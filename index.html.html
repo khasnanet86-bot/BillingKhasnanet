@@ -750,7 +750,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 // ==========================================
 // 🔧 KONFIGURASI - URL WEBAPP ANDA
 // ==========================================
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxOe-zakejT35tP9wZFUsPzm9iKB3WSIye_6cLtK2nGcOdED4V7WsnDbeQbYuqAOuHBYw/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxjZlraM0lsNjg6-kex83lC9coeKkVk-VUmhDS1zKujHsGoLP8d8WmwcRRYCuOt5Kp-VA/exec';
 var WEB_APP_MONITOR_URL = 'https://script.google.com/macros/s/AKfycbz5u2WIvmlHSDRs7CDDHyh1r2kyGfecRT0kIrmVXAdGRVrhm1svG5rkE5Nz_YMGB_cN/exec';
 
 // ==========================================
@@ -1740,15 +1740,139 @@ function clearTelegramLog() {
     });
 }
 
+// ==========================================
+// ✈️ TELEGRAM FUNCTIONS
+// ==========================================
+
+// ==========================================
+// SEND TELEGRAM MESSAGE
+// ==========================================
 function sendTelegramMessage() {
     var chatId = document.getElementById('telegramChatId').value.trim();
     var message = document.getElementById('telegramMessage').value.trim();
-    if (!chatId || !message) {
-        showNotification('⚠️ Chat ID dan pesan harus diisi!', 'error');
+    
+    if (!chatId) {
+        showNotification('⚠️ Chat ID / Username harus diisi!', 'error');
         return;
     }
-    showNotification('⏳ Mengirim...', 'info');
-    callWebApp('sendTelegramMessage', { chatId: chatId, message: message }, function(response) {
+    
+    if (!message) {
+        showNotification('⚠️ Pesan harus diisi!', 'error');
+        return;
+    }
+    
+    // Konfirmasi
+    if (!confirm('✈️ Kirim pesan ke ' + chatId + '?')) return;
+    
+    showNotification('⏳ Mengirim pesan...', 'info');
+    
+    callWebApp('sendTelegramMessage', { 
+        chatId: chatId, 
+        message: message 
+    }, function(response) {
+        console.log('📥 Telegram Response:', response);
+        if (response && response.success) {
+            showNotification('✅ ' + response.message, 'success');
+            loadTelegramLog();
+            document.getElementById('telegramMessage').value = '';
+        } else {
+            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
+        }
+    });
+}
+
+// ==========================================
+// SET TELEGRAM TEMPLATE
+// ==========================================
+function setTelegramTemplate() {
+    var template = document.getElementById('telegramTemplate').value;
+    var templates = {
+        'tagihan': '📄 *TAGIHAN INTERNET*\n\nHalo, tagihan internet Anda sebesar *Rp{tagihan}* untuk periode *{periode}*.\n\n📅 Jatuh Tempo: {jatuh_tempo}\n💳 Bayar melalui: BCA 1234567890\n\nTerima kasih!',
+        'pengingat': '⏰ *PENGINGAT*\n\nYth {nama}, tagihan internet Anda sudah jatuh tempo!\n\n💰 Segera lunasi untuk menghindari isolir.\n📞 Hubungi kami jika ada pertanyaan.',
+        'promo': '🎉 *PROMO SPESIAL*\n\nHalo {nama}! Kami ada promo menarik untuk pelanggan setia.\n\n📌 Upgrade paket internet dengan harga spesial!\n📞 Hubungi kami sekarang!'
+    };
+    
+    if (templates[template]) {
+        document.getElementById('telegramMessage').value = templates[template];
+    } else {
+        document.getElementById('telegramMessage').value = '';
+    }
+}
+
+// ==========================================
+// CLEAR TELEGRAM FORM
+// ==========================================
+function clearTelegramForm() {
+    document.getElementById('telegramChatId').value = '';
+    document.getElementById('telegramMessage').value = '';
+    document.getElementById('telegramTemplate').value = '';
+    document.getElementById('telegramSendResult').innerHTML = '';
+}
+
+// ==========================================
+// LOAD TELEGRAM LOG
+// ==========================================
+function loadTelegramLog() {
+    var container = document.getElementById('telegramLogContainer');
+    if (container) {
+        container.innerHTML = '<p style="color:#6b7280;text-align:center;">Memuat log...</p>';
+    }
+    
+    callWebApp('getTelegramLog', {}, function(data) {
+        renderTelegramLog(data || []);
+    });
+}
+
+// ==========================================
+// RENDER TELEGRAM LOG
+// ==========================================
+function renderTelegramLog(data) {
+    var container = document.getElementById('telegramLogContainer');
+    if (!container) return;
+    
+    if (!data || !data.length) {
+        container.innerHTML = '<p style="color:#6b7280;text-align:center;">Belum ada log Telegram</p>';
+        document.getElementById('telegramTotal').innerText = '0';
+        document.getElementById('telegramFailed').innerText = '0';
+        return;
+    }
+    
+    var total = data.length, failed = 0;
+    var html = '<table style="width:100%;font-size:12px;border-collapse:collapse;">';
+    html += '<thead><tr style="border-bottom:1px solid var(--border-color);">';
+    html += '<th style="text-align:left;padding:5px;">Tanggal</th>';
+    html += '<th style="text-align:left;padding:5px;">Chat ID</th>';
+    html += '<th style="text-align:left;padding:5px;">Status</th>';
+    html += '</tr></thead><tbody>';
+    
+    for (var i = 0; i < Math.min(data.length, 50); i++) {
+        var row = data[i];
+        var status = String(row.STATUS || '').toUpperCase();
+        if (status !== 'SENT') failed++;
+        
+        var statusColor = status === 'SENT' ? '#16a34a' : '#dc2626';
+        var statusText = status === 'SENT' ? '✅ Terkirim' : '❌ ' + status;
+        
+        html += '<tr style="border-bottom:1px solid var(--border-color);">';
+        html += '<td style="padding:5px;font-size:11px;">' + safe(row.TANGGAL || '-') + '</td>';
+        html += '<td style="padding:5px;font-size:11px;">' + safe(row.CHAT_ID || '-') + '</td>';
+        html += '<td style="padding:5px;color:' + statusColor + ';font-size:11px;">' + statusText + '</td>';
+        html += '</tr>';
+    }
+    html += '</tbody></table>';
+    container.innerHTML = html;
+    
+    document.getElementById('telegramTotal').innerText = total;
+    document.getElementById('telegramFailed').innerText = failed;
+}
+
+// ==========================================
+// CLEAR TELEGRAM LOG
+// ==========================================
+function clearTelegramLog() {
+    if (!confirm('⚠️ Hapus semua log Telegram?')) return;
+    showNotification('Menghapus...', 'info');
+    callWebApp('clearTelegramLog', {}, function(response) {
         if (response && response.success) {
             showNotification('✅ ' + response.message, 'success');
             loadTelegramLog();
@@ -1758,31 +1882,18 @@ function sendTelegramMessage() {
     });
 }
 
-function clearTelegramForm() {
-    document.getElementById('telegramChatId').value = '';
-    document.getElementById('telegramMessage').value = '';
-    document.getElementById('telegramTemplate').value = '';
-    document.getElementById('telegramSendResult').innerText = '';
-}
-
-function setTelegramTemplate() {
-    var template = document.getElementById('telegramTemplate').value;
-    var templates = {
-        'tagihan': '📄 *Tagihan Internet*\n\nHalo, tagihan Anda sebesar *Rp{tagihan}* untuk periode *{periode}*.',
-        'pengingat': '⏰ *Pengingat*\n\nTagihan Anda sudah jatuh tempo! Segera lunasi.',
-        'promo': '🎉 *Promo Spesial*\n\nHubungi kami untuk info promo terbaru!'
-    };
-    if (templates[template]) {
-        document.getElementById('telegramMessage').value = templates[template];
-    } else {
-        document.getElementById('telegramMessage').value = '';
-    }
-}
-
+// ==========================================
+// SEND TELEGRAM BROADCAST TAGIHAN
+// ==========================================
 function sendTelegramBroadcastTagihan() {
     var periode = document.getElementById('telegramBroadcastPeriode').value;
-    if (!periode) { showNotification('⚠️ Pilih periode!', 'error'); return; }
+    if (!periode) { 
+        showNotification('⚠️ Pilih periode!', 'error'); 
+        return; 
+    }
+    
     if (!confirm('✈️ Kirim tagihan ' + periode + ' ke Telegram?')) return;
+    
     showNotification('⏳ Mengirim...', 'info');
     callWebApp('sendTelegramBroadcastTagihan', { periode: periode }, function(response) {
         if (response && response.success) {
@@ -1794,8 +1905,12 @@ function sendTelegramBroadcastTagihan() {
     });
 }
 
+// ==========================================
+// SEND TELEGRAM BROADCAST PENGINGAT
+// ==========================================
 function sendTelegramBroadcastPengingat() {
     if (!confirm('✈️ Kirim pengingat ke Telegram?')) return;
+    
     showNotification('⏳ Mengirim...', 'info');
     callWebApp('sendTelegramBroadcastPengingat', {}, function(response) {
         if (response && response.success) {
@@ -1807,9 +1922,13 @@ function sendTelegramBroadcastPengingat() {
     });
 }
 
+// ==========================================
+// LOAD BROADCAST PERIODE TELEGRAM
+// ==========================================
 function loadBroadcastPeriodeTelegram() {
     callWebApp('getDaftarPeriode', {}, function(data) {
         var select = document.getElementById('telegramBroadcastPeriode');
+        if (!select) return;
         select.innerHTML = '<option value="">Pilih Periode</option>';
         if (Array.isArray(data)) {
             for (var i = 0; i < data.length; i++) {
@@ -1818,20 +1937,6 @@ function loadBroadcastPeriodeTelegram() {
                 opt.textContent = data[i];
                 select.appendChild(opt);
             }
-        }
-    });
-}
-
-function kirimLaporanTelegram() {
-    var periode = document.getElementById('laporanPeriode').value;
-    if (!periode) { alert('Pilih periode terlebih dahulu!'); return; }
-    if (!confirm('✈️ Kirim laporan ' + periode + ' ke Telegram?')) return;
-    showNotification('⏳ Mengirim...', 'info');
-    callWebApp('kirimLaporanTelegram', { periode: periode }, function(response) {
-        if (response && response.success) {
-            showNotification('✅ ' + response.message, 'success');
-        } else {
-            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
         }
     });
 }
