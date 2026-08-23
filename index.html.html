@@ -750,7 +750,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 // ==========================================
 // 🔧 KONFIGURASI - URL WEBAPP ANDA
 // ==========================================
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxMFKsmK2-ZWHmdxInVS_0udgRxZoyOI7jUtau2nrrmuggi58FwFfA1onU4flWTeNXmew/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyIaRmZALsOAsQO9-xYrkVsYA46oLnrjVYJfuN9oByMsNHIN-oPjU79PqfR-lAILIpJeQ/exec';
 var WEB_APP_MONITOR_URL = 'https://script.google.com/macros/s/AKfycbz5u2WIvmlHSDRs7CDDHyh1r2kyGfecRT0kIrmVXAdGRVrhm1svG5rkE5Nz_YMGB_cN/exec';
 
 // ==========================================
@@ -2062,15 +2062,47 @@ function testMikrotik() {
     });
 }
 
+// ==========================================
+// CEK KONFIGURASI (UPDATE)
+// ==========================================
 function cekKonfigurasi() {
-    showNotification('🔍 Cek konfigurasi...', 'info');
-    callWebApp('cekKonfigurasiMikrotik', {}, function(response) {
-        if (response && response.success) {
-            showNotification('✅ ' + response.message, 'success');
-        } else {
-            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
-        }
-    });
+  showNotification('🔍 Cek konfigurasi MikroTik...', 'info');
+  
+  callWebApp('cekKonfigurasiMikrotik', {}, function(response) {
+    console.log('📥 Response cekKonfigurasi:', response);
+    
+    var infoEl = document.getElementById('mikrotikInfo');
+    var detailEl = document.getElementById('mikrotikDetail');
+    var statusEl = document.getElementById('mikrotikStatus');
+    
+    if (response && response.success) {
+      var config = response.data || {};
+      var msg = '📋 Konfigurasi MikroTik:\n\n';
+      msg += '✅ MIKROTIK_ENABLED = ' + (config.MIKROTIK_ENABLED || 'FALSE') + '\n';
+      msg += '✅ MIKROTIK_IP = ' + (config.MIKROTIK_IP || '-') + '\n';
+      msg += '✅ MIKROTIK_PORT = ' + (config.MIKROTIK_PORT || '-') + '\n';
+      msg += '✅ MIKROTIK_USER = ' + (config.MIKROTIK_USER || '-') + '\n';
+      msg += '✅ MIKROTIK_PASS = ' + (config.MIKROTIK_PASS || '-') + '\n';
+      
+      if (config.MIKROTIK_ENABLED === 'TRUE') {
+        statusEl.innerHTML = '✅ MikroTik ENABLED';
+        statusEl.style.color = '#16a34a';
+      } else {
+        statusEl.innerHTML = '❌ MikroTik DISABLED';
+        statusEl.style.color = '#dc2626';
+      }
+      
+      infoEl.style.display = 'block';
+      detailEl.textContent = msg;
+      showNotification('✅ ' + (response.message || 'Konfigurasi dimuat'), 'success');
+    } else {
+      statusEl.innerHTML = '❌ Gagal Cek Konfigurasi';
+      statusEl.style.color = '#dc2626';
+      infoEl.style.display = 'block';
+      detailEl.textContent = '❌ ' + (response && response.message ? response.message : 'Gagal cek konfigurasi');
+      showNotification('❌ ' + (response && response.message ? response.message : 'Gagal cek konfigurasi'), 'error');
+    }
+  });
 }
 
 function forceEnableMikrotik() {
