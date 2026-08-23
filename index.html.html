@@ -750,7 +750,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 // ==========================================
 // 🔧 KONFIGURASI - URL WEBAPP ANDA
 // ==========================================
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyIaRmZALsOAsQO9-xYrkVsYA46oLnrjVYJfuN9oByMsNHIN-oPjU79PqfR-lAILIpJeQ/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzajJoZ6bpqKFidqOmeO2z8D0GnxcLjoN2xm1tl2pVgJXjeHjnsHR-M8pHWwDPBudZa1A/exec';
 var WEB_APP_MONITOR_URL = 'https://script.google.com/macros/s/AKfycbz5u2WIvmlHSDRs7CDDHyh1r2kyGfecRT0kIrmVXAdGRVrhm1svG5rkE5Nz_YMGB_cN/exec';
 
 // ==========================================
@@ -2668,30 +2668,51 @@ function forceEnableMikrotikDirect() {
 // ==========================================
 // DEBUG MIKROTIK
 // ==========================================
+// ==========================================
+// DEBUG MIKROTIK (UPDATE)
+// ==========================================
 function debugMikrotik() {
   showNotification('🐛 Menjalankan debug...', 'info');
   
   callWebApp('debugMikrotikEnabled', {}, function(result) {
+    console.log('📥 Debug Result:', result);
+    
     var statusEl = document.getElementById('mikrotikStatus');
     var infoEl = document.getElementById('mikrotikInfo');
     var detailEl = document.getElementById('mikrotikDetail');
     
-    if (result && typeof result === 'string') {
+    if (result && result.success) {
+      var data = result.data || {};
+      var msg = '🐛 DEBUG MIKROTIK\n';
+      msg += '='.repeat(40) + '\n\n';
+      
+      // Summary
+      msg += '📊 SUMMARY:\n';
+      msg += '├─ Status: ' + (data.summary ? data.summary.status : '❓') + '\n';
+      msg += '├─ MIKROTIK_ENABLED: ' + (data.fromGetPengaturan ? data.fromGetPengaturan.MIKROTIK_ENABLED : '❓') + '\n';
+      msg += '├─ MIKROTIK_IP: ' + (data.fromGetPengaturan ? data.fromGetPengaturan.MIKROTIK_IP : '❓') + '\n';
+      msg += '├─ MIKROTIK_PORT: ' + (data.fromGetPengaturan ? data.fromGetPengaturan.MIKROTIK_PORT : '❓') + '\n';
+      msg += '└─ MIKROTIK_USER: ' + (data.fromGetPengaturan ? data.fromGetPengaturan.MIKROTIK_USER : '❓') + '\n\n';
+      
+      // All Settings
+      if (data.allSettings && data.allSettings.length) {
+        msg += '📋 SEMUA SETTING:\n';
+        for (var i = 0; i < data.allSettings.length; i++) {
+          msg += '  ' + data.allSettings[i] + '\n';
+        }
+      }
+      
       statusEl.innerHTML = '🐛 Debug Selesai';
       statusEl.style.color = '#2563eb';
       infoEl.style.display = 'block';
-      detailEl.textContent = result;
-      showNotification('✅ Debug selesai, cek detail di bawah', 'success');
-    } else if (result && result.success) {
-      var msg = result.message || 'Debug selesai';
-      statusEl.innerHTML = '🐛 Debug Selesai';
-      statusEl.style.color = '#2563eb';
-      infoEl.style.display = 'block';
-      detailEl.textContent = JSON.stringify(result.data || result, null, 2);
-      showNotification('✅ ' + msg, 'success');
+      detailEl.textContent = msg;
+      showNotification('✅ ' + (result.message || 'Debug selesai'), 'success');
+      
     } else {
       statusEl.innerHTML = '❌ Debug Gagal';
       statusEl.style.color = '#dc2626';
+      infoEl.style.display = 'block';
+      detailEl.textContent = '❌ ' + (result && result.message ? result.message : 'Debug gagal');
       showNotification('❌ ' + (result && result.message ? result.message : 'Debug gagal'), 'error');
     }
   });
