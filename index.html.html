@@ -365,118 +365,112 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         <div class="info-data">Total: <span id="jmlPembayaran">0</span> data pembayaran</div>
       </div>
 
-      <!-- ========================================== -->
-<!-- WHATSAPP -->
-<!-- ========================================== -->
-<!-- ========================================== -->
-<!-- WHATSAPP -->
-<!-- ========================================== -->
-<div id="whatsappPage" style="display:none;">
-  <h2>📱 WhatsApp</h2>
-  
-  <!-- Tabs -->
-  <div class="toolbar" style="background:white;padding:18px;border-radius:14px;margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-    <button class="detail-btn" onclick="showWhatsappQR()" style="background:#25D366;">📱 QR Code</button>
-    <button class="detail-btn" onclick="showWhatsappSend()" style="background:#2563eb;">📨 Kirim Pesan</button>
-    <button class="detail-btn" onclick="showWhatsappLog()" style="background:#6b7280;">📋 Log</button>
-  </div>
-  
-  <!-- QR Code Section -->
-  <div id="whatsappQRSection" style="display:block;">
-    <div class="card" style="padding:20px;text-align:center;max-width:500px;margin:0 auto;">
-      <h3 style="margin-top:0;">📱 Scan QR Code</h3>
-      <p style="color:#6b7280;font-size:14px;">Masukkan nomor WhatsApp Anda, lalu scan QR Code.</p>
-      
-      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:15px;">
-        <input id="qrWhatsAppNumber" class="search" placeholder="628123456789" style="max-width:250px;text-align:center;" value="628123456789">
-        <button class="success-btn" onclick="updateQRCode()" style="background:#25D366;">🔄 Update QR</button>
-      </div>
-      
-      <div id="qrContainer" style="margin:20px auto;max-width:250px;min-height:200px;background:#f9fafb;border-radius:12px;display:flex;align-items:center;justify-content:center;border:2px dashed #d1d5db;">
-        <div id="qrPlaceholder" style="text-align:center;color:#9ca3af;">
-          <span style="font-size:48px;">📱</span>
-          <p style="font-size:14px;">Klik "Generate QR"</p>
+      <!-- WHATSAPP -->
+      <div id="whatsappPage" style="display:none;">
+        <h2>📱 WhatsApp</h2>
+        
+        <!-- Tabs -->
+        <div class="toolbar" style="background:white;padding:18px;border-radius:14px;margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+          <button class="detail-btn" onclick="showWhatsappQR()" style="background:#25D366;">📱 QR Code</button>
+          <button class="detail-btn" onclick="showWhatsappSend()" style="background:#2563eb;">📨 Kirim Pesan</button>
+          <button class="detail-btn" onclick="showWhatsappLog()" style="background:#6b7280;">📋 Log</button>
         </div>
-        <img id="qrImage" src="" alt="QR Code" style="width:100%;display:none;border-radius:8px;">
-      </div>
-      
-      <div style="margin-top:15px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-        <button class="success-btn" onclick="generateQRCode()" style="background:#25D366;">🔄 Generate QR</button>
-        <button class="danger-btn" onclick="disconnectWhatsApp()">🔌 Putuskan</button>
-      </div>
-      <div id="qrStatus" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
-      <div id="qrInfo" style="margin-top:10px;font-size:12px;color:#6b7280;display:none;">
-        <p>✅ QR Code siap di-scan!</p>
-        <p style="font-size:11px;">Buka WhatsApp → Scan QR Code → Kirim pesan</p>
-      </div>
-    </div>
-  </div>
-  
-  <!-- Kirim Pesan Section -->
-  <div id="whatsappSendSection" style="display:none;">
-    <div class="card" style="padding:20px;margin-bottom:15px;">
-      <h3 style="margin-top:0;">📨 Kirim Pesan WhatsApp</h3>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
-        <div>
-          <label style="font-weight:bold;display:block;margin-bottom:5px;">Nomor Tujuan *</label>
-          <input id="waSendNumber" class="search" placeholder="628123456789">
+        
+        <!-- QR Code Section -->
+        <div id="whatsappQRSection" style="display:block;">
+          <div class="card" style="padding:20px;text-align:center;max-width:500px;margin:0 auto;">
+            <h3 style="margin-top:0;">📱 Scan QR Code</h3>
+            <p style="color:#6b7280;font-size:14px;">Masukkan nomor WhatsApp Anda, lalu scan QR Code.</p>
+            
+            <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:15px;">
+              <input id="qrWhatsAppNumber" class="search" placeholder="628123456789" style="max-width:250px;text-align:center;" value="628123456789">
+              <button class="success-btn" onclick="generateQRCode()" style="background:#25D366;">🔄 Generate QR</button>
+            </div>
+            
+            <div id="qrContainer" style="margin:20px auto;max-width:250px;min-height:200px;background:#f9fafb;border-radius:12px;display:flex;align-items:center;justify-content:center;border:2px dashed #d1d5db;">
+              <div id="qrPlaceholder" style="text-align:center;color:#9ca3af;">
+                <span style="font-size:48px;">📱</span>
+                <p style="font-size:14px;">Klik "Generate QR"</p>
+              </div>
+              <img id="qrImage" src="" alt="QR Code" style="width:100%;display:none;border-radius:8px;">
+            </div>
+            
+            <div style="margin-top:15px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+              <button class="danger-btn" onclick="disconnectWhatsApp()">🔌 Putuskan</button>
+            </div>
+            <div id="qrStatus" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
+            <div id="qrInfo" style="margin-top:10px;font-size:12px;color:#6b7280;display:none;">
+              <p>✅ QR Code siap di-scan!</p>
+              <p style="font-size:11px;">Buka WhatsApp → Scan QR Code → Kirim pesan</p>
+            </div>
+          </div>
         </div>
-        <div>
-          <label style="font-weight:bold;display:block;margin-bottom:5px;">Template Pesan</label>
-          <select id="waTemplate" class="filter" style="width:100%;" onchange="setTemplateMessage()">
-            <option value="">Pilih Template</option>
-            <option value="tagihan">📄 Tagihan</option>
-            <option value="pengingat">⏰ Pengingat</option>
-            <option value="promo">🎉 Promo</option>
-            <option value="custom">✏️ Custom</option>
-          </select>
+        
+        <!-- Kirim Pesan Section -->
+        <div id="whatsappSendSection" style="display:none;">
+          <div class="card" style="padding:20px;margin-bottom:15px;">
+            <h3 style="margin-top:0;">📨 Kirim Pesan WhatsApp</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+              <div>
+                <label style="font-weight:bold;display:block;margin-bottom:5px;">Nomor Tujuan *</label>
+                <input id="waSendNumber" class="search" placeholder="628123456789">
+              </div>
+              <div>
+                <label style="font-weight:bold;display:block;margin-bottom:5px;">Template Pesan</label>
+                <select id="waTemplate" class="filter" style="width:100%;" onchange="setTemplateMessage()">
+                  <option value="">Pilih Template</option>
+                  <option value="tagihan">📄 Tagihan</option>
+                  <option value="pengingat">⏰ Pengingat</option>
+                  <option value="promo">🎉 Promo</option>
+                  <option value="custom">✏️ Custom</option>
+                </select>
+              </div>
+            </div>
+            <div style="margin-top:10px;">
+              <label style="font-weight:bold;display:block;margin-bottom:5px;">Pesan *</label>
+              <textarea id="waSendMessage" class="search" rows="4" placeholder="Tulis pesan Anda..." style="width:100%;resize:vertical;"></textarea>
+            </div>
+            <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="success-btn" onclick="sendWhatsAppMessage()" style="background:#25D366;">📤 Kirim Pesan</button>
+              <button class="reset-btn" onclick="clearWhatsAppForm()">↺ Reset</button>
+            </div>
+            <div id="waSendResult" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
+          </div>
+          
+          <!-- Kirim Massal -->
+          <div class="card" style="padding:20px;">
+            <h3 style="margin-top:0;">📨 Kirim Massal (Broadcast)</h3>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+              <select id="waBroadcastPeriode" class="filter" style="min-width:150px;">
+                <option value="">Pilih Periode Tagihan</option>
+              </select>
+              <button class="success-btn" onclick="sendBroadcastTagihan()" style="background:#25D366;">📤 Kirim Tagihan</button>
+              <button class="detail-btn" onclick="sendBroadcastPengingat()">⏰ Kirim Pengingat</button>
+            </div>
+            <div id="waBroadcastResult" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
+          </div>
+        </div>
+        
+        <!-- Log Section -->
+        <div id="whatsappLogSection" style="display:none;">
+          <div class="toolbar">
+            <button class="detail-btn" onclick="loadWALog()">🔄 Refresh</button>
+            <button class="danger-btn" onclick="clearWALog()">🗑️ Hapus Log</button>
+          </div>
+          <div class="cards">
+            <div class="card"><div class="card-title">Total Kiriman</div><div class="card-number" id="waTotal">0</div></div>
+            <div class="card"><div class="card-title">Berhasil</div><div class="card-number" id="waSuccess" style="color:#16a34a;">0</div></div>
+            <div class="card"><div class="card-title">Gagal</div><div class="card-number" id="waFailed" style="color:#dc2626;">0</div></div>
+          </div>
+          <div class="table-box">
+            <table>
+              <thead><tr><th>Tanggal</th><th>No WhatsApp</th><th>Pesan</th><th>Status</th></tr></thead>
+              <tbody id="waLogTable"><tr><td colspan="4" style="text-align:center;padding:30px;">Belum ada log WhatsApp</td></tr></tbody>
+            </table>
+          </div>
+          <div class="info-data">Total: <span id="jmlWALog">0</span> data log</div>
         </div>
       </div>
-      <div style="margin-top:10px;">
-        <label style="font-weight:bold;display:block;margin-bottom:5px;">Pesan *</label>
-        <textarea id="waSendMessage" class="search" rows="4" placeholder="Tulis pesan Anda..." style="width:100%;resize:vertical;"></textarea>
-      </div>
-      <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="success-btn" onclick="sendWhatsAppMessage()" style="background:#25D366;">📤 Kirim Pesan</button>
-        <button class="reset-btn" onclick="clearWhatsAppForm()">↺ Reset</button>
-      </div>
-      <div id="waSendResult" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
-    </div>
-    
-    <!-- Kirim Massal -->
-    <div class="card" style="padding:20px;">
-      <h3 style="margin-top:0;">📨 Kirim Massal (Broadcast)</h3>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-        <select id="waBroadcastPeriode" class="filter" style="min-width:150px;">
-          <option value="">Pilih Periode Tagihan</option>
-        </select>
-        <button class="success-btn" onclick="sendBroadcastTagihan()" style="background:#25D366;">📤 Kirim Tagihan</button>
-        <button class="detail-btn" onclick="sendBroadcastPengingat()">⏰ Kirim Pengingat</button>
-      </div>
-      <div id="waBroadcastResult" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
-    </div>
-  </div>
-  
-  <!-- Log Section -->
-  <div id="whatsappLogSection" style="display:none;">
-    <div class="toolbar">
-      <button class="detail-btn" onclick="loadWALog()">🔄 Refresh</button>
-      <button class="danger-btn" onclick="clearWALog()">🗑️ Hapus Log</button>
-    </div>
-    <div class="cards">
-      <div class="card"><div class="card-title">Total Kiriman</div><div class="card-number" id="waTotal">0</div></div>
-      <div class="card"><div class="card-title">Berhasil</div><div class="card-number" id="waSuccess" style="color:#16a34a;">0</div></div>
-      <div class="card"><div class="card-title">Gagal</div><div class="card-number" id="waFailed" style="color:#dc2626;">0</div></div>
-    </div>
-    <div class="table-box">
-      <table>
-        <thead><tr><th>Tanggal</th><th>No WhatsApp</th><th>Pesan</th><th>Status</th></tr></thead>
-        <tbody id="waLogTable"><tr><td colspan="4" style="text-align:center;padding:30px;">Belum ada log WhatsApp</td></tr></tbody>
-      </table>
-    </div>
-    <div class="info-data">Total: <span id="jmlWALog">0</span> data log</div>
-  </div>
-</div>
 
       <div id="pengeluaranPage" style="display:none;">
         <h2>📋 Pengeluaran</h2>
@@ -1704,7 +1698,7 @@ function hapusPembayaran(idPembayaran) {
 }
 
 // ==========================================
-// WHATSAPP
+// WHATSAPP - FUNGSI UTAMA
 // ==========================================
 function showWhatsapp() {
     document.getElementById('dashboardContent').style.display = 'none';
@@ -1723,31 +1717,192 @@ function showWhatsapp() {
     loadWALog();
 }
 
-function loadDaftarPeriodeWA() {
+function showWhatsappQR() {
+    var qrSection = document.getElementById('whatsappQRSection');
+    var sendSection = document.getElementById('whatsappSendSection');
+    var logSection = document.getElementById('whatsappLogSection');
+    if (qrSection) qrSection.style.display = 'block';
+    if (sendSection) sendSection.style.display = 'none';
+    if (logSection) logSection.style.display = 'none';
+}
+
+function showWhatsappSend() {
+    var qrSection = document.getElementById('whatsappQRSection');
+    var sendSection = document.getElementById('whatsappSendSection');
+    var logSection = document.getElementById('whatsappLogSection');
+    if (qrSection) qrSection.style.display = 'none';
+    if (sendSection) sendSection.style.display = 'block';
+    if (logSection) logSection.style.display = 'none';
+    loadBroadcastPeriode();
+}
+
+function showWhatsappLog() {
+    var qrSection = document.getElementById('whatsappQRSection');
+    var sendSection = document.getElementById('whatsappSendSection');
+    var logSection = document.getElementById('whatsappLogSection');
+    if (qrSection) qrSection.style.display = 'none';
+    if (sendSection) sendSection.style.display = 'none';
+    if (logSection) logSection.style.display = 'block';
+    loadWALog();
+}
+
+function generateQRCode() {
+    var status = document.getElementById('qrStatus');
+    var placeholder = document.getElementById('qrPlaceholder');
+    var qrImage = document.getElementById('qrImage');
+    var numberInput = document.getElementById('qrWhatsAppNumber');
+    
+    if (!status || !placeholder || !qrImage) {
+        console.error('QR Code elements not found!');
+        return;
+    }
+    
+    var waNumber = numberInput ? numberInput.value.trim() : '628123456789';
+    
+    if (!waNumber || waNumber.length < 10) {
+        status.innerText = '⚠️ Masukkan nomor WhatsApp yang valid! (contoh: 628123456789)';
+        status.style.color = '#dc2626';
+        return;
+    }
+    
+    status.innerText = '⏳ Membuat QR Code...';
+    status.style.color = '#2563eb';
+    placeholder.style.display = 'none';
+    qrImage.style.display = 'none';
+    
+    var pesan = 'Halo%20KhasnaNET%20Arjosari%2C%20saya%20ingin%20bertanya%20tentang%20tagihan%20internet.';
+    var qrData = 'https://wa.me/' + waNumber + '?text=' + pesan;
+    var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(qrData);
+    
+    qrImage.src = qrUrl;
+    qrImage.style.display = 'block';
+    qrImage.onload = function() {
+        status.innerText = '✅ QR Code siap di-scan! Scan dengan WhatsApp Anda.';
+        status.style.color = '#16a34a';
+        var info = document.getElementById('qrInfo');
+        if (info) info.style.display = 'block';
+        showNotification('✅ QR Code siap!', 'success');
+    };
+    qrImage.onerror = function() {
+        status.innerText = '❌ Gagal membuat QR Code. Coba lagi.';
+        status.style.color = '#dc2626';
+        placeholder.style.display = 'block';
+        showNotification('❌ Gagal membuat QR Code', 'error');
+    };
+}
+
+function disconnectWhatsApp() {
+    if (!confirm('⚠️ Yakin ingin memutuskan koneksi WhatsApp?')) return;
+    document.getElementById('qrStatus').innerText = '❌ WhatsApp terputus';
+    document.getElementById('qrStatus').style.color = '#dc2626';
+    document.getElementById('qrImage').style.display = 'none';
+    document.getElementById('qrPlaceholder').style.display = 'block';
+    document.getElementById('qrInfo').style.display = 'none';
+    showNotification('✅ WhatsApp terputus', 'success');
+}
+
+function setTemplateMessage() {
+    var template = document.getElementById('waTemplate').value;
+    var message = document.getElementById('waSendMessage');
+    var templates = {
+        'tagihan': 'Halo {nama}, tagihan internet Anda sebesar Rp{tagihan} untuk periode {periode}. Batas pembayaran tanggal {jatuh_tempo}.',
+        'pengingat': 'Yth {nama}, tagihan internet Anda sudah jatuh tempo! Segera lunasi sebelum layanan dihentikan.',
+        'promo': 'Halo {nama}! Kami ada promo menarik untuk pelanggan setia. Hubungi kami untuk info lebih lanjut.'
+    };
+    if (templates[template]) {
+        message.value = templates[template];
+    } else {
+        message.value = '';
+    }
+}
+
+function sendWhatsAppMessage() {
+    var number = document.getElementById('waSendNumber').value.trim();
+    var message = document.getElementById('waSendMessage').value.trim();
+    var result = document.getElementById('waSendResult');
+    
+    if (!number) { result.innerText = '⚠️ Nomor tujuan harus diisi!'; result.style.color = '#dc2626'; return; }
+    if (!message) { result.innerText = '⚠️ Pesan harus diisi!'; result.style.color = '#dc2626'; return; }
+    
+    result.innerText = '⏳ Mengirim pesan...';
+    result.style.color = '#2563eb';
+    
+    callWebApp('sendWhatsAppMessage', { number: number, message: message }, function(response) {
+        if (response && response.success) {
+            result.innerText = '✅ ' + response.message;
+            result.style.color = '#16a34a';
+            showNotification('✅ Pesan terkirim!', 'success');
+            loadWALog();
+        } else {
+            result.innerText = '❌ ' + (response && response.message ? response.message : 'Gagal');
+            result.style.color = '#dc2626';
+            showNotification('❌ Gagal kirim pesan', 'error');
+        }
+    });
+}
+
+function clearWhatsAppForm() {
+    document.getElementById('waSendNumber').value = '';
+    document.getElementById('waSendMessage').value = '';
+    document.getElementById('waTemplate').value = '';
+    document.getElementById('waSendResult').innerText = '';
+}
+
+function loadBroadcastPeriode() {
     callWebApp('getDaftarPeriode', {}, function(data) {
-        var select = document.getElementById('waPeriode');
-        select.innerHTML = '<option value="">Pilih Periode</option>';
-        if (Array.isArray(data) && data.length > 0) {
+        var select = document.getElementById('waBroadcastPeriode');
+        select.innerHTML = '<option value="">Pilih Periode Tagihan</option>';
+        if (Array.isArray(data)) {
             for (var i = 0; i < data.length; i++) {
                 var opt = document.createElement('option');
                 opt.value = data[i];
                 opt.textContent = data[i];
                 select.appendChild(opt);
             }
+        }
+    });
+}
+
+function sendBroadcastTagihan() {
+    var periode = document.getElementById('waBroadcastPeriode').value;
+    var result = document.getElementById('waBroadcastResult');
+    if (!periode) { result.innerText = '⚠️ Pilih periode terlebih dahulu!'; result.style.color = '#dc2626'; return; }
+    if (!confirm('📨 Kirim tagihan periode ' + periode + ' ke semua pelanggan yang belum bayar?')) return;
+    
+    result.innerText = '⏳ Mengirim tagihan...';
+    result.style.color = '#2563eb';
+    
+    callWebApp('kirimTagihanWA', { periode: periode }, function(response) {
+        if (response && response.success) {
+            result.innerText = '✅ ' + response.message;
+            result.style.color = '#16a34a';
+            showNotification('✅ ' + response.message, 'success');
+            loadWALog();
         } else {
-            var now = new Date();
-            var bulanNama = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
-            var bulan = now.getMonth();
-            var tahun = now.getFullYear();
-            for (var i = 0; i < 6; i++) {
-                var b = bulan - i;
-                var t = tahun;
-                if (b < 0) { b += 12; t--; }
-                var opt = document.createElement('option');
-                opt.value = bulanNama[b] + ' ' + t;
-                opt.textContent = bulanNama[b] + ' ' + t;
-                select.appendChild(opt);
-            }
+            result.innerText = '❌ ' + (response && response.message ? response.message : 'Gagal');
+            result.style.color = '#dc2626';
+            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
+        }
+    });
+}
+
+function sendBroadcastPengingat() {
+    var result = document.getElementById('waBroadcastResult');
+    if (!confirm('⏰ Kirim pengingat ke pelanggan yang tagihannya sudah lewat jatuh tempo?')) return;
+    
+    result.innerText = '⏳ Mengirim pengingat...';
+    result.style.color = '#2563eb';
+    
+    callWebApp('kirimPengingatOtomatis', {}, function(response) {
+        if (response && response.success) {
+            result.innerText = '✅ ' + response.message;
+            result.style.color = '#16a34a';
+            showNotification('✅ ' + response.message, 'success');
+            loadWALog();
+        } else {
+            result.innerText = '❌ ' + (response && response.message ? response.message : 'Gagal');
+            result.style.color = '#dc2626';
+            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
         }
     });
 }
@@ -1795,47 +1950,6 @@ function updateWAStats(data) {
     document.getElementById('waTotal').innerText = total;
     document.getElementById('waSuccess').innerText = success;
     document.getElementById('waFailed').innerText = failed;
-}
-
-function kirimTagihanMassal() {
-    var periode = document.getElementById('waPeriode').value;
-    if (!periode) { alert('Pilih periode tagihan terlebih dahulu!'); return; }
-    if (!confirm('📨 Kirim tagihan periode ' + periode + ' ke semua pelanggan yang belum bayar?')) return;
-    showNotification('Mengirim tagihan...', 'info');
-    callWebApp('kirimTagihanWA', { periode: periode }, function(response) {
-        if (response && response.success) {
-            showNotification('✅ ' + response.message, 'success');
-            loadWALog();
-        } else {
-            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
-        }
-    });
-}
-
-function kirimPengingatWA() {
-    if (!confirm('⏰ Kirim pengingat ke pelanggan yang tagihannya sudah lewat jatuh tempo?')) return;
-    showNotification('Mengirim pengingat...', 'info');
-    callWebApp('kirimPengingatOtomatis', {}, function(response) {
-        if (response && response.success) {
-            showNotification('✅ ' + response.message, 'success');
-            loadWALog();
-        } else {
-            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
-        }
-    });
-}
-
-function kirimSemuaPelanggan() {
-    if (!confirm('📱 Kirim notifikasi WhatsApp ke SEMUA pelanggan?\n\n⚠️ Ini akan mengirim pesan ke semua pelanggan yang memiliki nomor WhatsApp.')) return;
-    showNotification('Mengirim notifikasi ke semua pelanggan...', 'info');
-    callWebApp('kirimSemuaPelanggan', {}, function(response) {
-        if (response && response.success) {
-            showNotification('✅ ' + response.message, 'success');
-            loadWALog();
-        } else {
-            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
-        }
-    });
 }
 
 function clearWALog() {
@@ -2457,390 +2571,10 @@ function downloadInvoiceTeks(idPelanggan, periode) {
         }
     });
 }
-  // ==========================================
-// WHATSAPP - QR CODE, SEND, LOG
+
 // ==========================================
-
-// Variabel untuk menyimpan status WhatsApp
-var whatsappConnected = false;
-
-function showWhatsappQR() {
-    document.getElementById('whatsappQRSection').style.display = 'block';
-    document.getElementById('whatsappSendSection').style.display = 'none';
-    document.getElementById('whatsappLogSection').style.display = 'none';
-}
-
-function showWhatsappSend() {
-    document.getElementById('whatsappQRSection').style.display = 'none';
-    document.getElementById('whatsappSendSection').style.display = 'block';
-    document.getElementById('whatsappLogSection').style.display = 'none';
-    loadBroadcastPeriode();
-}
-
-function showWhatsappLog() {
-    document.getElementById('whatsappQRSection').style.display = 'none';
-    document.getElementById('whatsappSendSection').style.display = 'none';
-    document.getElementById('whatsappLogSection').style.display = 'block';
-    loadWALog();
-}
-
-ffunction generateQRCode() {
-    var status = document.getElementById('qrStatus');
-    var placeholder = document.getElementById('qrPlaceholder');
-    var qrImage = document.getElementById('qrImage');
-    
-    status.innerText = '⏳ Meminta QR Code...';
-    status.style.color = '#2563eb';
-    placeholder.style.display = 'none';
-    qrImage.style.display = 'none';
-    
-    // 🔴 GANTI DENGAN NOMOR WHATSAPP ANDA!
-    var waNumber = '6282323863125';
-    
-    // Buat QR Code dari API publik
-    var qrData = 'https://wa.me/' + waNumber + '?text=Halo%20KhasnaNET';
-    var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(qrData);
-    
-    // Tampilkan QR Code
-    qrImage.src = qrUrl;
-    qrImage.style.display = 'block';
-    qrImage.onload = function() {
-        status.innerText = '✅ QR Code siap di-scan! Scan dengan WhatsApp Anda.';
-        status.style.color = '#16a34a';
-        document.getElementById('qrInfo').style.display = 'block';
-        showNotification('✅ QR Code siap!', 'success');
-    };
-    qrImage.onerror = function() {
-        status.innerText = '❌ Gagal memuat QR Code. Coba lagi.';
-        status.style.color = '#dc2626';
-        placeholder.style.display = 'block';
-        showNotification('❌ Gagal memuat QR Code', 'error');
-    };
-}
-  function generateQRCode() {
-    var status = document.getElementById('qrStatus');
-    var placeholder = document.getElementById('qrPlaceholder');
-    var qrImage = document.getElementById('qrImage');
-    var numberInput = document.getElementById('qrWhatsAppNumber');
-    
-    // Jika elemen tidak ada, berhenti
-    if (!status || !placeholder || !qrImage) {
-        console.error('QR Code elements not found!');
-        return;
-    }
-    
-    // Ambil nomor dari input
-    var waNumber = numberInput ? numberInput.value.trim() : '628123456789';
-    
-    if (!waNumber || waNumber.length < 10) {
-        status.innerText = '⚠️ Masukkan nomor WhatsApp yang valid! (contoh: 628123456789)';
-        status.style.color = '#dc2626';
-        return;
-    }
-    
-    status.innerText = '⏳ Membuat QR Code...';
-    status.style.color = '#2563eb';
-    placeholder.style.display = 'none';
-    qrImage.style.display = 'none';
-    
-    // Buat link WhatsApp dengan pesan otomatis
-    var pesan = 'Halo%20KhasnaNET%20Arjosari%2C%20saya%20ingin%20bertanya%20tentang%20tagihan%20internet.';
-    var qrData = 'https://wa.me/' + waNumber + '?text=' + pesan;
-    var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(qrData);
-    
-    // Tampilkan QR Code
-    qrImage.src = qrUrl;
-    qrImage.style.display = 'block';
-    qrImage.onload = function() {
-        status.innerText = '✅ QR Code siap di-scan! Scan dengan WhatsApp Anda.';
-        status.style.color = '#16a34a';
-        var info = document.getElementById('qrInfo');
-        if (info) info.style.display = 'block';
-        showNotification('✅ QR Code siap!', 'success');
-    };
-    qrImage.onerror = function() {
-        status.innerText = '❌ Gagal membuat QR Code. Coba lagi.';
-        status.style.color = '#dc2626';
-        placeholder.style.display = 'block';
-        showNotification('❌ Gagal membuat QR Code', 'error');
-    };
-}
-
-function checkWhatsAppStatus() {
-    callWebApp('checkWhatsAppStatus', {}, function(response) {
-        if (response && response.connected) {
-            whatsappConnected = true;
-            document.getElementById('qrStatus').innerText = '✅ WhatsApp terhubung!';
-            document.getElementById('qrStatus').style.color = '#16a34a';
-            showNotification('✅ WhatsApp terhubung!', 'success');
-        } else {
-            // Cek lagi setelah 10 detik
-            setTimeout(checkWhatsAppStatus, 10000);
-        }
-    });
-}
-
-function disconnectWhatsApp() {
-    if (!confirm('⚠️ Yakin ingin memutuskan koneksi WhatsApp?')) return;
-    callWebApp('disconnectWhatsApp', {}, function(response) {
-        if (response && response.success) {
-            whatsappConnected = false;
-            document.getElementById('qrStatus').innerText = '❌ WhatsApp terputus';
-            document.getElementById('qrStatus').style.color = '#dc2626';
-            document.getElementById('qrImage').style.display = 'none';
-            document.getElementById('qrPlaceholder').style.display = 'block';
-            document.getElementById('qrInfo').style.display = 'none';
-            showNotification('✅ WhatsApp terputus', 'success');
-        } else {
-            showNotification('❌ Gagal memutuskan koneksi', 'error');
-        }
-    });
-}
-
-function setTemplateMessage() {
-    var template = document.getElementById('waTemplate').value;
-    var message = document.getElementById('waSendMessage');
-    var templates = {
-        'tagihan': 'Halo {nama}, tagihan internet Anda sebesar Rp{tagihan} untuk periode {periode}. Batas pembayaran tanggal {jatuh_tempo}.',
-        'pengingat': 'Yth {nama}, tagihan internet Anda sudah jatuh tempo! Segera lunasi sebelum layanan dihentikan.',
-        'promo': 'Halo {nama}! Kami ada promo menarik untuk pelanggan setia. Hubungi kami untuk info lebih lanjut.'
-    };
-    if (templates[template]) {
-        message.value = templates[template];
-    } else {
-        message.value = '';
-    }
-}
-
-function sendWhatsAppMessage() {
-    var number = document.getElementById('waSendNumber').value.trim();
-    var message = document.getElementById('waSendMessage').value.trim();
-    var result = document.getElementById('waSendResult');
-    
-    if (!number) { result.innerText = '⚠️ Nomor tujuan harus diisi!'; result.style.color = '#dc2626'; return; }
-    if (!message) { result.innerText = '⚠️ Pesan harus diisi!'; result.style.color = '#dc2626'; return; }
-    
-    result.innerText = '⏳ Mengirim pesan...';
-    result.style.color = '#2563eb';
-    
-    callWebApp('sendWhatsAppMessage', { number: number, message: message }, function(response) {
-        if (response && response.success) {
-            result.innerText = '✅ ' + response.message;
-            result.style.color = '#16a34a';
-            showNotification('✅ Pesan terkirim!', 'success');
-            loadWALog();
-        } else {
-            result.innerText = '❌ ' + (response && response.message ? response.message : 'Gagal');
-            result.style.color = '#dc2626';
-            showNotification('❌ Gagal kirim pesan', 'error');
-        }
-    });
-}
-
-function clearWhatsAppForm() {
-    document.getElementById('waSendNumber').value = '';
-    document.getElementById('waSendMessage').value = '';
-    document.getElementById('waTemplate').value = '';
-    document.getElementById('waSendResult').innerText = '';
-}
-
-function loadBroadcastPeriode() {
-    callWebApp('getDaftarPeriode', {}, function(data) {
-        var select = document.getElementById('waBroadcastPeriode');
-        select.innerHTML = '<option value="">Pilih Periode Tagihan</option>';
-        if (Array.isArray(data)) {
-            for (var i = 0; i < data.length; i++) {
-                var opt = document.createElement('option');
-                opt.value = data[i];
-                opt.textContent = data[i];
-                select.appendChild(opt);
-            }
-        }
-    });
-}
-
-function sendBroadcastTagihan() {
-    var periode = document.getElementById('waBroadcastPeriode').value;
-    var result = document.getElementById('waBroadcastResult');
-    if (!periode) { result.innerText = '⚠️ Pilih periode terlebih dahulu!'; result.style.color = '#dc2626'; return; }
-    if (!confirm('📨 Kirim tagihan periode ' + periode + ' ke semua pelanggan yang belum bayar?')) return;
-    
-    result.innerText = '⏳ Mengirim tagihan...';
-    result.style.color = '#2563eb';
-    
-    callWebApp('kirimTagihanWA', { periode: periode }, function(response) {
-        if (response && response.success) {
-            result.innerText = '✅ ' + response.message;
-            result.style.color = '#16a34a';
-            showNotification('✅ ' + response.message, 'success');
-            loadWALog();
-        } else {
-            result.innerText = '❌ ' + (response && response.message ? response.message : 'Gagal');
-            result.style.color = '#dc2626';
-            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
-        }
-    });
-}
-
-function sendBroadcastPengingat() {
-    var result = document.getElementById('waBroadcastResult');
-    if (!confirm('⏰ Kirim pengingat ke pelanggan yang tagihannya sudah lewat jatuh tempo?')) return;
-    
-    result.innerText = '⏳ Mengirim pengingat...';
-    result.style.color = '#2563eb';
-    
-    callWebApp('kirimPengingatOtomatis', {}, function(response) {
-        if (response && response.success) {
-            result.innerText = '✅ ' + response.message;
-            result.style.color = '#16a34a';
-            showNotification('✅ ' + response.message, 'success');
-            loadWALog();
-        } else {
-            result.innerText = '❌ ' + (response && response.message ? response.message : 'Gagal');
-            result.style.color = '#dc2626';
-            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
-        }
-    });
-}
+// WINDOW ONLOAD
 // ==========================================
-// WHATSAPP - TAMBAHAN FUNGSI
-// ==========================================
-
-function showWhatsappSend() {
-    var qrSection = document.getElementById('whatsappQRSection');
-    var sendSection = document.getElementById('whatsappSendSection');
-    var logSection = document.getElementById('whatsappLogSection');
-    if (qrSection) qrSection.style.display = 'none';
-    if (sendSection) sendSection.style.display = 'block';
-    if (logSection) logSection.style.display = 'none';
-    loadBroadcastPeriode();
-}
-
-function showWhatsappLog() {
-    var qrSection = document.getElementById('whatsappQRSection');
-    var sendSection = document.getElementById('whatsappSendSection');
-    var logSection = document.getElementById('whatsappLogSection');
-    if (qrSection) qrSection.style.display = 'none';
-    if (sendSection) sendSection.style.display = 'none';
-    if (logSection) logSection.style.display = 'block';
-    loadWALog();
-}
-
-function disconnectWhatsApp() {
-    if (!confirm('⚠️ Yakin ingin memutuskan koneksi WhatsApp?')) return;
-    document.getElementById('qrStatus').innerText = '❌ WhatsApp terputus';
-    document.getElementById('qrStatus').style.color = '#dc2626';
-    document.getElementById('qrImage').style.display = 'none';
-    document.getElementById('qrPlaceholder').style.display = 'block';
-    document.getElementById('qrInfo').style.display = 'none';
-    showNotification('✅ WhatsApp terputus', 'success');
-}
-
-function setTemplateMessage() {
-    var template = document.getElementById('waTemplate').value;
-    var message = document.getElementById('waSendMessage');
-    var templates = {
-        'tagihan': 'Halo {nama}, tagihan internet Anda sebesar Rp{tagihan} untuk periode {periode}. Batas pembayaran tanggal {jatuh_tempo}.',
-        'pengingat': 'Yth {nama}, tagihan internet Anda sudah jatuh tempo! Segera lunasi sebelum layanan dihentikan.',
-        'promo': 'Halo {nama}! Kami ada promo menarik untuk pelanggan setia. Hubungi kami untuk info lebih lanjut.'
-    };
-    if (templates[template]) {
-        message.value = templates[template];
-    } else {
-        message.value = '';
-    }
-}
-
-function sendWhatsAppMessage() {
-    var number = document.getElementById('waSendNumber').value.trim();
-    var message = document.getElementById('waSendMessage').value.trim();
-    var result = document.getElementById('waSendResult');
-    
-    if (!number) { result.innerText = '⚠️ Nomor tujuan harus diisi!'; result.style.color = '#dc2626'; return; }
-    if (!message) { result.innerText = '⚠️ Pesan harus diisi!'; result.style.color = '#dc2626'; return; }
-    
-    result.innerText = '⏳ Mengirim pesan...';
-    result.style.color = '#2563eb';
-    
-    callWebApp('sendWhatsAppMessage', { number: number, message: message }, function(response) {
-        if (response && response.success) {
-            result.innerText = '✅ ' + response.message;
-            result.style.color = '#16a34a';
-            showNotification('✅ Pesan terkirim!', 'success');
-            loadWALog();
-        } else {
-            result.innerText = '❌ ' + (response && response.message ? response.message : 'Gagal');
-            result.style.color = '#dc2626';
-            showNotification('❌ Gagal kirim pesan', 'error');
-        }
-    });
-}
-
-function clearWhatsAppForm() {
-    document.getElementById('waSendNumber').value = '';
-    document.getElementById('waSendMessage').value = '';
-    document.getElementById('waTemplate').value = '';
-    document.getElementById('waSendResult').innerText = '';
-}
-
-function loadBroadcastPeriode() {
-    callWebApp('getDaftarPeriode', {}, function(data) {
-        var select = document.getElementById('waBroadcastPeriode');
-        select.innerHTML = '<option value="">Pilih Periode Tagihan</option>';
-        if (Array.isArray(data)) {
-            for (var i = 0; i < data.length; i++) {
-                var opt = document.createElement('option');
-                opt.value = data[i];
-                opt.textContent = data[i];
-                select.appendChild(opt);
-            }
-        }
-    });
-}
-
-function sendBroadcastTagihan() {
-    var periode = document.getElementById('waBroadcastPeriode').value;
-    var result = document.getElementById('waBroadcastResult');
-    if (!periode) { result.innerText = '⚠️ Pilih periode terlebih dahulu!'; result.style.color = '#dc2626'; return; }
-    if (!confirm('📨 Kirim tagihan periode ' + periode + ' ke semua pelanggan yang belum bayar?')) return;
-    
-    result.innerText = '⏳ Mengirim tagihan...';
-    result.style.color = '#2563eb';
-    
-    callWebApp('kirimTagihanWA', { periode: periode }, function(response) {
-        if (response && response.success) {
-            result.innerText = '✅ ' + response.message;
-            result.style.color = '#16a34a';
-            showNotification('✅ ' + response.message, 'success');
-            loadWALog();
-        } else {
-            result.innerText = '❌ ' + (response && response.message ? response.message : 'Gagal');
-            result.style.color = '#dc2626';
-            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
-        }
-    });
-}
-
-function sendBroadcastPengingat() {
-    var result = document.getElementById('waBroadcastResult');
-    if (!confirm('⏰ Kirim pengingat ke pelanggan yang tagihannya sudah lewat jatuh tempo?')) return;
-    
-    result.innerText = '⏳ Mengirim pengingat...';
-    result.style.color = '#2563eb';
-    
-    callWebApp('kirimPengingatOtomatis', {}, function(response) {
-        if (response && response.success) {
-            result.innerText = '✅ ' + response.message;
-            result.style.color = '#16a34a';
-            showNotification('✅ ' + response.message, 'success');
-            loadWALog();
-        } else {
-            result.innerText = '❌ ' + (response && response.message ? response.message : 'Gagal');
-            result.style.color = '#dc2626';
-            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
-        }
-    });
-}
 window.onload = function() {
     loadTheme();
     var loggedIn = sessionStorage.getItem('login');
