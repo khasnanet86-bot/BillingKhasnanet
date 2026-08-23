@@ -2159,12 +2159,29 @@ function setupTriggerLaporan() {
 }
 
 function exportPelangganExcel() {
-    showNotification('Membuat file Excel pelanggan...', 'info');
+    showNotification('📊 Membuat file Excel pelanggan...', 'info');
     callWebApp('exportPelangganExcel', {}, function(response) {
         if (response && response.success) {
-            showNotification('✅ ' + response.message, 'success');
+            try {
+                // Konversi blob dari response
+                var byteArray = new Uint8Array(response.blob);
+                var blob = new Blob([byteArray], { type: 'text/csv' });
+                
+                var link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = response.fileName || 'Data_Pelanggan.csv';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                URL.revokeObjectURL(link.href);
+                
+                showNotification('✅ ' + response.message, 'success');
+            } catch (e) {
+                console.error('Error download:', e);
+                showNotification('❌ Error: ' + e.message, 'error');
+            }
         } else {
-            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
+            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal export data'), 'error');
         }
     });
 }
