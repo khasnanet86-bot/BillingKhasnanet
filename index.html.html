@@ -622,6 +622,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
     <div id="mikrotikLogContainer" class="mikrotik-status-box info"><p style="color:#6b7280;text-align:center;">Belum ada log aktivitas</p></div>
   </div>
 </div>
+
       <!-- 📡 MIKROTIK PPPoE MONITOR -->
       <div id="mikrotikMonitorPage" style="display:none;">
         <h2>📡 Monitor PPPoE MikroTik</h2>
@@ -747,13 +748,13 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 
 <script>
 // ==========================================
-// 🔧 KONFIGURASI
+// 🔧 KONFIGURASI - URL WEBAPP ANDA
 // ==========================================
 var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbzzoZl5YAEVmXuF37ONRB0IW8720rTdKL9QgBJ3LHNDqZ3w6A9xUvg3W6L6U2ev9DnpDA/exec';
 var WEB_APP_MONITOR_URL = 'https://script.google.com/macros/s/AKfycbz5u2WIvmlHSDRs7CDDHyh1r2kyGfecRT0kIrmVXAdGRVrhm1svG5rkE5Nz_YMGB_cN/exec';
 
 // ==========================================
-// FUNGSI CALL WEB APP
+// FUNGSI CALL WEB APP (DENGAN CORS FIX)
 // ==========================================
 function callWebApp(action, params, callback) {
     var url = WEB_APP_URL + '?action=' + action;
@@ -762,15 +763,31 @@ function callWebApp(action, params, callback) {
             url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
         }
     }
-    fetch(url)
-        .then(function(response) { return response.json(); })
-        .then(function(data) {
-            if (callback) callback(data);
-        })
-        .catch(function(error) {
-            console.error('Error:', error);
-            if (callback) callback({ success: false, message: 'Network error: ' + error.message });
-        });
+    
+    console.log('📤 Calling WebApp:', url);
+    
+    fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+            'Accept': 'application/json',
+        }
+    })
+    .then(function(response) {
+        if (!response.ok) {
+            throw new Error('HTTP ' + response.status + ': ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(function(data) {
+        console.log('📥 Response:', data);
+        if (callback) callback(data);
+    })
+    .catch(function(error) {
+        console.error('❌ Fetch Error:', error);
+        showNotification('❌ Network error: ' + error.message, 'error');
+        if (callback) callback({ success: false, message: 'Network error: ' + error.message });
+    });
 }
 
 function callWebAppMonitor(action, params, callback) {
@@ -780,15 +797,31 @@ function callWebAppMonitor(action, params, callback) {
             url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
         }
     }
-    fetch(url)
-        .then(function(response) { return response.json(); })
-        .then(function(data) {
-            if (callback) callback(data);
-        })
-        .catch(function(error) {
-            console.error('Error:', error);
-            if (callback) callback({ success: false, message: 'Network error: ' + error.message });
-        });
+    
+    console.log('📤 Calling Monitor WebApp:', url);
+    
+    fetch(url, {
+        method: 'GET',
+        mode: 'cors',
+        headers: {
+            'Accept': 'application/json',
+        }
+    })
+    .then(function(response) {
+        if (!response.ok) {
+            throw new Error('HTTP ' + response.status + ': ' + response.statusText);
+        }
+        return response.json();
+    })
+    .then(function(data) {
+        console.log('📥 Monitor Response:', data);
+        if (callback) callback(data);
+    })
+    .catch(function(error) {
+        console.error('❌ Monitor Fetch Error:', error);
+        showNotification('❌ Network error: ' + error.message, 'error');
+        if (callback) callback({ success: false, message: 'Network error: ' + error.message });
+    });
 }
 
 function showNotification(message, type) {
@@ -2572,6 +2605,7 @@ function resetFormPelanggan() {
     document.getElementById('inputPassword').value = '';
     document.getElementById('formPelangganMessage').innerHTML = '';
 }
+
 // ==========================================
 // FORCE ENABLE MIKROTIK DIRECT (PAKSA)
 // ==========================================
@@ -2589,7 +2623,6 @@ function forceEnableMikrotikDirect() {
   callWebApp('forceEnableMikrotikDirect', {}, function(response) {
     if (response && response.success) {
       showNotification('✅ ' + response.message, 'success');
-      // Refresh status setelah 1 detik
       setTimeout(function() {
         cekKonfigurasi();
         loadMikrotikUsers();
