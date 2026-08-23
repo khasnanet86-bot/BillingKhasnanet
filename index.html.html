@@ -532,22 +532,14 @@ function callWebApp(action, params, callback) {
             url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
         }
     }
-    
     console.log('📤 Call WebApp:', url);
-    
     fetch(url)
-        .then(function(response) {
-            if (!response.ok) {
-                throw new Error('HTTP ' + response.status);
-            }
-            return response.json();
-        })
+        .then(function(response) { return response.json(); })
         .then(function(data) {
-            console.log('📥 Response:', data);
             if (callback) callback(data);
         })
         .catch(function(error) {
-            console.error('❌ Fetch Error:', error);
+            console.error('Error:', error);
             if (callback) callback({ success: false, message: 'Network error: ' + error.message });
         });
 }
@@ -607,6 +599,9 @@ function loadTheme() {
     }
 }
 
+// ==========================================
+// LOGIN - VERSI LANGSUNG
+// ==========================================
 function login() {
     var username = document.getElementById('username').value.trim();
     var password = document.getElementById('password').value;
@@ -714,7 +709,7 @@ function showSidebarByLevel() {
 }
 
 // ==========================================
-// TAMBAH PELANGGAN - FUNGSI
+// TAMBAH PELANGGAN
 // ==========================================
 function showTambahPelanggan() {
     document.getElementById('dashboardContent').style.display = 'none';
@@ -747,7 +742,6 @@ function resetFormPelanggan() {
 function tambahPelanggan() {
     var msg = document.getElementById('formPelangganMessage');
     if (!msg) return;
-    
     var nama = document.getElementById('inputNama');
     var whatsapp = document.getElementById('inputWhatsapp');
     var alamat = document.getElementById('inputAlamat');
@@ -756,13 +750,11 @@ function tambahPelanggan() {
     var harga = document.getElementById('inputHarga');
     var pppoe = document.getElementById('inputPPPoE');
     var password = document.getElementById('inputPassword');
-    
     if (!nama || !whatsapp || !harga) {
         msg.innerText = '⚠️ Form tidak lengkap!';
         msg.style.color = '#dc2626';
         return;
     }
-    
     var data = {
         nama: nama.value.trim(),
         whatsapp: whatsapp.value.trim(),
@@ -773,14 +765,11 @@ function tambahPelanggan() {
         pppoe: pppoe ? pppoe.value.trim() : '',
         password: password ? password.value.trim() : ''
     };
-    
     if (!data.nama) { msg.innerText = '⚠️ Nama harus diisi!'; msg.style.color = '#dc2626'; return; }
     if (!data.whatsapp) { msg.innerText = '⚠️ WhatsApp harus diisi!'; msg.style.color = '#dc2626'; return; }
     if (!data.harga || Number(data.harga) <= 0) { msg.innerText = '⚠️ Harga harus diisi dengan angka positif!'; msg.style.color = '#dc2626'; return; }
-    
     msg.innerText = '⏳ Menyimpan pelanggan...';
     msg.style.color = '#2563eb';
-    
     callWebApp('tambahPelanggan', data, function(response) {
         if (response && response.success) {
             msg.innerText = '✅ ' + response.message;
@@ -799,7 +788,6 @@ function tambahPelanggan() {
 function tambahPelangganDanInvoice() {
     var msg = document.getElementById('formPelangganMessage');
     if (!msg) return;
-    
     var nama = document.getElementById('inputNama');
     var whatsapp = document.getElementById('inputWhatsapp');
     var alamat = document.getElementById('inputAlamat');
@@ -808,13 +796,11 @@ function tambahPelangganDanInvoice() {
     var harga = document.getElementById('inputHarga');
     var pppoe = document.getElementById('inputPPPoE');
     var password = document.getElementById('inputPassword');
-    
     if (!nama || !whatsapp || !harga) {
         msg.innerText = '⚠️ Form tidak lengkap!';
         msg.style.color = '#dc2626';
         return;
     }
-    
     var data = {
         nama: nama.value.trim(),
         whatsapp: whatsapp.value.trim(),
@@ -825,14 +811,11 @@ function tambahPelangganDanInvoice() {
         pppoe: pppoe ? pppoe.value.trim() : '',
         password: password ? password.value.trim() : ''
     };
-    
     if (!data.nama) { msg.innerText = '⚠️ Nama harus diisi!'; msg.style.color = '#dc2626'; return; }
     if (!data.whatsapp) { msg.innerText = '⚠️ WhatsApp harus diisi!'; msg.style.color = '#dc2626'; return; }
     if (!data.harga || Number(data.harga) <= 0) { msg.innerText = '⚠️ Harga harus diisi dengan angka positif!'; msg.style.color = '#dc2626'; return; }
-    
     msg.innerText = '⏳ Menyimpan pelanggan dan membuat invoice...';
     msg.style.color = '#2563eb';
-    
     callWebApp('tambahPelangganDanInvoice', data, function(response) {
         if (response && response.success) {
             msg.innerText = '✅ ' + response.message + (response.idTagihan ? ' - Invoice: ' + response.idTagihan : '');
@@ -941,7 +924,6 @@ function updateKeuangan(data) {
     var persen = data.persentaseLaba || 0;
     var totalPelanggan = data.totalPelanggan || 0;
     var aktif = data.aktif || 0;
-    
     if (level === 'COLLECTOR') {
         document.getElementById('metricPemasukan').innerText = '****';
         document.getElementById('metricPengeluaran').innerText = '****';
@@ -2190,10 +2172,8 @@ function exportPelangganExcel() {
     callWebApp('exportPelangganExcel', {}, function(response) {
         if (response && response.success) {
             try {
-                // Konversi blob dari response
                 var byteArray = new Uint8Array(response.blob);
                 var blob = new Blob([byteArray], { type: 'text/csv' });
-                
                 var link = document.createElement('a');
                 link.href = URL.createObjectURL(blob);
                 link.download = response.fileName || 'Data_Pelanggan.csv';
@@ -2201,7 +2181,6 @@ function exportPelangganExcel() {
                 link.click();
                 document.body.removeChild(link);
                 URL.revokeObjectURL(link.href);
-                
                 showNotification('✅ ' + response.message, 'success');
             } catch (e) {
                 console.error('Error download:', e);
@@ -2403,25 +2382,6 @@ window.onload = function() {
         document.getElementById('dashboardPage').style.display = 'none';
     }
 };
-  <div id="whatsappQRCode">
-  <h3>Scan QR Code untuk menghubungkan WhatsApp</h3>
-  <img id="qrCodeImage" src="" alt="QR Code WhatsApp" />
-  <button onclick="generateQRCode()">Generate QR Code</button>
-</div>
-
-<script>
-function generateQRCode() {
-  showNotification('Meminta QR Code...', 'info');
-  callWebApp('getWhatsAppQR', {}, function(response) {
-    if (response && response.success) {
-      document.getElementById('qrCodeImage').src = response.qrImageUrl;
-      showNotification('✅ QR Code siap di-scan!', 'success');
-    } else {
-      showNotification('❌ Gagal mendapatkan QR Code', 'error');
-    }
-  });
-}
-</script>
 </script>
 </body>
 </html>
