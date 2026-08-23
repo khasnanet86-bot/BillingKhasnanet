@@ -716,6 +716,9 @@ function login() {
     fetch(url)
         .then(function(response) {
             console.log('📥 Response status:', response.status);
+            if (!response.ok) {
+                throw new Error('HTTP ' + response.status);
+            }
             return response.json();
         })
         .then(function(response) {
@@ -752,7 +755,7 @@ function login() {
         .catch(function(error) {
             btn.classList.remove('loading');
             console.error('❌ Fetch Error:', error);
-            message.innerText = '❌ Network error: ' + error.message;
+            message.innerText = '❌ Gagal terhubung ke server: ' + error.message;
             message.className = 'login-message';
             showNotification('❌ Gagal terhubung ke server', 'error');
         });
