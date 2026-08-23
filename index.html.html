@@ -750,7 +750,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 // ==========================================
 // 🔧 KONFIGURASI - URL WEBAPP ANDA
 // ==========================================
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbypGs4DkTEDlnVOv7pSyO2DmNE0HyytgMSsA9LNYPHTUNqU1HWKwa3rGqbhE9Xzc2CtEw/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxOe-zakejT35tP9wZFUsPzm9iKB3WSIye_6cLtK2nGcOdED4V7WsnDbeQbYuqAOuHBYw/exec';
 var WEB_APP_MONITOR_URL = 'https://script.google.com/macros/s/AKfycbz5u2WIvmlHSDRs7CDDHyh1r2kyGfecRT0kIrmVXAdGRVrhm1svG5rkE5Nz_YMGB_cN/exec';
 
 // ==========================================
@@ -2005,14 +2005,80 @@ function showMikrotik() {
     loadMikrotikUsers();
 }
 
+// ==========================================
+// GET MIKROTIK USERS (REAL)
+// ==========================================
 function loadMikrotikUsers() {
     document.getElementById('mikrotikUserTable').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;">⏳ Memuat...</td></tr>';
     callWebApp('getMikrotikUsers', {}, function(data) {
+        console.log('📥 Mikrotik Users:', data);
         if (data && data.success) {
             mikrotikUsers = data.users || [];
             renderMikrotikUsers(mikrotikUsers);
+            document.getElementById('mikrotikTotalUser').innerText = data.total || 0;
+            document.getElementById('mikrotikUserAktif').innerText = data.aktif || 0;
+            document.getElementById('mikrotikUserNonAktif').innerText = data.nonaktif || 0;
         } else {
-            document.getElementById('mikrotikUserTable').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;">❌ Gagal load data</td></tr>';
+            document.getElementById('mikrotikUserTable').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;">❌ Gagal load data: ' + (data && data.message ? data.message : '') + '</td></tr>';
+        }
+    });
+}
+
+// ==========================================
+// SYNC MIKROTIK USERS (REAL)
+// ==========================================
+function syncMikrotikUsers() {
+    if (!confirm('🔄 Sinkronkan data pelanggan ke MikroTik?\n\nAkan membuat/update user PPPoE sesuai data pelanggan.')) return;
+    showNotification('⏳ Menyinkronkan...', 'info');
+    callWebApp('syncMikrotikUsers', {}, function(response) {
+        if (response && response.success) {
+            showNotification('✅ ' + response.message, 'success');
+            loadMikrotikUsers();
+        } else {
+            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal sync'), 'error');
+        }
+    });
+}
+
+// ==========================================
+// MIKROTIK USER ACTION (REAL)
+// ==========================================
+function mikrotikUserAction(action, username) {
+    var target = username || document.getElementById('mikrotikUsername').value.trim();
+    if (!target) {
+        showNotification('⚠️ Masukkan username!', 'error');
+        return;
+    }
+    var label = { 'enable': 'Aktifkan', 'disable': 'Nonaktifkan', 'delete': 'Hapus' };
+    if (!confirm(label[action] + ' user ' + target + '?')) return;
+    showNotification('⏳ Memproses...', 'info');
+    callWebApp('mikrotikUserAction', { action: action, username: target }, function(response) {
+        if (response && response.success) {
+            showNotification('✅ ' + response.message, 'success');
+            loadMikrotikUsers();
+            document.getElementById('mikrotikUsername').value = '';
+        } else {
+            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
+        }
+    });
+}
+
+// ==========================================
+// TEST MIKROTIK KONEKSI (REAL)
+// ==========================================
+function testMikrotik() {
+    showNotification('🔌 Testing koneksi ke MikroTik...', 'info');
+    callWebApp('testMikrotikConnection', {}, function(response) {
+        console.log('📥 Test Connection:', response);
+        if (response && response.success) {
+            document.getElementById('mikrotikStatus').innerHTML = '✅ ' + response.message;
+            document.getElementById('mikrotikStatus').style.color = '#16a34a';
+            showNotification('✅ ' + response.message, 'success');
+            loadMikrotikUsers();
+        } else {
+            document.getElementById('mikrotikStatus').innerHTML = '❌ ' + (response && response.message ? response.message : 'Gagal');
+            document.getElementById('mikrotikStatus').style.color = '#dc2626';
+            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
         }
     });
 }
