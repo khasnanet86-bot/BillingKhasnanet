@@ -564,26 +564,32 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         <div id="whatsappQRSection" style="display:block;">
           <div class="card" style="padding:20px;text-align:center;max-width:500px;margin:0 auto;">
             <h3 style="margin-top:0;">📱 Scan QR Code</h3>
-            <p style="color:#6b7280;font-size:14px;">Masukkan nomor WhatsApp Anda, lalu scan QR Code.</p>
+                        <p style="color:#6b7280;font-size:14px;">Scan QR dari gateway dengan WhatsApp yang akan digunakan untuk mengirim pesan.</p>
             <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:15px;">
-              <input id="qrWhatsAppNumber" class="search" placeholder="628123456789" style="max-width:250px;text-align:center;" value="628123456789">
-              <button class="success-btn" onclick="generateQRCode()" style="background:#25D366;">🔄 Generate QR</button>
+                            <button class="success-btn" onclick="generateQRCode()" style="background:#25D366;">🔄 Ambil QR Gateway</button>
+                            <button class="detail-btn" onclick="checkWhatsAppStatus()">🔌 Cek Status</button>
             </div>
             <div id="qrContainer" style="margin:20px auto;max-width:250px;min-height:200px;background:#f9fafb;border-radius:12px;display:flex;align-items:center;justify-content:center;border:2px dashed #d1d5db;">
               <div id="qrPlaceholder" style="text-align:center;color:#9ca3af;">
                 <span style="font-size:48px;">📱</span>
-                <p style="font-size:14px;">Klik "Generate QR"</p>
+                <p style="font-size:14px;">Klik "Ambil QR Gateway"</p>
               </div>
               <img id="qrImage" src="" alt="QR Code" style="width:100%;display:none;border-radius:8px;">
             </div>
             <div style="margin-top:15px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-              <button class="danger-btn" onclick="disconnectWhatsApp()">🔌 Putuskan</button>
+              <button class="danger-btn" onclick="clearWhatsAppQr()">✕ Bersihkan QR</button>
             </div>
             <div id="qrStatus" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
             <div id="qrInfo" style="margin-top:10px;font-size:12px;color:#6b7280;display:none;">
-              <p>✅ QR Code siap di-scan!</p>
-              <p style="font-size:11px;">Buka WhatsApp → Scan QR Code → Kirim pesan</p>
+                            <p>✅ QR gateway siap di-scan.</p>
+                            <p style="font-size:11px;">WhatsApp → Perangkat tertaut → Tautkan perangkat</p>
             </div>
+                        <div id="waConnectionStatus" style="margin-top:12px;font-weight:bold;color:#6b7280;">Status: belum dicek</div>
+                        <div style="margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                            <input id="pairingWhatsAppNumber" class="search" placeholder="Nomor WhatsApp untuk pairing" style="max-width:250px;text-align:center;">
+                            <button class="detail-btn" onclick="generatePairingCode()">🔐 Kode Pairing</button>
+                        </div>
+                        <div id="pairingCodeResult" style="margin-top:10px;font-size:18px;font-weight:bold;color:#2563eb;"></div>
           </div>
         </div>
         <div id="whatsappSendSection" style="display:none;">
@@ -911,7 +917,7 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 // ==========================================
 // 🔧 KONFIGURASI - GANTI DENGAN URL WEB APP ANDA
 // ==========================================
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwmBde7G6ZFrXxp56zjX2Dhp-cKDBuAHhPu4kP4mJdwzIJlj0SfqxKDrMpX20vFrxnCMQ/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbw2lhvi-KWKLGlC05p_cfOXUpXZcUD_1CmqRAFLQMUXksaD7xsgeG63_pjGvZLVxF86OA/exec';
 
 function callWebApp(action, params, callback) {
     var url = WEB_APP_URL + '?action=' + action;
@@ -2112,6 +2118,7 @@ function showWhatsapp() {
     setActiveMenu('menuWhatsapp');
     showWhatsappQR();
     loadWALog();
+    checkWhatsAppStatus();
 }
 
 function showWhatsappQR() {
@@ -2147,55 +2154,82 @@ function generateQRCode() {
     var status = document.getElementById('qrStatus');
     var placeholder = document.getElementById('qrPlaceholder');
     var qrImage = document.getElementById('qrImage');
-    var numberInput = document.getElementById('qrWhatsAppNumber');
-    
     if (!status || !placeholder || !qrImage) {
         console.error('QR Code elements not found!');
         return;
     }
     
-    var waNumber = numberInput ? numberInput.value.trim() : '628123456789';
-    
-    if (!waNumber || waNumber.length < 10) {
-        status.innerText = '⚠️ Masukkan nomor WhatsApp yang valid! (contoh: 628123456789)';
-        status.style.color = '#dc2626';
-        return;
-    }
-    
-    status.innerText = '⏳ Membuat QR Code...';
+    status.innerText = '⏳ Meminta QR dari gateway...';
     status.style.color = '#2563eb';
     placeholder.style.display = 'none';
     qrImage.style.display = 'none';
     
-    var pesan = 'Halo%20KhasnaNET%20Arjosari%2C%20saya%20ingin%20bertanya%20tentang%20tagihan%20internet.';
-    var qrData = 'https://wa.me/' + waNumber + '?text=' + pesan;
-    var qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=' + encodeURIComponent(qrData);
-    
-    qrImage.src = qrUrl;
-    qrImage.style.display = 'block';
-    qrImage.onload = function() {
-        status.innerText = '✅ QR Code siap di-scan! Scan dengan WhatsApp Anda.';
+    callWebApp('generateWhatsAppQR', {}, function(response) {
+        var qrValue = response && (response.qrCode || (response.data && response.data.qr));
+        if (!response || !response.success || !qrValue) {
+            status.innerText = '❌ ' + (response && response.message ? response.message : 'QR gateway tidak tersedia');
+            status.style.color = '#dc2626';
+            placeholder.style.display = 'block';
+            return;
+        }
+        qrImage.src = String(qrValue).indexOf('data:image') === 0 ? qrValue : 'data:image/png;base64,' + qrValue;
+        qrImage.style.display = 'block';
+        status.innerText = '✅ QR gateway siap di-scan.';
         status.style.color = '#16a34a';
-        var info = document.getElementById('qrInfo');
-        if (info) info.style.display = 'block';
-        showNotification('✅ QR Code siap!', 'success');
-    };
-    qrImage.onerror = function() {
-        status.innerText = '❌ Gagal membuat QR Code. Coba lagi.';
-        status.style.color = '#dc2626';
-        placeholder.style.display = 'block';
-        showNotification('❌ Gagal membuat QR Code', 'error');
-    };
+        document.getElementById('qrInfo').style.display = 'block';
+        showNotification('✅ QR gateway siap!', 'success');
+        startWhatsAppStatusPolling();
+    });
 }
 
-function disconnectWhatsApp() {
-    if (!confirm('⚠️ Yakin ingin memutuskan koneksi WhatsApp?')) return;
+function clearWhatsAppQr() {
     document.getElementById('qrStatus').innerText = '❌ WhatsApp terputus';
     document.getElementById('qrStatus').style.color = '#dc2626';
     document.getElementById('qrImage').style.display = 'none';
     document.getElementById('qrPlaceholder').style.display = 'block';
     document.getElementById('qrInfo').style.display = 'none';
     showNotification('✅ WhatsApp terputus', 'success');
+}
+
+var whatsappStatusTimer = null;
+
+function checkWhatsAppStatus() {
+    callWebApp('getWhatsAppDeviceStatus', {}, function(response) {
+        var statusEl = document.getElementById('waConnectionStatus');
+        if (!statusEl) return;
+        if (response && response.connected) {
+            statusEl.innerText = '✅ Status: WhatsApp gateway terhubung';
+            statusEl.style.color = '#16a34a';
+        } else {
+            statusEl.innerText = '❌ Status: ' + (response && response.message ? response.message : 'Belum terhubung');
+            statusEl.style.color = '#dc2626';
+        }
+    });
+}
+
+function startWhatsAppStatusPolling() {
+    if (whatsappStatusTimer) clearInterval(whatsappStatusTimer);
+    whatsappStatusTimer = setInterval(function() {
+        checkWhatsAppStatus();
+    }, 10000);
+}
+
+function generatePairingCode() {
+    var number = document.getElementById('pairingWhatsAppNumber').value.trim();
+    var resultEl = document.getElementById('pairingCodeResult');
+    if (!number || number.length < 10) {
+        resultEl.innerText = '⚠️ Masukkan nomor WhatsApp yang valid.';
+        return;
+    }
+    resultEl.innerText = '⏳ Membuat pairing code...';
+    callWebApp('generateWhatsAppPairing', { phone: number }, function(response) {
+        if (response && response.success) {
+            resultEl.innerText = 'Kode Pairing: ' + response.pairingCode;
+            startWhatsAppStatusPolling();
+        } else {
+            resultEl.innerText = '❌ ' + (response && response.message ? response.message : 'Pairing code gagal dibuat');
+        }
+    });
 }
 
 function setTemplateMessage() {
