@@ -792,42 +792,52 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 // ==========================================
 // 🔧 KONFIGURASI - URL WEBAPP ANDA
 // ==========================================
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbz4UhLLwe4lU9ZLgsCO2u6aDimzKs_AfjxBOO-TSs1T-NknvE8MV8aT0x2JjHocd_519A/exec?;
+// PASTIKAN URL AKHIRANNYA ADALAH /exec TANPA PARAMETER
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbyoF5njQ0zcMKd0ocs5xs8RD-a1ovw1RUY5_gIwpvXxnyXs0tCKiYxT1EcNZXhwBpOfCA/exec';
 var WEB_APP_MONITOR_URL = 'https://script.google.com/macros/s/AKfycbz5u2WIvmlHSDRs7CDDHyh1r2kyGfecRT0kIrmVXAdGRVrhm1svG5rkE5Nz_YMGB_cN/exec';
 
 // ==========================================
-// FUNGSI CALL WEB APP
+// FUNGSI CALL WEB APP (DIPERBAIKI)
 // ==========================================
 function callWebApp(action, params, callback) {
-    var url = WEB_APP_URL + '?action=' + action;
+    // Buat URL dengan parameter action
+    var url = WEB_APP_URL + '?action=' + encodeURIComponent(action);
     for (var key in params) {
         if (params.hasOwnProperty(key)) {
             url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
         }
     }
     
-    console.log('📤 Calling WebApp:', url); // <- Cek URL di console
+    console.log('📤 Calling WebApp:', url);
     
     fetch(url, {
         method: 'GET',
         mode: 'cors',
         headers: { 'Accept': 'application/json' }
     })
-    .then(function(response) { return response.json(); })
+    .then(function(response) {
+        if (!response.ok) {
+            throw new Error('HTTP ' + response.status + ': ' + response.statusText);
+        }
+        return response.json();
+    })
     .then(function(data) {
         console.log('📥 Response:', data);
         if (callback) callback(data);
     })
     .catch(function(error) {
         console.error('❌ Fetch Error:', error);
+        showNotification('❌ Network error: ' + error.message, 'error');
         if (callback) callback({ success: false, message: 'Network error: ' + error.message });
     });
 }
 
 function callWebAppMonitor(action, params, callback) {
-    var url = WEB_APP_MONITOR_URL + '?action=' + action;
+    var url = WEB_APP_MONITOR_URL + '?action=' + encodeURIComponent(action);
     for (var key in params) {
-        if (params.hasOwnProperty(key)) { url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(params[key]); }
+        if (params.hasOwnProperty(key)) {
+            url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
+        }
     }
     console.log('📤 Calling Monitor WebApp:', url);
     fetch(url, { method: 'GET', mode: 'cors', headers: { 'Accept': 'application/json' } })
@@ -866,19 +876,22 @@ function login() {
     var btn = document.getElementById('loginBtn');
     if (!username || !password) { message.innerText = '⚠️ Username dan password harus diisi'; message.className = 'login-message'; return; }
     btn.classList.add('loading'); message.innerText = '⏳ Memeriksa login...'; message.className = 'login-message';
-    var url = WEB_APP_URL + '?action=login&username=' + encodeURIComponent(username) + '&password=' + encodeURIComponent(password);
-    fetch(url).then(function(response) { if (!response.ok) throw new Error('HTTP ' + response.status); return response.json(); })
-        .then(function(response) {
-            btn.classList.remove('loading');
-            if (response && response.success) {
-                sessionStorage.setItem('login', 'true'); sessionStorage.setItem('nama', response.nama || ''); sessionStorage.setItem('level', response.level || ''); sessionStorage.setItem('username', response.username || '');
-                document.getElementById('loginPage').style.display = 'none'; document.getElementById('dashboardPage').style.display = 'block';
-                document.getElementById('userName').innerText = response.nama || username;
-                var levelDisplay = document.getElementById('userLevel'); if (levelDisplay) levelDisplay.innerText = ' (' + response.level + ')';
-                message.innerText = ''; showNotification('🎉 Selamat datang, ' + (response.nama || username) + '!', 'success'); showDashboard();
-            } else { message.innerText = '❌ ' + (response && response.message ? response.message : 'Login gagal'); message.className = 'login-message'; document.getElementById('loginBox').classList.add('shake'); setTimeout(function() { document.getElementById('loginBox').classList.remove('shake'); }, 500); }
-        })
-        .catch(function(error) { btn.classList.remove('loading'); message.innerText = '❌ Gagal terhubung ke server: ' + error.message; message.className = 'login-message'; showNotification('❌ Gagal terhubung ke server', 'error'); });
+    
+    callWebApp('login', { username: username, password: password }, function(response) {
+        btn.classList.remove('loading');
+        if (response && response.success) {
+            sessionStorage.setItem('login', 'true'); sessionStorage.setItem('nama', response.nama || ''); sessionStorage.setItem('level', response.level || ''); sessionStorage.setItem('username', response.username || '');
+            document.getElementById('loginPage').style.display = 'none'; document.getElementById('dashboardPage').style.display = 'block';
+            document.getElementById('userName').innerText = response.nama || username;
+            var levelDisplay = document.getElementById('userLevel'); if (levelDisplay) levelDisplay.innerText = ' (' + response.level + ')';
+            message.innerText = ''; showNotification('🎉 Selamat datang, ' + (response.nama || username) + '!', 'success'); showDashboard();
+        } else {
+            message.innerText = '❌ ' + (response && response.message ? response.message : 'Login gagal');
+            message.className = 'login-message';
+            document.getElementById('loginBox').classList.add('shake');
+            setTimeout(function() { document.getElementById('loginBox').classList.remove('shake'); }, 500);
+        }
+    });
 }
 
 function logout() { sessionStorage.clear(); document.getElementById('dashboardPage').style.display = 'none'; document.getElementById('loginPage').style.display = 'flex'; showNotification('Anda telah logout', 'info'); }
