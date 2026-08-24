@@ -903,10 +903,11 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 // ==========================================
 // 🔧 KONFIGURASI - GANTI DENGAN URL WEB APP ANDA
 // ==========================================
-var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxYBhEP6FyZKJeOvu4osfVMX_3B_G6eikJWRykpulPhZYfSLcRw9vWKVRPTM95eCmUneg/exec';
+var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbxRWL8Idg8rtYYGs2vOL_6u20DJbM6albK2_CpBJud6GCnHeSUdwV7fgvHRi0YQISZ6/exec';
 
 function callWebApp(action, params, callback) {
     var url = WEB_APP_URL + '?action=' + action;
+    params = params || {};
     for (var key in params) {
         if (params.hasOwnProperty(key)) {
             url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
@@ -922,6 +923,10 @@ function callWebApp(action, params, callback) {
             console.error('Error:', error);
             if (callback) callback({ success: false, message: 'Network error: ' + error.message });
         });
+}
+
+function getResponseData(response) {
+    return response && response.data !== undefined ? response.data : response;
 }
 
 function showNotification(message, type) {
@@ -1471,7 +1476,11 @@ function showPelanggan() {
 function loadPelanggan() {
     document.getElementById('pelangganTable').innerHTML = '<tr><td colspan="9" style="text-align:center">Memuat data...</td></tr>';
     callWebApp('getPelangganData', {}, function(data) {
-        customerData = Array.isArray(data) ? data : [];
+        var rows = getResponseData(data);
+        customerData = Array.isArray(rows) ? rows : [];
+        if (data && data.success === false) {
+            showNotification('❌ ' + (data.message || 'Gagal memuat data pelanggan'), 'error');
+        }
         buildFilters();
         filterPelanggan();
     });
@@ -1800,6 +1809,7 @@ function showTagihan() {
 function loadDaftarPeriodeTagihan() {
     showNotification('Memuat periode tagihan...', 'info');
     callWebApp('getDaftarPeriodeTagihan', {}, function(data) {
+        data = getResponseData(data);
         var select = document.getElementById('tagihanPeriode');
         select.innerHTML = '';
         var bulanNama = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
@@ -1859,7 +1869,8 @@ function loadTagihan() {
     }
     document.getElementById('tagihanTable').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;">⏳ Memuat tagihan untuk ' + periodeText + '...</td></tr>';
     callWebApp('getTagihanData', { periode: periode }, function(data) {
-        tagihanData = data || [];
+        var rows = getResponseData(data);
+        tagihanData = Array.isArray(rows) ? rows : [];
         renderTagihan(tagihanData);
         if (tagihanData.length === 0) {
             document.getElementById('tagihanTable').innerHTML = '<tr><td colspan="8" style="text-align:center;padding:30px;">📭 Belum ada tagihan untuk ' + periodeText + '<br><br>Klik <strong>➕ Generate</strong> untuk membuat tagihan.</td></tr>';
@@ -2012,8 +2023,9 @@ function showPembayaran() {
 function loadPembayaran() {
     document.getElementById('pembayaranTable').innerHTML = '<tr><td colspan="9" style="text-align:center">Memuat data pembayaran...</td></tr>';
     callWebApp('getPembayaranData', {}, function(data) {
-        renderPembayaran(data || []);
-        updatePembayaranStats(data || []);
+        var rows = getResponseData(data);
+        renderPembayaran(rows || []);
+        updatePembayaranStats(rows || []);
     });
 }
 
@@ -2201,7 +2213,7 @@ function sendWhatsAppMessage() {
     result.innerText = '⏳ Mengirim pesan...';
     result.style.color = '#2563eb';
     
-    callWebApp('sendWhatsAppMessage', { number: number, message: message }, function(response) {
+    callWebApp('sendWhatsAppMessageV2', { number: number, message: message }, function(response) {
         if (response && response.success) {
             result.innerText = '✅ ' + response.message;
             result.style.color = '#16a34a';
@@ -2224,6 +2236,7 @@ function clearWhatsAppForm() {
 
 function loadBroadcastPeriode() {
     callWebApp('getDaftarPeriode', {}, function(data) {
+        data = getResponseData(data);
         var select = document.getElementById('waBroadcastPeriode');
         select.innerHTML = '<option value="">Pilih Periode Tagihan</option>';
         if (Array.isArray(data)) {
@@ -2284,8 +2297,9 @@ function sendBroadcastPengingat() {
 function loadWALog() {
     document.getElementById('waLogTable').innerHTML = '<tr><td colspan="4" style="text-align:center">Memuat log...</td></tr>';
     callWebApp('getWALog', {}, function(data) {
-        renderWALog(data || []);
-        updateWAStats(data || []);
+        var rows = getResponseData(data);
+        renderWALog(rows || []);
+        updateWAStats(rows || []);
     });
 }
 
@@ -2449,6 +2463,7 @@ function clearTelegramForm() {
 
 function loadBroadcastPeriodeTelegram() {
     callWebApp('getDaftarPeriode', {}, function(data) {
+        data = getResponseData(data);
         var select = document.getElementById('telegramBroadcastPeriode');
         select.innerHTML = '<option value="">Pilih Periode Tagihan</option>';
         if (Array.isArray(data)) {
@@ -2508,8 +2523,9 @@ function sendTelegramBroadcastPengingat() {
 
 function loadTelegramLog() {
     callWebApp('getTelegramLog', {}, function(data) {
-        renderTelegramLog(data || []);
-        updateTelegramStats(data || []);
+        var rows = getResponseData(data);
+        renderTelegramLog(rows || []);
+        updateTelegramStats(rows || []);
     });
 }
 
@@ -2601,7 +2617,8 @@ function showPengeluaran() {
 function loadPengeluaran() {
     document.getElementById('pengeluaranTable').innerHTML = '<tr><td colspan="7" style="text-align:center;padding:30px;">⏳ Memuat data pengeluaran...</td></tr>';
     callWebApp('getPengeluaranData', {}, function(data) {
-        pengeluaranData = data || [];
+        var rows = getResponseData(data);
+        pengeluaranData = Array.isArray(rows) ? rows : [];
         renderPengeluaran(pengeluaranData);
         updatePengeluaranStats(pengeluaranData);
     });
@@ -2788,7 +2805,7 @@ function cekKonfigurasi() {
             statusEl.innerHTML = '📋 ' + response.message;
             statusEl.style.color = '#2563eb';
             logContainer.className = 'mikrotik-status-box info';
-            logContainer.textContent = JSON.stringify(response.config, null, 2);
+            logContainer.textContent = JSON.stringify(response.data || {}, null, 2);
             showNotification('✅ Konfigurasi ditemukan!', 'success');
         } else {
             statusEl.innerHTML = '❌ ' + (response && response.message ? response.message : 'Gagal');
@@ -2905,7 +2922,7 @@ function mikrotikUserAction(action, username) {
     };
     if (!confirm(actionMap[action] + ' user ' + targetUsername + ' di MikroTik?')) return;
     showNotification('Memproses ' + action + ' user...', 'info');
-    callWebApp('mikrotikUserAction', { action: action, username: targetUsername }, function(response) {
+    callWebApp('mikrotikUserAction', { subAction: action, username: targetUsername }, function(response) {
         var resultEl = document.getElementById('mikrotikActionResult');
         if (response && response.success) {
             resultEl.innerText = '✅ ' + response.message;
@@ -2955,6 +2972,7 @@ function showLaporan() {
 
 function loadDaftarPeriodeLaporan() {
     callWebApp('getDaftarPeriode', {}, function(data) {
+        data = getResponseData(data);
         var select = document.getElementById('laporanPeriode');
         select.innerHTML = '<option value="">Pilih Periode</option>';
         if (Array.isArray(data)) {
@@ -3058,6 +3076,7 @@ function showPengaturan() {
 
 function loadPengaturan() {
     callWebApp('getPengaturan', {}, function(data) {
+        data = getResponseData(data);
         document.getElementById('pengaturanStatus').textContent = JSON.stringify(data, null, 2);
         document.getElementById('setPeriode').value = data.PERIODE_AKTIF || '';
         document.getElementById('setDenda').value = data.DENDA_PER_HARI || '';
@@ -3162,7 +3181,7 @@ function showUsers() {
 function loadUsers() {
     document.getElementById('usersTable').innerHTML = '<tr><td colspan="5" style="text-align:center;padding:30px;">⏳ Memuat data user...</td></tr>';
     callWebApp('getUsers', {}, function(data) {
-        renderUsers(data || []);
+        renderUsers(getResponseData(data) || []);
     });
 }
 
