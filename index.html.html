@@ -2085,18 +2085,20 @@ function filterPembayaran() {
 }
 
 function hapusPembayaran(idPembayaran) {
-    if (!confirm('⚠️ Yakin ingin menghapus pembayaran ' + idPembayaran + '?')) return;
-    showNotification('Menghapus data...', 'info');
-    callWebApp('hapusPembayaran', { idPembayaran: idPembayaran }, function(response) {
-        if (response && response.success) {
-            showNotification('✅ ' + response.message, 'success');
-            loadPembayaran();
-            loadTagihan();
-            loadDashboardKeuangan();
-        } else {
-            showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
-        }
-    });
+  if (!confirm('⚠️ Yakin ingin menghapus pembayaran ' + idPembayaran + '?\n\nStatus tagihan akan dikembalikan ke BELUM BAYAR.')) return;
+  
+  showNotification('⏳ Menghapus pembayaran...', 'info');
+  
+  callWebApp('hapusPembayaran', { idPembayaran: idPembayaran }, function(response) {
+    if (response && response.success) {
+      showNotification('✅ ' + response.message, 'success');
+      loadPembayaran();  // Refresh tabel pembayaran
+      loadTagihan();     // Refresh tabel tagihan (status berubah)
+      loadDashboardKeuangan(); // Refresh dashboard
+    } else {
+      showNotification('❌ ' + (response && response.message ? response.message : 'Gagal'), 'error');
+    }
+  });
 }
 
 // ==========================================
