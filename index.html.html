@@ -1197,6 +1197,82 @@ function safe(value) {
     if (value === null || value === undefined) return '';
     return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
 }
+    // ==========================================
+// FUNGSI LOAD THEME (Untuk Mode Gelap/Terang)
+// ==========================================
+function loadTheme() {
+    var savedTheme = localStorage.getItem('theme');
+    var btn = document.getElementById('darkToggleBtn');
+    if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if (btn) btn.textContent = '☀️';
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        if (btn) btn.textContent = '🌙';
+    }
+}
+
+// ==========================================
+// FUNGSI LOGIN
+// ==========================================
+function login() {
+    var username = document.getElementById('username').value.trim();
+    var password = document.getElementById('password').value;
+    var message = document.getElementById('loginMessage');
+    var btn = document.getElementById('loginBtn');
+
+    if (!username || !password) {
+        message.innerText = '⚠️ Username dan password harus diisi';
+        message.className = 'login-message';
+        return;
+    }
+
+    btn.classList.add('loading');
+    message.innerText = '⏳ Memeriksa login...';
+    message.className = 'login-message';
+
+    // PAKAI WEB_APP_URL (untuk data billing)
+    var url = WEB_APP_URL + '?action=login';
+    url += '&username=' + encodeURIComponent(username);
+    url += '&password=' + encodeURIComponent(password);
+
+    fetch(url)
+        .then(function(response) {
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            return response.json();
+        })
+        .then(function(response) {
+            btn.classList.remove('loading');
+            if (response && response.success) {
+                sessionStorage.setItem('login', 'true');
+                sessionStorage.setItem('nama', response.nama || '');
+                sessionStorage.setItem('level', response.level || '');
+                sessionStorage.setItem('username', response.username || '');
+                sessionStorage.setItem('token', response.token || '');
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('dashboardPage').style.display = 'block';
+                document.getElementById('userName').innerText = response.nama || username;
+                var levelDisplay = document.getElementById('userLevel');
+                if (levelDisplay) levelDisplay.innerText = ' (' + response.level + ')';
+                message.innerText = '';
+                showNotification('🎉 Selamat datang, ' + (response.nama || username) + '!', 'success');
+                showDashboard();
+            } else {
+                message.innerText = '❌ ' + (response && response.message ? response.message : 'Login gagal');
+                message.className = 'login-message';
+                document.getElementById('loginBox').classList.add('shake');
+                setTimeout(function() {
+                    document.getElementById('loginBox').classList.remove('shake');
+                }, 500);
+            }
+        })
+        .catch(function(error) {
+            btn.classList.remove('loading');
+            message.innerText = '❌ Gagal terhubung ke server: ' + error.message;
+            message.className = 'login-message';
+            showNotification('❌ Gagal terhubung ke server', 'error');
+        });
+}
 
 // ==========================================
 // LOAD THEME & SESSION
