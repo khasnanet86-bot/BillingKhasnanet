@@ -316,7 +316,106 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
       <div id="tambahPelangganPage" style="display:none;"><h2>➕ Tambah Pelanggan Baru</h2><p>Fitur akan segera tersedia</p></div>
       <div id="tagihanPage" style="display:none;"><h2>🧾 Tagihan</h2><p>Fitur akan segera tersedia</p></div>
       <div id="pembayaranPage" style="display:none;"><h2>💳 Pembayaran</h2><p>Fitur akan segera tersedia</p></div>
-      <div id="whatsappPage" style="display:none;"><h2>📱 WhatsApp</h2><p>Fitur akan segera tersedia</p></div>
+      <div id="whatsappPage" style="display:none;">
+    <h2>📱 WhatsApp Gateway</h2>
+    
+    <!-- Tombol navigasi -->
+    <div class="toolbar" style="background:white;padding:18px;border-radius:14px;margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <button class="detail-btn" onclick="showWhatsappQR()" style="background:#25D366;">📱 QR Code</button>
+        <button class="detail-btn" onclick="showWhatsappSend()" style="background:#2563eb;">📨 Kirim Pesan</button>
+        <button class="detail-btn" onclick="showWhatsappLog()" style="background:#6b7280;">📋 Log</button>
+    </div>
+
+    <!-- SECTION QR CODE -->
+    <div id="whatsappQRSection" style="display:block;">
+        <div class="card" style="padding:20px;text-align:center;max-width:500px;margin:0 auto;">
+            <h3 style="margin-top:0;">📱 Scan QR Code</h3>
+            <p style="color:#6b7280;font-size:14px;">Scan QR dari gateway dengan WhatsApp yang akan digunakan untuk mengirim pesan.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:15px;">
+                <button class="success-btn" onclick="generateQRCode()" style="background:#25D366;">🔄 Ambil QR Gateway</button>
+                <button class="detail-btn" onclick="checkWhatsAppStatus()">🔌 Cek Status</button>
+            </div>
+            <div id="qrContainer" style="margin:20px auto;max-width:250px;min-height:200px;background:#f9fafb;border-radius:12px;display:flex;align-items:center;justify-content:center;border:2px dashed #d1d5db;">
+                <div id="qrPlaceholder" style="text-align:center;color:#9ca3af;">
+                    <span style="font-size:48px;">📱</span>
+                    <p style="font-size:14px;">Klik "Ambil QR Gateway"</p>
+                </div>
+                <img id="qrImage" src="" alt="QR Code" style="width:100%;display:none;border-radius:8px;">
+            </div>
+            <div id="qrStatus" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
+            <div id="waConnectionStatus" style="margin-top:12px;font-weight:bold;color:#6b7280;">Status: belum dicek</div>
+            <div style="margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
+                <input id="pairingWhatsAppNumber" class="search" placeholder="Nomor WhatsApp untuk pairing" style="max-width:250px;text-align:center;">
+                <button class="detail-btn" onclick="generatePairingCode()">🔐 Kode Pairing</button>
+            </div>
+            <div id="pairingCodeResult" style="margin-top:10px;font-size:18px;font-weight:bold;color:#2563eb;"></div>
+        </div>
+    </div>
+
+    <!-- SECTION KIRIM PESAN -->
+    <div id="whatsappSendSection" style="display:none;">
+        <div class="card" style="padding:20px;margin-bottom:15px;">
+            <h3 style="margin-top:0;">📨 Kirim Pesan WhatsApp</h3>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
+                <div>
+                    <label style="font-weight:bold;display:block;margin-bottom:5px;">Nomor Tujuan *</label>
+                    <input id="waSendNumber" class="search" placeholder="628123456789">
+                </div>
+                <div>
+                    <label style="font-weight:bold;display:block;margin-bottom:5px;">Template Pesan</label>
+                    <select id="waTemplate" class="filter" style="width:100%;" onchange="setTemplateMessage()">
+                        <option value="">Pilih Template</option>
+                        <option value="tagihan">📄 Tagihan</option>
+                        <option value="pengingat">⏰ Pengingat</option>
+                        <option value="promo">🎉 Promo</option>
+                        <option value="custom">✏️ Custom</option>
+                    </select>
+                </div>
+            </div>
+            <div style="margin-top:10px;">
+                <label style="font-weight:bold;display:block;margin-bottom:5px;">Pesan *</label>
+                <textarea id="waSendMessage" class="search" rows="4" placeholder="Tulis pesan Anda..." style="width:100%;resize:vertical;"></textarea>
+            </div>
+            <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+                <button class="success-btn" onclick="sendWhatsAppMessage()" style="background:#25D366;">📤 Kirim Pesan</button>
+                <button class="reset-btn" onclick="clearWhatsAppForm()">↺ Reset</button>
+            </div>
+            <div id="waSendResult" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
+        </div>
+
+        <div class="card" style="padding:20px;">
+            <h3 style="margin-top:0;">📨 Kirim Massal (Broadcast)</h3>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+                <select id="waBroadcastPeriode" class="filter" style="min-width:150px;">
+                    <option value="">Pilih Periode Tagihan</option>
+                </select>
+                <button class="success-btn" onclick="sendBroadcastTagihan()" style="background:#25D366;">📤 Kirim Tagihan</button>
+                <button class="detail-btn" onclick="sendBroadcastPengingat()">⏰ Kirim Pengingat</button>
+            </div>
+            <div id="waBroadcastResult" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
+        </div>
+    </div>
+
+    <!-- SECTION LOG -->
+    <div id="whatsappLogSection" style="display:none;">
+        <div class="toolbar">
+            <button class="detail-btn" onclick="loadWALog()">🔄 Refresh</button>
+            <button class="danger-btn" onclick="clearWALog()">🗑️ Hapus Log</button>
+        </div>
+        <div class="cards">
+            <div class="card"><div class="card-title">Total Kiriman</div><div class="card-number" id="waTotal">0</div></div>
+            <div class="card"><div class="card-title">Berhasil</div><div class="card-number" id="waSuccess" style="color:#16a34a;">0</div></div>
+            <div class="card"><div class="card-title">Gagal</div><div class="card-number" id="waFailed" style="color:#dc2626;">0</div></div>
+        </div>
+        <div class="table-box">
+            <table>
+                <thead><tr><th>Tanggal</th><th>No WhatsApp</th><th>Pesan</th><th>Status</th></tr></thead>
+                <tbody id="waLogTable"><tr><td colspan="4" style="text-align:center;padding:30px;">Belum ada log WhatsApp</td></tr></tbody>
+            </table>
+        </div>
+        <div class="info-data">Total: <span id="jmlWALog">0</span> data log</div>
+    </div>
+</div>
       <div id="telegramPage" style="display:none;"><h2>✈️ Telegram</h2><p>Fitur akan segera tersedia</p></div>
       <div id="pengeluaranPage" style="display:none;"><h2>📋 Pengeluaran</h2><p>Fitur akan segera tersedia</p></div>
       <div id="laporanPage" style="display:none;"><h2>📊 Laporan</h2><p>Fitur akan segera tersedia</p></div>
@@ -421,6 +520,28 @@ function showWhatsapp() {
     document.querySelectorAll('.content > div').forEach(el => el.style.display = 'none');
     document.getElementById('whatsappPage').style.display = 'block';
     setActive('menuWhatsapp');
+}
+  // ==========================================
+// NAVIGASI WHATSAPP
+// ==========================================
+function showWhatsappQR() {
+    document.getElementById('whatsappQRSection').style.display = 'block';
+    document.getElementById('whatsappSendSection').style.display = 'none';
+    document.getElementById('whatsappLogSection').style.display = 'none';
+}
+
+function showWhatsappSend() {
+    document.getElementById('whatsappQRSection').style.display = 'none';
+    document.getElementById('whatsappSendSection').style.display = 'block';
+    document.getElementById('whatsappLogSection').style.display = 'none';
+    loadBroadcastPeriode();
+}
+
+function showWhatsappLog() {
+    document.getElementById('whatsappQRSection').style.display = 'none';
+    document.getElementById('whatsappSendSection').style.display = 'none';
+    document.getElementById('whatsappLogSection').style.display = 'block';
+    loadWALog();
 }
 
 function showTelegram() {
