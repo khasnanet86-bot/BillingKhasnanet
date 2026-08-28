@@ -1035,6 +1035,254 @@ function sendBroadcastPengingat() {
         }
     });
 }
+  // ==========================================
+// TEMPLATE PESAN
+// ==========================================
+var templates = {
+    'v1': 'Yth. [nama_pelanggan], tagihan internet Anda sebesar Rp[price] sudah jatuh tempo hari ini. Segera bayar ya!',
+    'v2': 'Halo [nama_pelanggan], invoice [no_invoice] dengan total Rp[price] sudah terbit. Deadline: [due_date]',
+    'v3': 'Pemberitahuan: Paket internet [pake_t] Anda akan berakhir pada [expired]. Perpanjang sekarang!'
+};
+
+function setTemplateMessage() {
+    var templateSelect = document.getElementById('waTemplate');
+    var messageArea = document.getElementById('waSendMessage');
+    var templateKey = templateSelect.value;
+    
+    if (templateKey && templates[templateKey]) {
+        messageArea.value = templates[templateKey];
+    } else {
+        messageArea.value = '';
+    }
+}
+
+function getTemplates() {
+    return templates;
+}
+
+// ==========================================
+// FUNGSI WHATSAPP LENGKAP
+// ==========================================
+function generateQRCode() {
+    var status = document.getElementById('qrStatus');
+    var placeholder = document.getElementById('qrPlaceholder');
+    var qrImage = document.getElementById('qrImage');
+    if (!status || !placeholder || !qrImage) return;
+    
+    status.innerText = '⏳ Meminta QR dari gateway...';
+    status.style.color = '#2563eb';
+    placeholder.style.display = 'none';
+    qrImage.style.display = 'none';
+    
+    callWAGateway('/session/create', 'POST', {}, function(response) {
+        if (response && response.sukses) {
+            status.innerText = '✅ QR Code tersedia! Scan di terminal VPS.';
+            status.style.color = '#16a34a';
+            showNotification('📱 Scan QR Code di terminal VPS!', 'success');
+        } else {
+            status.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Gagal ambil QR');
+            status.style.color = '#dc2626';
+            placeholder.style.display = 'block';
+        }
+    });
+}
+
+function checkWhatsAppStatus() {
+    callWAGateway('/status', 'GET', null, function(response) {
+        var statusEl = document.getElementById('waConnectionStatus');
+        if (!statusEl) return;
+        if (response && response.konek) {
+            statusEl.innerText = '✅ Status: WhatsApp gateway terhubung';
+            statusEl.style.color = '#16a34a';
+        } else {
+            statusEl.innerText = '❌ Status: ' + (response && response.pesan ? response.pesan : 'Belum terhubung');
+            statusEl.style.color = '#dc2626';
+        }
+    });
+}
+
+function sendWhatsAppMessage() {
+    var number = document.getElementById('waSendNumber').value.trim();
+    var message = document.getElementById('waSendMessage').value.trim();
+    var templateKey = document.getElementById('waTemplate').value;
+    var result = document.getElementById('waSendResult');
+    
+    if (!number) { result.innerText = '⚠️ Nomor tujuan harus diisi!'; result.style.color = '#dc2626'; return; }
+    if (!message && !templateKey) { result.innerText = '⚠️ Pesan atau template harus diisi!'; result.style.color = '#dc2626'; return; }
+    
+    // Jika pakai template, ambil dari templates
+    var finalMessage = message;
+    if (templateKey && templates[templateKey]) {
+        finalMessage = templates[templateKey];
+        // Ganti variabel contoh
+        finalMessage = finalMessage.replace(/\[nama_pelanggan\]/g, 'Pelanggan');
+        finalMessage = finalMessage.replace(/\[price\]/g, '150000');
+        finalMessage = finalMessage.replace(/\[no_invoice\]/g, 'INV-001');
+        finalMessage = finalMessage.replace(/\[due_date\]/g, '01-09-2026');
+        finalMessage = finalMessage.replace(/\[expired\]/g, '30-09-2026');
+        finalMessage = finalMessage.replace(/\[pake_t\]/g, 'Paket 50Mbps');
+    }
+    
+    result.innerText = '⏳ Mengirim pesan...';
+    result.style.color = '#2563eb';
+    
+    callWAGateway('/kirim', 'POST', { nomor: number, pesan: finalMessage }, function(response) {
+        if (response && response.sukses) {
+            result.innerText = '✅ ' + response.pesan;
+            result.style.color = '#16a34a';
+            showNotification('✅ Pesan terkirim!', 'success');
+            loadWALog();
+        } else {
+            result.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Gagal');
+            result.style.color = '#dc2626';
+            showNotification('❌ Gagal kirim pesan', 'error');
+        }
+    });
+}
+
+function sendBroadcastTagihan() {
+    var periode = document.getElementById('waBroadcastPeriode').value;
+    var result = document.getElementById('waBroadcastResult');
+    if (!periode) { result.innerText = '⚠️ Pilih periode terlebih dahulu!'; result.style.color = '#dc2626'; return; }
+    if (!confirm('📨 Kirim tagihan periode ' + periode + ' ke semua pelanggan yang belum bayar?')) return;
+    
+    result.innerText = '⏳ Mengirim tagihan...';
+    result.style.color = '#2563eb';
+    
+    callWAGateway('/kirim-broadcast', 'POST', { periode: periode }, function(response) {
+        if (response && response.sukses) {
+            result.innerText = '✅ ' + response.pesan;
+            result.style.color = '#16a34a';
+            showNotification('✅ ' + response.pesan, 'success');
+            loadWALog();
+        } else {
+            result.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Gagal');
+            result.style.color = '#dc2626';
+            showNotification('❌ Gagal kirim broadcast', 'error');
+        }
+    });
+}
+
+function sendBroadcastPengingat() {
+    var result = document.getElementById('waBroadcastResult');
+    if (!confirm('⏰ Kirim pengingat ke pelanggan yang tagihannya sudah lewat jatuh tempo?')) return;
+    
+    result.innerText = '⏳ Mengirim pengingat...';
+    result.style.color = '#2563eb';
+    
+    callWAGateway('/kirim-pengingat', 'POST', {}, function(response) {
+        if (response && response.sukses) {
+            result.innerText = '✅ ' + response.pesan;
+            result.style.color = '#16a34a';
+            showNotification('✅ ' + response.pesan, 'success');
+            loadWALog();
+        } else {
+            result.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Gagal');
+            result.style.color = '#dc2626';
+            showNotification('❌ Gagal kirim pengingat', 'error');
+        }
+    });
+}
+
+function loadBroadcastPeriode() {
+    callWAGateway('/daftar-periode', 'GET', null, function(data) {
+        var select = document.getElementById('waBroadcastPeriode');
+        if (!select) return;
+        select.innerHTML = '<option value="">Pilih Periode Tagihan</option>';
+        var rows = data && data.data ? data.data : [];
+        if (Array.isArray(rows)) {
+            for (var i = 0; i < rows.length; i++) {
+                var opt = document.createElement('option');
+                opt.value = rows[i];
+                opt.textContent = rows[i];
+                select.appendChild(opt);
+            }
+        }
+    });
+}
+
+function loadWALog() {
+    document.getElementById('waLogTable').innerHTML = '<tr><td colspan="4" style="text-align:center">Memuat log...</td></tr>';
+    callWAGateway('/log', 'GET', null, function(data) {
+        var rows = data && data.data ? data.data : [];
+        renderWALog(rows);
+        updateWAStats(rows);
+    });
+}
+
+function renderWALog(data) {
+    var tbody = document.getElementById('waLogTable');
+    tbody.innerHTML = '';
+    if (!data || !data.length) {
+        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:30px;">Belum ada log WhatsApp</td></tr>';
+        document.getElementById('jmlWALog').innerText = '0';
+        return;
+    }
+    for (var i = 0; i < Math.min(data.length, 100); i++) {
+        var row = data[i];
+        var tr = document.createElement('tr');
+        var status = String(row.STATUS || '').toUpperCase();
+        var statusClass = (status === 'SENT' || status === 'READY') ? 'status-on' : 'status-off';
+        var statusText = (status === 'SENT' || status === 'READY') ? '✅ ' + status : '❌ ' + status;
+        tr.innerHTML = '<td>' + safe(row.TANGGAL || '-') + '</td><td>' + safe(row.NO_WHATSAPP || '-') + '</td><td style="max-width:300px;word-break:break-word;font-size:12px;">' + safe((row.PESAN || '').substring(0, 80)) + ((row.PESAN || '').length > 80 ? '...' : '') + '</td><td><span class="status ' + statusClass + '">' + safe(statusText) + '</span></td>';
+        tbody.appendChild(tr);
+    }
+    if (data.length > 100) {
+        var tr = document.createElement('tr');
+        tr.innerHTML = '<td colspan="4" style="text-align:center;color:#6b7280;">Menampilkan 100 dari ' + data.length + ' data</td>';
+        tbody.appendChild(tr);
+    }
+    document.getElementById('jmlWALog').innerText = data.length;
+}
+
+function updateWAStats(data) {
+    var total = data.length, success = 0, failed = 0;
+    for (var i = 0; i < data.length; i++) {
+        var status = String(data[i].STATUS || '').toUpperCase();
+        if (status === 'SENT' || status === 'READY') { success++; }
+        else if (status.indexOf('FAILED') !== -1) { failed++; }
+    }
+    document.getElementById('waTotal').innerText = total;
+    document.getElementById('waSuccess').innerText = success;
+    document.getElementById('waFailed').innerText = failed;
+}
+
+function clearWALog() {
+    if (!confirm('⚠️ Yakin ingin menghapus semua log WhatsApp?')) return;
+    showNotification('Menghapus log...', 'info');
+    callWAGateway('/clear-log', 'POST', {}, function(response) {
+        if (response && response.sukses) {
+            showNotification('✅ ' + response.pesan, 'success');
+            loadWALog();
+        } else {
+            showNotification('❌ ' + (response && response.pesan ? response.pesan : 'Gagal'), 'error');
+        }
+    });
+}
+
+function generatePairingCode() {
+    var number = document.getElementById('pairingWhatsAppNumber').value.trim();
+    var resultEl = document.getElementById('pairingCodeResult');
+    if (!number || number.length < 10) {
+        resultEl.innerText = '⚠️ Masukkan nomor WhatsApp yang valid.';
+        return;
+    }
+    resultEl.innerText = '⏳ Membuat pairing code...';
+    callWAGateway('/pairing', 'POST', { phone: number }, function(response) {
+        if (response && response.sukses) {
+            resultEl.innerText = 'Kode Pairing: ' + response.pairingCode;
+        } else {
+            resultEl.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Pairing code gagal dibuat');
+        }
+    });
+}
+
+function clearWhatsAppForm() {
+    document.getElementById('waSendNumber').value = '';
+    document.getElementById('waSendMessage').value = '';
+    document.getElementById('waTemplate').value = '';
+    document.getElementById('waSendResult').innerText = '';
+}
 </script>
 </body>
 </html>
