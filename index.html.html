@@ -773,6 +773,147 @@ window.onload = function() {
         showDashboard();
     }
 };
+  // ==========================================
+// FUNGSI WHATSAPP
+// ==========================================
+function callWAGateway(endpoint, method, body, callback) {
+    var url = WA_GATEWAY_URL + endpoint;
+    var options = {
+        method: method || 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + (sessionStorage.getItem('token') || '')
+        }
+    };
+    if (body) {
+        options.body = JSON.stringify(body);
+    }
+    console.log('📤 Call WA Gateway:', url, options);
+    fetch(url, options)
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+            if (callback) callback(data);
+        })
+        .catch(function(error) {
+            console.error('Error WA Gateway:', error);
+            if (callback) callback({ sukses: false, pesan: 'Network error: ' + error.message });
+        });
+}
+
+function generateQRCode() {
+    var status = document.getElementById('qrStatus');
+    if (!status) return;
+    status.innerText = '⏳ Meminta QR dari gateway...';
+    status.style.color = '#2563eb';
+    
+    callWAGateway('/session/create', 'POST', {}, function(response) {
+        if (response && response.sukses) {
+            status.innerText = '✅ QR Code tersedia! Scan di terminal VPS.';
+            status.style.color = '#16a34a';
+            showNotification('📱 Scan QR Code di terminal VPS!', 'success');
+        } else {
+            status.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Gagal ambil QR');
+            status.style.color = '#dc2626';
+        }
+    });
+}
+
+function checkWhatsAppStatus() {
+    callWAGateway('/status', 'GET', null, function(response) {
+        var statusEl = document.getElementById('waConnectionStatus');
+        if (!statusEl) return;
+        if (response && response.konek) {
+            statusEl.innerText = '✅ Status: WhatsApp gateway terhubung';
+            statusEl.style.color = '#16a34a';
+        } else {
+            statusEl.innerText = '❌ Status: ' + (response && response.pesan ? response.pesan : 'Belum terhubung');
+            statusEl.style.color = '#dc2626';
+        }
+    });
+}
+
+function sendWhatsAppMessage() {
+    var number = document.getElementById('waSendNumber').value.trim();
+    var message = document.getElementById('waSendMessage').value.trim();
+    var result = document.getElementById('waSendResult');
+    
+    if (!number) { result.innerText = '⚠️ Nomor tujuan harus diisi!'; result.style.color = '#dc2626'; return; }
+    if (!message) { result.innerText = '⚠️ Pesan harus diisi!'; result.style.color = '#dc2626'; return; }
+    
+    result.innerText = '⏳ Mengirim pesan...';
+    result.style.color = '#2563eb';
+    
+    callWAGateway('/kirim', 'POST', { nomor: number, pesan: message }, function(response) {
+        if (response && response.sukses) {
+            result.innerText = '✅ ' + response.pesan;
+            result.style.color = '#16a34a';
+            showNotification('✅ Pesan terkirim!', 'success');
+        } else {
+            result.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Gagal');
+            result.style.color = '#dc2626';
+            showNotification('❌ Gagal kirim pesan', 'error');
+        }
+    });
+}
+
+function loadBroadcastPeriode() {
+    callWAGateway('/daftar-periode', 'GET', null, function(data) {
+        var select = document.getElementById('waBroadcastPeriode');
+        if (!select) return;
+        select.innerHTML = '<option value="">Pilih Periode Tagihan</option>';
+        var rows = data && data.data ? data.data : [];
+        if (Array.isArray(rows)) {
+            for (var i = 0; i < rows.length; i++) {
+                var opt = document.createElement('option');
+                opt.value = rows[i];
+                opt.textContent = rows[i];
+                select.appendChild(opt);
+            }
+        }
+    });
+}
+
+function sendBroadcastTagihan() {
+    var periode = document.getElementById('waBroadcastPeriode').value;
+    var result = document.getElementById('waBroadcastResult');
+    if (!periode) { result.innerText = '⚠️ Pilih periode terlebih dahulu!'; result.style.color = '#dc2626'; return; }
+    if (!confirm('📨 Kirim tagihan periode ' + periode + ' ke semua pelanggan yang belum bayar?')) return;
+    
+    result.innerText = '⏳ Mengirim tagihan...';
+    result.style.color = '#2563eb';
+    
+    callWAGateway('/kirim-broadcast', 'POST', { periode: periode }, function(response) {
+        if (response && response.sukses) {
+            result.innerText = '✅ ' + response.pesan;
+            result.style.color = '#16a34a';
+            showNotification('✅ ' + response.pesan, 'success');
+        } else {
+            result.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Gagal');
+            result.style.color = '#dc2626';
+            showNotification('❌ Gagal kirim broadcast', 'error');
+        }
+    });
+}
+
+function sendBroadcastPengingat() {
+    var result = document.getElementById('waBroadcastResult');
+    if (!confirm('⏰ Kirim pengingat ke pelanggan yang tagihannya sudah lewat jatuh tempo?')) return;
+    
+    result.innerText = '⏳ Mengirim pengingat...';
+    result.style.color = '#2563eb';
+    
+    callWAGateway('/kirim-pengingat', 'POST', {}, function(response) {
+        if (response && response.sukses) {
+            result.innerText = '✅ ' + response.pesan;
+            result.style.color = '#16a34a';
+            showNotification('✅ ' + response.pesan, 'success');
+        } else {
+            result.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Gagal');
+            result.style.color = '#dc2626';
+            showNotification('❌ Gagal kirim pengingat', 'error');
+        }
+    });
+}
 </script>
 </body>
 </html>
