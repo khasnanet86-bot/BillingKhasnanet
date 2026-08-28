@@ -1766,7 +1766,20 @@ function kirimLaporanTelegram() {
 // ==========================================
 // FUNGSI DUMMY UNTUK MENGHINDARI ERROR (DIISI NANTI)
 // ==========================================
-function loadPelanggan() { showNotification('Fitur Pelanggan akan segera terhubung', 'info'); }
+function loadPelanggan() {
+    document.getElementById('pelangganTable').innerHTML = '<tr><td colspan="9" style="text-align:center">Memuat data...</td></tr>';
+    callWebApp('getPelangganData', {}, function(data) {
+        console.log('📥 Data dari server:', data); // <-- Tambahkan ini untuk debug
+        var rows = getResponseData(data);
+        customerData = Array.isArray(rows) ? rows : [];
+        console.log('📊 customerData:', customerData); // <-- Tambahkan ini
+        if (data && data.success === false) {
+            showNotification('❌ ' + (data.message || 'Gagal memuat data pelanggan'), 'error');
+        }
+        buildFilters();
+        filterPelanggan();
+    });
+}
 function loadDaftarPeriodeTagihan() { showNotification('Fitur Tagihan akan segera terhubung', 'info'); }
 function loadTagihan() { showNotification('Fitur Tagihan akan segera terhubung', 'info'); }
 function loadPembayaran() { showNotification('Fitur Pembayaran akan segera terhubung', 'info'); }
