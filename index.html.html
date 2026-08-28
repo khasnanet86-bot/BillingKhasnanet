@@ -924,30 +924,389 @@ var WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbx-BqIWi7korzHvZC8J7u
 var WA_GATEWAY_URL = 'https://stats-vice-wagner-stands.trycloudflare.com';
 
 // ==========================================
-// FUNGSI UNTUK DATA BILLING (TETAP PAKAI WEB_APP_URL)
+// FUNGSI LOAD THEME
 // ==========================================
-function callWebApp(action, params, callback) {
-    var url = WEB_APP_URL + '?action=' + action;
-    params = params || {};
-    for (var key in params) {
-        if (params.hasOwnProperty(key)) {
-            url += '&' + encodeURIComponent(key) + '=' + encodeURIComponent(params[key]);
-        }
+function loadTheme() {
+    var savedTheme = localStorage.getItem('theme');
+    var btn = document.getElementById('darkToggleBtn');
+    if (savedTheme === 'dark') {
+        document.documentElement.setAttribute('data-theme', 'dark');
+        if (btn) btn.textContent = '☀️';
+    } else {
+        document.documentElement.removeAttribute('data-theme');
+        if (btn) btn.textContent = '🌙';
     }
-    console.log('📤 Call WebApp (Billing):', url);
+}
+
+// ==========================================
+// FUNGSI TOGGLE DARK MODE
+// ==========================================
+function toggleDarkMode() {
+    var html = document.documentElement;
+    var btn = document.getElementById('darkToggleBtn');
+    if (html.getAttribute('data-theme') === 'dark') {
+        html.removeAttribute('data-theme');
+        btn.textContent = '🌙';
+        localStorage.setItem('theme', 'light');
+        showNotification('☀️ Mode Terang', 'info');
+    } else {
+        html.setAttribute('data-theme', 'dark');
+        btn.textContent = '☀️';
+        localStorage.setItem('theme', 'dark');
+        showNotification('🌙 Mode Gelap', 'info');
+    }
+}
+
+// ==========================================
+// FUNGSI LOGIN
+// ==========================================
+function login() {
+    var username = document.getElementById('username').value.trim();
+    var password = document.getElementById('password').value;
+    var message = document.getElementById('loginMessage');
+    var btn = document.getElementById('loginBtn');
+
+    if (!username || !password) {
+        message.innerText = '⚠️ Username dan password harus diisi';
+        message.className = 'login-message';
+        return;
+    }
+
+    btn.classList.add('loading');
+    message.innerText = '⏳ Memeriksa login...';
+    message.className = 'login-message';
+
+    var url = WEB_APP_URL + '?action=login';
+    url += '&username=' + encodeURIComponent(username);
+    url += '&password=' + encodeURIComponent(password);
+
     fetch(url)
-        .then(function(response) { return response.json(); })
-        .then(function(data) {
-            if (callback) callback(data);
+        .then(function(response) {
+            if (!response.ok) throw new Error('HTTP ' + response.status);
+            return response.json();
+        })
+        .then(function(response) {
+            btn.classList.remove('loading');
+            if (response && response.success) {
+                sessionStorage.setItem('login', 'true');
+                sessionStorage.setItem('nama', response.nama || '');
+                sessionStorage.setItem('level', response.level || '');
+                sessionStorage.setItem('username', response.username || '');
+                sessionStorage.setItem('token', response.token || '');
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('dashboardPage').style.display = 'block';
+                document.getElementById('userName').innerText = response.nama || username;
+                var levelDisplay = document.getElementById('userLevel');
+                if (levelDisplay) levelDisplay.innerText = ' (' + response.level + ')';
+                message.innerText = '';
+                showNotification('🎉 Selamat datang, ' + (response.nama || username) + '!', 'success');
+                showDashboard();
+            } else {
+                message.innerText = '❌ ' + (response && response.message ? response.message : 'Login gagal');
+                message.className = 'login-message';
+                document.getElementById('loginBox').classList.add('shake');
+                setTimeout(function() {
+                    document.getElementById('loginBox').classList.remove('shake');
+                }, 500);
+            }
         })
         .catch(function(error) {
-            console.error('Error:', error);
-            if (callback) callback({ success: false, message: 'Network error: ' + error.message });
+            btn.classList.remove('loading');
+            message.innerText = '❌ Gagal terhubung ke server: ' + error.message;
+            message.className = 'login-message';
+            showNotification('❌ Gagal terhubung ke server', 'error');
         });
 }
 
 // ==========================================
-// FUNGSI UNTUK WHATSAPP GATEWAY (PAKAI WA_GATEWAY_URL)
+// FUNGSI LOGOUT
+// ==========================================
+function logout() {
+    sessionStorage.clear();
+    document.getElementById('dashboardPage').style.display = 'none';
+    document.getElementById('loginPage').style.display = 'flex';
+    showNotification('Anda telah logout', 'info');
+}
+
+// ==========================================
+// FUNGSI SHOW MENU (SIDEBAR)
+// ==========================================
+function showDashboard() {
+    document.getElementById('dashboardContent').style.display = 'block';
+    document.getElementById('pelangganPage').style.display = 'none';
+    document.getElementById('tagihanPage').style.display = 'none';
+    document.getElementById('pembayaranPage').style.display = 'none';
+    document.getElementById('whatsappPage').style.display = 'none';
+    document.getElementById('telegramPage').style.display = 'none';
+    document.getElementById('pengeluaranPage').style.display = 'none';
+    document.getElementById('mikrotikPage').style.display = 'none';
+    document.getElementById('laporanPage').style.display = 'none';
+    document.getElementById('pengaturanPage').style.display = 'none';
+    document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
+    setActiveMenu('menuDashboard');
+}
+
+function showPelanggan() {
+    document.getElementById('dashboardContent').style.display = 'none';
+    document.getElementById('pelangganPage').style.display = 'block';
+    document.getElementById('tagihanPage').style.display = 'none';
+    document.getElementById('pembayaranPage').style.display = 'none';
+    document.getElementById('whatsappPage').style.display = 'none';
+    document.getElementById('telegramPage').style.display = 'none';
+    document.getElementById('pengeluaranPage').style.display = 'none';
+    document.getElementById('mikrotikPage').style.display = 'none';
+    document.getElementById('laporanPage').style.display = 'none';
+    document.getElementById('pengaturanPage').style.display = 'none';
+    document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
+    setActiveMenu('menuPelanggan');
+    loadPelanggan();
+}
+
+function showTambahPelanggan() {
+    document.getElementById('dashboardContent').style.display = 'none';
+    document.getElementById('pelangganPage').style.display = 'none';
+    document.getElementById('tagihanPage').style.display = 'none';
+    document.getElementById('pembayaranPage').style.display = 'none';
+    document.getElementById('whatsappPage').style.display = 'none';
+    document.getElementById('telegramPage').style.display = 'none';
+    document.getElementById('pengeluaranPage').style.display = 'none';
+    document.getElementById('mikrotikPage').style.display = 'none';
+    document.getElementById('laporanPage').style.display = 'none';
+    document.getElementById('pengaturanPage').style.display = 'none';
+    document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'block';
+    setActiveMenu('menuTambahPelanggan');
+}
+
+function showTagihan() {
+    document.getElementById('dashboardContent').style.display = 'none';
+    document.getElementById('pelangganPage').style.display = 'none';
+    document.getElementById('tagihanPage').style.display = 'block';
+    document.getElementById('pembayaranPage').style.display = 'none';
+    document.getElementById('whatsappPage').style.display = 'none';
+    document.getElementById('telegramPage').style.display = 'none';
+    document.getElementById('pengeluaranPage').style.display = 'none';
+    document.getElementById('mikrotikPage').style.display = 'none';
+    document.getElementById('laporanPage').style.display = 'none';
+    document.getElementById('pengaturanPage').style.display = 'none';
+    document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
+    setActiveMenu('menuTagihan');
+    loadDaftarPeriodeTagihan();
+}
+
+function showPembayaran() {
+    document.getElementById('dashboardContent').style.display = 'none';
+    document.getElementById('pelangganPage').style.display = 'none';
+    document.getElementById('tagihanPage').style.display = 'none';
+    document.getElementById('pembayaranPage').style.display = 'block';
+    document.getElementById('whatsappPage').style.display = 'none';
+    document.getElementById('telegramPage').style.display = 'none';
+    document.getElementById('pengeluaranPage').style.display = 'none';
+    document.getElementById('mikrotikPage').style.display = 'none';
+    document.getElementById('laporanPage').style.display = 'none';
+    document.getElementById('pengaturanPage').style.display = 'none';
+    document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
+    setActiveMenu('menuPembayaran');
+    loadPembayaran();
+}
+
+function showWhatsapp() {
+    document.getElementById('dashboardContent').style.display = 'none';
+    document.getElementById('pelangganPage').style.display = 'none';
+    document.getElementById('tagihanPage').style.display = 'none';
+    document.getElementById('pembayaranPage').style.display = 'none';
+    document.getElementById('whatsappPage').style.display = 'block';
+    document.getElementById('telegramPage').style.display = 'none';
+    document.getElementById('pengeluaranPage').style.display = 'none';
+    document.getElementById('mikrotikPage').style.display = 'none';
+    document.getElementById('laporanPage').style.display = 'none';
+    document.getElementById('pengaturanPage').style.display = 'none';
+    document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
+    setActiveMenu('menuWhatsapp');
+    showWhatsappQR();
+    loadWALog();
+    checkWhatsAppStatus();
+}
+
+function showTelegram() {
+    document.getElementById('dashboardContent').style.display = 'none';
+    document.getElementById('pelangganPage').style.display = 'none';
+    document.getElementById('tagihanPage').style.display = 'none';
+    document.getElementById('pembayaranPage').style.display = 'none';
+    document.getElementById('whatsappPage').style.display = 'none';
+    document.getElementById('telegramPage').style.display = 'block';
+    document.getElementById('pengeluaranPage').style.display = 'none';
+    document.getElementById('mikrotikPage').style.display = 'none';
+    document.getElementById('laporanPage').style.display = 'none';
+    document.getElementById('pengaturanPage').style.display = 'none';
+    document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
+    setActiveMenu('menuTelegram');
+    checkTelegramStatus();
+    loadTelegramLog();
+}
+
+function showPengeluaran() {
+    document.getElementById('dashboardContent').style.display = 'none';
+    document.getElementById('pelangganPage').style.display = 'none';
+    document.getElementById('tagihanPage').style.display = 'none';
+    document.getElementById('pembayaranPage').style.display = 'none';
+    document.getElementById('whatsappPage').style.display = 'none';
+    document.getElementById('telegramPage').style.display = 'none';
+    document.getElementById('pengeluaranPage').style.display = 'block';
+    document.getElementById('mikrotikPage').style.display = 'none';
+    document.getElementById('laporanPage').style.display = 'none';
+    document.getElementById('pengaturanPage').style.display = 'none';
+    document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
+    setActiveMenu('menuPengeluaran');
+    loadPengeluaran();
+}
+
+function showLaporan() {
+    document.getElementById('dashboardContent').style.display = 'none';
+    document.getElementById('pelangganPage').style.display = 'none';
+    document.getElementById('tagihanPage').style.display = 'none';
+    document.getElementById('pembayaranPage').style.display = 'none';
+    document.getElementById('whatsappPage').style.display = 'none';
+    document.getElementById('telegramPage').style.display = 'none';
+    document.getElementById('pengeluaranPage').style.display = 'none';
+    document.getElementById('mikrotikPage').style.display = 'none';
+    document.getElementById('laporanPage').style.display = 'block';
+    document.getElementById('pengaturanPage').style.display = 'none';
+    document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
+    setActiveMenu('menuLaporan');
+    loadDaftarPeriodeLaporan();
+}
+
+function showMikrotik() {
+    document.getElementById('dashboardContent').style.display = 'none';
+    document.getElementById('pelangganPage').style.display = 'none';
+    document.getElementById('tagihanPage').style.display = 'none';
+    document.getElementById('pembayaranPage').style.display = 'none';
+    document.getElementById('whatsappPage').style.display = 'none';
+    document.getElementById('telegramPage').style.display = 'none';
+    document.getElementById('pengeluaranPage').style.display = 'none';
+    document.getElementById('mikrotikPage').style.display = 'block';
+    document.getElementById('laporanPage').style.display = 'none';
+    document.getElementById('pengaturanPage').style.display = 'none';
+    document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
+    setActiveMenu('menuMikrotik');
+    loadMikrotikUsers();
+}
+
+function showPengaturan() {
+    document.getElementById('dashboardContent').style.display = 'none';
+    document.getElementById('pelangganPage').style.display = 'none';
+    document.getElementById('tagihanPage').style.display = 'none';
+    document.getElementById('pembayaranPage').style.display = 'none';
+    document.getElementById('whatsappPage').style.display = 'none';
+    document.getElementById('telegramPage').style.display = 'none';
+    document.getElementById('pengeluaranPage').style.display = 'none';
+    document.getElementById('mikrotikPage').style.display = 'none';
+    document.getElementById('laporanPage').style.display = 'none';
+    document.getElementById('pengaturanPage').style.display = 'block';
+    document.getElementById('usersPage').style.display = 'none';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
+    setActiveMenu('menuPengaturan');
+    loadPengaturan();
+}
+
+function showUsers() {
+    document.getElementById('dashboardContent').style.display = 'none';
+    document.getElementById('pelangganPage').style.display = 'none';
+    document.getElementById('tagihanPage').style.display = 'none';
+    document.getElementById('pembayaranPage').style.display = 'none';
+    document.getElementById('whatsappPage').style.display = 'none';
+    document.getElementById('telegramPage').style.display = 'none';
+    document.getElementById('pengeluaranPage').style.display = 'none';
+    document.getElementById('mikrotikPage').style.display = 'none';
+    document.getElementById('laporanPage').style.display = 'none';
+    document.getElementById('pengaturanPage').style.display = 'none';
+    document.getElementById('usersPage').style.display = 'block';
+    document.getElementById('tambahPelangganPage').style.display = 'none';
+    setActiveMenu('menuUsers');
+    loadUsers();
+}
+
+function setActiveMenu(menuId) {
+    var menus = document.querySelectorAll('.sidebar .menu');
+    for (var i = 0; i < menus.length; i++) {
+        menus[i].classList.remove('active');
+    }
+    var target = document.getElementById(menuId);
+    if (target) target.classList.add('active');
+}
+
+// ==========================================
+// FUNGSI WHATSAPP QR
+// ==========================================
+function showWhatsappQR() {
+    document.getElementById('whatsappQRSection').style.display = 'block';
+    document.getElementById('whatsappSendSection').style.display = 'none';
+    document.getElementById('whatsappLogSection').style.display = 'none';
+}
+
+function showWhatsappSend() {
+    document.getElementById('whatsappQRSection').style.display = 'none';
+    document.getElementById('whatsappSendSection').style.display = 'block';
+    document.getElementById('whatsappLogSection').style.display = 'none';
+}
+
+function showWhatsappLog() {
+    document.getElementById('whatsappQRSection').style.display = 'none';
+    document.getElementById('whatsappSendSection').style.display = 'none';
+    document.getElementById('whatsappLogSection').style.display = 'block';
+    loadWALog();
+}
+
+// ==========================================
+// FUNGSI NOTIFIKASI
+// ==========================================
+function showNotification(message, type) {
+    var container = document.getElementById('notificationContainer');
+    var div = document.createElement('div');
+    div.className = 'notification notification-' + (type || 'info');
+    div.textContent = message;
+    container.appendChild(div);
+    setTimeout(function() {
+        div.style.opacity = '0';
+        div.style.transition = 'opacity .3s';
+        setTimeout(function() { div.remove(); }, 300);
+    }, 4000);
+}
+
+function safe(value) {
+    if (value === null || value === undefined) return '';
+    return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
+// ==========================================
+// WINDOW ONLOAD
+// ==========================================
+window.onload = function() {
+    loadTheme();
+    var loggedIn = sessionStorage.getItem('login');
+    if (loggedIn === 'true') {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('dashboardPage').style.display = 'block';
+        document.getElementById('userName').innerText = sessionStorage.getItem('nama') || 'Administrator';
+        showDashboard();
+    } else {
+        document.getElementById('loginPage').style.display = 'flex';
+        document.getElementById('dashboardPage').style.display = 'none';
+    }
+};
+
+// ==========================================
+// FUNGSI CALL WA GATEWAY
 // ==========================================
 function callWAGateway(endpoint, method, body, callback) {
     var url = WA_GATEWAY_URL + endpoint;
@@ -955,7 +1314,7 @@ function callWAGateway(endpoint, method, body, callback) {
         method: method || 'GET',
         headers: {
             'Content-Type': 'application/json',
-            'Authorization': 'Bearer ' + (localStorage.getItem('token') || '')
+            'Authorization': 'Bearer ' + (sessionStorage.getItem('token') || '')
         }
     };
     if (body) {
@@ -974,10 +1333,8 @@ function callWAGateway(endpoint, method, body, callback) {
 }
 
 // ==========================================
-// FUNGSI WHATSAPP YANG DIUPDATE (PAKAI WA_GATEWAY_URL)
+// GENERATE QR CODE
 // ==========================================
-
-// Generate QR Code
 function generateQRCode() {
     var status = document.getElementById('qrStatus');
     var placeholder = document.getElementById('qrPlaceholder');
@@ -994,7 +1351,6 @@ function generateQRCode() {
     
     callWAGateway('/session/create', 'POST', {}, function(response) {
         if (response && response.sukses) {
-            // QR akan muncul di terminal VPS, di sini kita hanya menampilkan pesan
             status.innerText = '✅ QR Code tersedia! Scan di terminal VPS.';
             status.style.color = '#16a34a';
             document.getElementById('qrInfo').style.display = 'block';
@@ -1008,7 +1364,54 @@ function generateQRCode() {
     });
 }
 
-// Kirim Pesan WhatsApp
+// ==========================================
+// CHECK WHATSAPP STATUS
+// ==========================================
+function checkWhatsAppStatus() {
+    callWAGateway('/status', 'GET', null, function(response) {
+        var statusEl = document.getElementById('waConnectionStatus');
+        if (!statusEl) return;
+        if (response && response.konek) {
+            statusEl.innerText = '✅ Status: WhatsApp gateway terhubung';
+            statusEl.style.color = '#16a34a';
+        } else {
+            statusEl.innerText = '❌ Status: ' + (response && response.pesan ? response.pesan : 'Belum terhubung');
+            statusEl.style.color = '#dc2626';
+        }
+    });
+}
+
+function startWhatsAppStatusPolling() {
+    if (whatsappStatusTimer) clearInterval(whatsappStatusTimer);
+    whatsappStatusTimer = setInterval(function() {
+        checkWhatsAppStatus();
+    }, 10000);
+}
+
+// ==========================================
+// GENERATE PAIRING CODE
+// ==========================================
+function generatePairingCode() {
+    var number = document.getElementById('pairingWhatsAppNumber').value.trim();
+    var resultEl = document.getElementById('pairingCodeResult');
+    if (!number || number.length < 10) {
+        resultEl.innerText = '⚠️ Masukkan nomor WhatsApp yang valid.';
+        return;
+    }
+    resultEl.innerText = '⏳ Membuat pairing code...';
+    callWAGateway('/pairing', 'POST', { phone: number }, function(response) {
+        if (response && response.sukses) {
+            resultEl.innerText = 'Kode Pairing: ' + response.pairingCode;
+            startWhatsAppStatusPolling();
+        } else {
+            resultEl.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Pairing code gagal dibuat');
+        }
+    });
+}
+
+// ==========================================
+// SEND WHATSAPP MESSAGE
+// ==========================================
 function sendWhatsAppMessage() {
     var number = document.getElementById('waSendNumber').value.trim();
     var message = document.getElementById('waSendMessage').value.trim();
@@ -1034,22 +1437,16 @@ function sendWhatsAppMessage() {
     });
 }
 
-// Cek Status WhatsApp
-function checkWhatsAppStatus() {
-    callWAGateway('/status', 'GET', null, function(response) {
-        var statusEl = document.getElementById('waConnectionStatus');
-        if (!statusEl) return;
-        if (response && response.konek) {
-            statusEl.innerText = '✅ Status: WhatsApp gateway terhubung';
-            statusEl.style.color = '#16a34a';
-        } else {
-            statusEl.innerText = '❌ Status: ' + (response && response.pesan ? response.pesan : 'Belum terhubung');
-            statusEl.style.color = '#dc2626';
-        }
-    });
+function clearWhatsAppForm() {
+    document.getElementById('waSendNumber').value = '';
+    document.getElementById('waSendMessage').value = '';
+    document.getElementById('waTemplate').value = '';
+    document.getElementById('waSendResult').innerText = '';
 }
 
-// Kirim Broadcast Tagihan
+// ==========================================
+// SEND BROADCAST
+// ==========================================
 function sendBroadcastTagihan() {
     var periode = document.getElementById('waBroadcastPeriode').value;
     var result = document.getElementById('waBroadcastResult');
@@ -1073,7 +1470,6 @@ function sendBroadcastTagihan() {
     });
 }
 
-// Kirim Broadcast Pengingat
 function sendBroadcastPengingat() {
     var result = document.getElementById('waBroadcastResult');
     if (!confirm('⏰ Kirim pengingat ke pelanggan yang tagihannya sudah lewat jatuh tempo?')) return;
@@ -1095,7 +1491,9 @@ function sendBroadcastPengingat() {
     });
 }
 
-// Load WA Log
+// ==========================================
+// LOAD WA LOG
+// ==========================================
 function loadWALog() {
     document.getElementById('waLogTable').innerHTML = '<tr><td colspan="4" style="text-align:center">Memuat log...</td></tr>';
     callWAGateway('/log', 'GET', null, function(data) {
@@ -1142,26 +1540,22 @@ function updateWAStats(data) {
     document.getElementById('waFailed').innerText = failed;
 }
 
-// Generate Pairing Code
-function generatePairingCode() {
-    var number = document.getElementById('pairingWhatsAppNumber').value.trim();
-    var resultEl = document.getElementById('pairingCodeResult');
-    if (!number || number.length < 10) {
-        resultEl.innerText = '⚠️ Masukkan nomor WhatsApp yang valid.';
-        return;
-    }
-    resultEl.innerText = '⏳ Membuat pairing code...';
-    callWAGateway('/pairing', 'POST', { phone: number }, function(response) {
+function clearWALog() {
+    if (!confirm('⚠️ Yakin ingin menghapus semua log WhatsApp?')) return;
+    showNotification('Menghapus log...', 'info');
+    callWAGateway('/clear-log', 'POST', {}, function(response) {
         if (response && response.sukses) {
-            resultEl.innerText = 'Kode Pairing: ' + response.pairingCode;
-            startWhatsAppStatusPolling();
+            showNotification('✅ ' + response.pesan, 'success');
+            loadWALog();
         } else {
-            resultEl.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Pairing code gagal dibuat');
+            showNotification('❌ ' + (response && response.pesan ? response.pesan : 'Gagal'), 'error');
         }
     });
 }
 
-// Test WA Admin (kirim pesan test ke admin)
+// ==========================================
+// TEST WA ADMIN
+// ==========================================
 function testWAAdmin() {
     if (!confirm('🔧 Kirim pesan test ke nomor admin?')) return;
     showNotification('Mengirim pesan test...', 'info');
@@ -1175,121 +1569,282 @@ function testWAAdmin() {
 }
 
 // ==========================================
-// SISANYA TETAP SAMA (TIDAK BERUBAH)
+// SEND TELEGRAM MESSAGE
 // ==========================================
-// ... (semua fungsi lain tetap seperti semula, tidak perlu diubah)
-// ==========================================
-
-function showNotification(message, type) {
-    var container = document.getElementById('notificationContainer');
-    var div = document.createElement('div');
-    div.className = 'notification notification-' + (type || 'info');
-    div.textContent = message;
-    container.appendChild(div);
-    setTimeout(function() {
-        div.style.opacity = '0';
-        div.style.transition = 'opacity .3s';
-        setTimeout(function() { div.remove(); }, 300);
-    }, 4000);
+function sendTelegramMessage() {
+    var chatId = document.getElementById('telegramChatId').value.trim();
+    var message = document.getElementById('telegramMessage').value.trim();
+    var result = document.getElementById('telegramSendResult');
+    
+    if (!chatId) { result.innerText = '⚠️ Chat ID harus diisi!'; result.style.color = '#dc2626'; return; }
+    if (!message) { result.innerText = '⚠️ Pesan harus diisi!'; result.style.color = '#dc2626'; return; }
+    
+    result.innerText = '⏳ Mengirim pesan...';
+    result.style.color = '#2563eb';
+    
+    callWAGateway('/telegram/send', 'POST', { chatId: chatId, message: message }, function(response) {
+        if (response && response.sukses) {
+            result.innerText = '✅ ' + response.pesan;
+            result.style.color = '#16a34a';
+            showNotification('✅ Pesan Telegram terkirim!', 'success');
+            loadTelegramLog();
+        } else {
+            result.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Gagal');
+            result.style.color = '#dc2626';
+            showNotification('❌ Gagal kirim pesan Telegram', 'error');
+        }
+    });
 }
 
-function safe(value) {
-    if (value === null || value === undefined) return '';
-    return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+function clearTelegramForm() {
+    document.getElementById('telegramChatId').value = '';
+    document.getElementById('telegramMessage').value = '';
+    document.getElementById('telegramTemplate').value = '';
+    document.getElementById('telegramSendResult').innerText = '';
 }
-    // ==========================================
-// FUNGSI LOAD THEME (Untuk Mode Gelap/Terang)
-// ==========================================
-function loadTheme() {
-    var savedTheme = localStorage.getItem('theme');
-    var btn = document.getElementById('darkToggleBtn');
-    if (savedTheme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        if (btn) btn.textContent = '☀️';
-    } else {
-        document.documentElement.removeAttribute('data-theme');
-        if (btn) btn.textContent = '🌙';
-    }
+
+function testTelegram() {
+    if (!confirm('✈️ Kirim pesan test ke Telegram?')) return;
+    showNotification('Mengirim pesan test...', 'info');
+    callWAGateway('/telegram/test', 'POST', {}, function(response) {
+        if (response && response.sukses) {
+            showNotification('✅ ' + response.pesan, 'success');
+            loadTelegramLog();
+        } else {
+            showNotification('❌ ' + (response && response.pesan ? response.pesan : 'Gagal'), 'error');
+        }
+    });
 }
 
 // ==========================================
-// FUNGSI LOGIN
+// LOAD TELEGRAM LOG
 // ==========================================
-function login() {
-    var username = document.getElementById('username').value.trim();
-    var password = document.getElementById('password').value;
-    var message = document.getElementById('loginMessage');
-    var btn = document.getElementById('loginBtn');
+function loadTelegramLog() {
+    callWAGateway('/telegram/log', 'GET', null, function(data) {
+        var rows = data && data.data ? data.data : [];
+        renderTelegramLog(rows);
+        updateTelegramStats(rows);
+    });
+}
 
-    if (!username || !password) {
-        message.innerText = '⚠️ Username dan password harus diisi';
-        message.className = 'login-message';
+function renderTelegramLog(data) {
+    var container = document.getElementById('telegramLogContainer');
+    if (!data || !data.length) {
+        container.innerHTML = '<p style="color:#6b7280;text-align:center;">Belum ada log Telegram</p>';
         return;
     }
+    var html = '<table style="width:100%;font-size:12px;border-collapse:collapse;">';
+    html += '<thead><tr style="border-bottom:1px solid var(--border-color);"><th style="text-align:left;padding:5px;">Tanggal</th><th style="text-align:left;padding:5px;">Chat ID</th><th style="text-align:left;padding:5px;">Status</th></tr></thead><tbody>';
+    for (var i = 0; i < Math.min(data.length, 50); i++) {
+        var row = data[i];
+        var status = String(row.STATUS || '').toUpperCase();
+        var statusColor = status === 'SENT' ? '#16a34a' : '#dc2626';
+        html += '<tr style="border-bottom:1px solid var(--border-color);">';
+        html += '<td style="padding:5px;">' + safe(row.TANGGAL || '-') + '</td>';
+        html += '<td style="padding:5px;">' + safe(row.CHAT_ID || '-') + '</td>';
+        html += '<td style="padding:5px;color:' + statusColor + ';font-weight:bold;">' + safe(status) + '</td>';
+        html += '</tr>';
+    }
+    html += '</tbody></table>';
+    if (data.length > 50) {
+        html += '<p style="color:#6b7280;font-size:11px;margin-top:5px;">Menampilkan 50 dari ' + data.length + ' data</p>';
+    }
+    container.innerHTML = html;
+}
 
-    btn.classList.add('loading');
-    message.innerText = '⏳ Memeriksa login...';
-    message.className = 'login-message';
+function updateTelegramStats(data) {
+    var total = data.length, failed = 0;
+    for (var i = 0; i < data.length; i++) {
+        var status = String(data[i].STATUS || '').toUpperCase();
+        if (status !== 'SENT') failed++;
+    }
+    document.getElementById('telegramTotal').innerText = total;
+    document.getElementById('telegramFailed').innerText = failed;
+}
 
-    // PAKAI WEB_APP_URL (untuk data billing)
-    var url = WEB_APP_URL + '?action=login';
-    url += '&username=' + encodeURIComponent(username);
-    url += '&password=' + encodeURIComponent(password);
+function clearTelegramLog() {
+    if (!confirm('⚠️ Yakin ingin menghapus semua log Telegram?')) return;
+    showNotification('Menghapus log...', 'info');
+    callWAGateway('/telegram/clear-log', 'POST', {}, function(response) {
+        if (response && response.sukses) {
+            showNotification('✅ ' + response.pesan, 'success');
+            loadTelegramLog();
+        } else {
+            showNotification('❌ ' + (response && response.pesan ? response.pesan : 'Gagal'), 'error');
+        }
+    });
+}
 
-    fetch(url)
-        .then(function(response) {
-            if (!response.ok) throw new Error('HTTP ' + response.status);
-            return response.json();
-        })
-        .then(function(response) {
-            btn.classList.remove('loading');
-            if (response && response.success) {
-                sessionStorage.setItem('login', 'true');
-                sessionStorage.setItem('nama', response.nama || '');
-                sessionStorage.setItem('level', response.level || '');
-                sessionStorage.setItem('username', response.username || '');
-                sessionStorage.setItem('token', response.token || '');
-                document.getElementById('loginPage').style.display = 'none';
-                document.getElementById('dashboardPage').style.display = 'block';
-                document.getElementById('userName').innerText = response.nama || username;
-                var levelDisplay = document.getElementById('userLevel');
-                if (levelDisplay) levelDisplay.innerText = ' (' + response.level + ')';
-                message.innerText = '';
-                showNotification('🎉 Selamat datang, ' + (response.nama || username) + '!', 'success');
-                showDashboard();
-            } else {
-                message.innerText = '❌ ' + (response && response.message ? response.message : 'Login gagal');
-                message.className = 'login-message';
-                document.getElementById('loginBox').classList.add('shake');
-                setTimeout(function() {
-                    document.getElementById('loginBox').classList.remove('shake');
-                }, 500);
+function checkTelegramStatus() {
+    callWAGateway('/telegram/status', 'GET', null, function(response) {
+        var statusEl = document.getElementById('telegramStatus');
+        if (response && response.sukses) {
+            statusEl.innerText = '✅ Terhubung';
+            statusEl.style.color = '#16a34a';
+        } else {
+            statusEl.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Gagal');
+            statusEl.style.color = '#dc2626';
+        }
+    });
+}
+
+function sendTelegramBroadcastTagihan() {
+    var periode = document.getElementById('telegramBroadcastPeriode').value;
+    var result = document.getElementById('telegramBroadcastResult');
+    if (!periode) { result.innerText = '⚠️ Pilih periode terlebih dahulu!'; result.style.color = '#dc2626'; return; }
+    if (!confirm('✈️ Kirim tagihan periode ' + periode + ' ke Telegram?')) return;
+    
+    result.innerText = '⏳ Mengirim tagihan...';
+    result.style.color = '#2563eb';
+    
+    callWAGateway('/telegram/broadcast-tagihan', 'POST', { periode: periode }, function(response) {
+        if (response && response.sukses) {
+            result.innerText = '✅ ' + response.pesan;
+            result.style.color = '#16a34a';
+            showNotification('✅ ' + response.pesan, 'success');
+            loadTelegramLog();
+        } else {
+            result.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Gagal');
+            result.style.color = '#dc2626';
+            showNotification('❌ Gagal kirim broadcast', 'error');
+        }
+    });
+}
+
+function sendTelegramBroadcastPengingat() {
+    var result = document.getElementById('telegramBroadcastResult');
+    if (!confirm('✈️ Kirim pengingat tagihan ke Telegram?')) return;
+    
+    result.innerText = '⏳ Mengirim pengingat...';
+    result.style.color = '#2563eb';
+    
+    callWAGateway('/telegram/broadcast-pengingat', 'POST', {}, function(response) {
+        if (response && response.sukses) {
+            result.innerText = '✅ ' + response.pesan;
+            result.style.color = '#16a34a';
+            showNotification('✅ ' + response.pesan, 'success');
+            loadTelegramLog();
+        } else {
+            result.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Gagal');
+            result.style.color = '#dc2626';
+            showNotification('❌ Gagal kirim broadcast', 'error');
+        }
+    });
+}
+
+function loadBroadcastPeriodeTelegram() {
+    callWAGateway('/telegram/daftar-periode', 'GET', null, function(data) {
+        var select = document.getElementById('telegramBroadcastPeriode');
+        select.innerHTML = '<option value="">Pilih Periode Tagihan</option>';
+        var rows = data && data.data ? data.data : [];
+        if (Array.isArray(rows)) {
+            for (var i = 0; i < rows.length; i++) {
+                var opt = document.createElement('option');
+                opt.value = rows[i];
+                opt.textContent = rows[i];
+                select.appendChild(opt);
             }
-        })
-        .catch(function(error) {
-            btn.classList.remove('loading');
-            message.innerText = '❌ Gagal terhubung ke server: ' + error.message;
-            message.className = 'login-message';
-            showNotification('❌ Gagal terhubung ke server', 'error');
-        });
+        }
+    });
+}
+
+function kirimLaporanTelegram() {
+    var periode = document.getElementById('laporanPeriode').value;
+    if (!periode) { alert('Pilih periode terlebih dahulu!'); return; }
+    if (!confirm('✈️ Kirim laporan ' + periode + ' ke Telegram?')) return;
+    showNotification('Mengirim laporan...', 'info');
+    callWAGateway('/telegram/kirim-laporan', 'POST', { periode: periode }, function(response) {
+        if (response && response.sukses) {
+            showNotification('✅ ' + response.pesan, 'success');
+            loadTelegramLog();
+        } else {
+            showNotification('❌ ' + (response && response.pesan ? response.pesan : 'Gagal'), 'error');
+        }
+    });
 }
 
 // ==========================================
-// LOAD THEME & SESSION
+// FUNGSI DUMMY UNTUK MENGHINDARI ERROR (DIISI NANTI)
 // ==========================================
-window.onload = function() {
-    loadTheme();
-    var loggedIn = sessionStorage.getItem('login');
-    if (loggedIn === 'true') {
-        document.getElementById('loginPage').style.display = 'none';
-        document.getElementById('dashboardPage').style.display = 'block';
-        document.getElementById('userName').innerText = sessionStorage.getItem('nama') || 'Administrator';
-        showDashboard();
-    } else {
-        document.getElementById('loginPage').style.display = 'flex';
-        document.getElementById('dashboardPage').style.display = 'none';
-    }
-};
+function loadPelanggan() { showNotification('Fitur Pelanggan akan segera terhubung', 'info'); }
+function loadDaftarPeriodeTagihan() { showNotification('Fitur Tagihan akan segera terhubung', 'info'); }
+function loadTagihan() { showNotification('Fitur Tagihan akan segera terhubung', 'info'); }
+function loadPembayaran() { showNotification('Fitur Pembayaran akan segera terhubung', 'info'); }
+function loadPengeluaran() { showNotification('Fitur Pengeluaran akan segera terhubung', 'info'); }
+function loadDaftarPeriodeLaporan() { showNotification('Fitur Laporan akan segera terhubung', 'info'); }
+function loadLaporanKeuangan() { showNotification('Fitur Laporan akan segera terhubung', 'info'); }
+function loadPengaturan() { showNotification('Fitur Pengaturan akan segera terhubung', 'info'); }
+function loadUsers() { showNotification('Fitur Users akan segera terhubung', 'info'); }
+function loadMikrotikUsers() { showNotification('Fitur MikroTik akan segera terhubung', 'info'); }
+function refreshDashboard() { showNotification('Dashboard di-refresh!', 'info'); }
+function toggleNominal() { showNotification('Fitur toggle nominal akan segera tersedia', 'info'); }
+function resetDateFilter() { showNotification('Filter tanggal direset!', 'info'); }
+function filterPelanggan() { showNotification('Fitur filter pelanggan akan segera tersedia', 'info'); }
+function filterBelumLunas() { showNotification('Fitur filter belum lunas akan segera tersedia', 'info'); }
+function resetFilter() { showNotification('Filter direset!', 'info'); }
+function sortTable() { showNotification('Fitur sort table akan segera tersedia', 'info'); }
+function tambahPelanggan() { showNotification('Fitur tambah pelanggan akan segera tersedia', 'info'); }
+function tambahPelangganDanInvoice() { showNotification('Fitur tambah pelanggan & invoice akan segera tersedia', 'info'); }
+function resetFormPelanggan() { showNotification('Form pelanggan direset!', 'info'); }
+function generateTagihanDariWeb() { showNotification('Fitur generate tagihan akan segera tersedia', 'info'); }
+function exportPelangganExcel() { showNotification('Fitur export Excel akan segera tersedia', 'info'); }
+function exportTagihanExcel() { showNotification('Fitur export tagihan Excel akan segera tersedia', 'info'); }
+function exportBelumBayar() { showNotification('Fitur export belum bayar akan segera tersedia', 'info'); }
+function savePengaturan() { showNotification('Fitur save pengaturan akan segera tersedia', 'info'); }
+function setupAutoTrigger() { showNotification('Fitur setup auto trigger akan segera tersedia', 'info'); }
+function setupTriggerLaporan() { showNotification('Fitur setup trigger laporan akan segera tersedia', 'info'); }
+function saveUser() { showNotification('Fitur save user akan segera tersedia', 'info'); }
+function editUser() { showNotification('Fitur edit user akan segera tersedia', 'info'); }
+function deleteUser() { showNotification('Fitur delete user akan segera tersedia', 'info'); }
+function resetUserForm() { showNotification('Form user direset!', 'info'); }
+function testMikrotik() { showNotification('Fitur test MikroTik akan segera tersedia', 'info'); }
+function forceEnableMikrotik() { showNotification('Fitur force enable MikroTik akan segera tersedia', 'info'); }
+function cekKonfigurasi() { showNotification('Fitur cek konfigurasi MikroTik akan segera tersedia', 'info'); }
+function syncMikrotikUsers() { showNotification('Fitur sync MikroTik users akan segera tersedia', 'info'); }
+function enableMikrotikUser() { showNotification('Fitur enable MikroTik user akan segera tersedia', 'info'); }
+function disableMikrotikUser() { showNotification('Fitur disable MikroTik user akan segera tersedia', 'info'); }
+function mikrotikUserAction() { showNotification('Fitur action MikroTik user akan segera tersedia', 'info'); }
+function filterMikrotikUsers() { showNotification('Fitur filter MikroTik users akan segera tersedia', 'info'); }
+function loadDashboardWithFilter() { showNotification('Dashboard dengan filter akan segera tersedia', 'info'); }
+function setTemplateMessage() { showNotification('Fitur set template akan segera tersedia', 'info'); }
+function setTelegramTemplate() { showNotification('Fitur set template Telegram akan segera tersedia', 'info'); }
+function clearWhatsAppQr() { 
+    document.getElementById('qrStatus').innerText = '❌ WhatsApp terputus';
+    document.getElementById('qrStatus').style.color = '#dc2626';
+    document.getElementById('qrImage').style.display = 'none';
+    document.getElementById('qrPlaceholder').style.display = 'block';
+    document.getElementById('qrInfo').style.display = 'none';
+    showNotification('QR Code dibersihkan', 'info');
+}
+function showDetail() { showNotification('Fitur detail pelanggan akan segera tersedia', 'info'); }
+function closeDetail() { document.getElementById('detailModal').style.display = 'none'; }
+function downloadInvoice() { showNotification('Fitur download invoice akan segera tersedia', 'info'); }
+function downloadInvoiceTeks() { showNotification('Fitur download invoice teks akan segera tersedia', 'info'); }
+function bayarTagihanRow() { showNotification('Fitur bayar tagihan akan segera tersedia', 'info'); }
+function hapusPembayaran() { showNotification('Fitur hapus pembayaran akan segera tersedia', 'info'); }
+function filterPembayaran() { showNotification('Fitur filter pembayaran akan segera tersedia', 'info'); }
+function filterPengeluaran() { showNotification('Fitur filter pengeluaran akan segera tersedia', 'info'); }
+function tambahPengeluaranForm() { showNotification('Fitur tambah pengeluaran akan segera tersedia', 'info'); }
+function tambahPengeluaranDash() { showNotification('Fitur tambah pengeluaran akan segera tersedia', 'info'); }
+function hapusPengeluaranRow() { showNotification('Fitur hapus pengeluaran akan segera tersedia', 'info'); }
+function clearPengeluaran() { showNotification('Fitur clear pengeluaran akan segera tersedia', 'info'); }
+function kirimLaporanEmail() { showNotification('Fitur kirim laporan email akan segera tersedia', 'info'); }
+function loadBroadcastPeriode() { showNotification('Fitur load broadcast periode akan segera tersedia', 'info'); }
+function waPelanggan() { showNotification('Fitur WA pelanggan akan segera tersedia', 'info'); }
+
+// ==========================================
+// INITIALIZE
+// ==========================================
+// Load theme
+loadTheme();
+
+// Jika sudah login, tampilkan dashboard
+if (sessionStorage.getItem('login') === 'true') {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('dashboardPage').style.display = 'block';
+    document.getElementById('userName').innerText = sessionStorage.getItem('nama') || 'Administrator';
+    showDashboard();
+}
 </script>
 </body>
 </html>
