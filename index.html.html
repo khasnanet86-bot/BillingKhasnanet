@@ -321,6 +321,162 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
         flex-direction: column;
     }
 }
+    /* ===== STYLE WHATSAPP GATEWAY ===== */
+.wa-gateway-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    background: var(--bg-card);
+    border-radius: 16px;
+    box-shadow: var(--card-shadow);
+}
+.wa-gateway-container .server-selector {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+}
+.wa-gateway-container .server-selector select {
+    padding: 10px 16px;
+    border: 2px solid var(--input-border);
+    border-radius: 10px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+    font-size: 14px;
+}
+.wa-gateway-container .delay-info {
+    background: #fef3c7;
+    color: #92400e;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+.wa-gateway-container .file-upload-area {
+    border: 2px dashed var(--input-border);
+    padding: 20px;
+    border-radius: 12px;
+    text-align: center;
+    margin-bottom: 15px;
+    background: var(--bg-primary);
+    cursor: pointer;
+    transition: 0.3s;
+}
+.wa-gateway-container .file-upload-area:hover {
+    border-color: #25d366;
+    background: rgba(37, 211, 102, 0.05);
+}
+.wa-gateway-container .file-upload-area input[type="file"] {
+    display: none;
+}
+.wa-gateway-container .keyword-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0;
+}
+.wa-gateway-container .keyword-buttons .keyword-btn {
+    background: var(--hover-bg);
+    border: 1px solid var(--border-color);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+    color: var(--text-primary);
+}
+.wa-gateway-container .keyword-buttons .keyword-btn:hover {
+    background: #25d366;
+    color: #fff;
+    border-color: #25d366;
+}
+.wa-gateway-container .variant-section {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin: 15px 0;
+}
+.wa-gateway-container .variant-section .variant-btn {
+    padding: 8px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    background: var(--bg-card);
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+.wa-gateway-container .variant-section .variant-btn.active {
+    border-color: #25d366;
+    background: #d4edda;
+    color: #155724;
+}
+.wa-gateway-container .data-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin: 15px 0;
+    background: var(--bg-primary);
+    padding: 15px;
+    border-radius: 10px;
+    font-size: 13px;
+}
+.wa-gateway-container .data-fields .field {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.wa-gateway-container .data-fields .field code {
+    background: var(--input-bg);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+}
+.wa-gateway-container .message-area textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 14px;
+    border: 2px solid var(--input-border);
+    border-radius: 12px;
+    background: var(--input-bg);
+    color: var(--text-primary);
+    font-size: 14px;
+    resize: vertical;
+}
+.wa-gateway-container .message-area textarea:focus {
+    border-color: #25d366;
+    outline: none;
+}
+.wa-gateway-container .send-btn {
+    background: #25d366;
+    color: #fff;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 12px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s;
+    width: 100%;
+    margin-top: 15px;
+}
+.wa-gateway-container .send-btn:hover {
+    background: #1da851;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(37, 211, 102, 0.3);
+}
+@media (max-width: 600px) {
+    .wa-gateway-container .data-fields {
+        grid-template-columns: 1fr;
+    }
+    .wa-gateway-container .server-selector {
+        flex-direction: column;
+        align-items: stretch;
+    }
+}
 </style>
 </head>
 <body>
@@ -555,103 +711,99 @@ td{padding:13px;border-top:1px solid #eee;font-size:14px}
 
       <!-- WHATSAPP -->
       <div id="whatsappPage" style="display:none;">
-        <h2>📱 WhatsApp</h2>
-        <div class="toolbar" style="background:white;padding:18px;border-radius:14px;margin-bottom:15px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-          <button class="detail-btn" onclick="showWhatsappQR()" style="background:#25D366;">📱 QR Code</button>
-          <button class="detail-btn" onclick="showWhatsappSend()" style="background:#2563eb;">📨 Kirim Pesan</button>
-          <button class="detail-btn" onclick="showWhatsappLog()" style="background:#6b7280;">📋 Log</button>
+    <h2 style="display:flex;align-items:center;gap:12px;">
+        📱 <span>WhatsApp Gateway</span>
+        <span style="font-size:14px;font-weight:normal;color:#6b7280;margin-left:auto;" id="waStatusBadge">● Offline</span>
+    </h2>
+
+    <div class="wa-gateway-container">
+
+        <!-- Server Selector -->
+        <div class="server-selector">
+            <label style="font-weight:600;">Pilih Server:</label>
+            <select id="waServerSelect">
+                <option value="global">Global (Free)</option>
+                <option value="06">Server 06 (42 Online)</option>
+            </select>
+            <span class="delay-info">⏱️ Delay Sending: <span id="delayDisplay">30</span> detik</span>
         </div>
-        <div id="whatsappQRSection" style="display:block;">
-          <div class="card" style="padding:20px;text-align:center;max-width:500px;margin:0 auto;">
-            <h3 style="margin-top:0;">📱 Scan QR Code</h3>
-                        <p style="color:#6b7280;font-size:14px;">Scan QR dari gateway dengan WhatsApp yang akan digunakan untuk mengirim pesan.</p>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:15px;">
-                            <button class="success-btn" onclick="generateQRCode()" style="background:#25D366;">🔄 Ambil QR Gateway</button>
-                            <button class="detail-btn" onclick="checkWhatsAppStatus()">🔌 Cek Status</button>
-            </div>
-            <div id="qrContainer" style="margin:20px auto;max-width:250px;min-height:200px;background:#f9fafb;border-radius:12px;display:flex;align-items:center;justify-content:center;border:2px dashed #d1d5db;">
-              <div id="qrPlaceholder" style="text-align:center;color:#9ca3af;">
-                <span style="font-size:48px;">📱</span>
-                <p style="font-size:14px;">Klik "Ambil QR Gateway"</p>
-              </div>
-              <img id="qrImage" src="" alt="QR Code" style="width:100%;display:none;border-radius:8px;">
-            </div>
-            <div style="margin-top:15px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-              <button class="danger-btn" onclick="clearWhatsAppQr()">✕ Bersihkan QR</button>
-            </div>
-            <div id="qrStatus" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
-            <div id="qrInfo" style="margin-top:10px;font-size:12px;color:#6b7280;display:none;">
-                            <p>✅ QR gateway siap di-scan.</p>
-                            <p style="font-size:11px;">WhatsApp → Perangkat tertaut → Tautkan perangkat</p>
-            </div>
-                        <div id="waConnectionStatus" style="margin-top:12px;font-weight:bold;color:#6b7280;">Status: belum dicek</div>
-                        <div style="margin-top:12px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
-                            <input id="pairingWhatsAppNumber" class="search" placeholder="Nomor WhatsApp untuk pairing" style="max-width:250px;text-align:center;">
-                            <button class="detail-btn" onclick="generatePairingCode()">🔐 Kode Pairing</button>
-                        </div>
-                        <div id="pairingCodeResult" style="margin-top:10px;font-size:18px;font-weight:bold;color:#2563eb;"></div>
-          </div>
+
+        <!-- Status QR -->
+        <div style="display:flex;gap:15px;flex-wrap:wrap;align-items:center;margin-bottom:15px;">
+            <button class="success-btn" onclick="generateQRCode()" style="background:#25D366;">📱 Ambil QR Gateway</button>
+            <button class="detail-btn" onclick="checkWhatsAppStatus()" style="background:#2563eb;">🔌 Cek Status</button>
+            <div id="qrStatus" style="font-size:14px;color:#6b7280;"></div>
         </div>
-        <div id="whatsappSendSection" style="display:none;">
-          <div class="card" style="padding:20px;margin-bottom:15px;">
-            <h3 style="margin-top:0;">📨 Kirim Pesan WhatsApp</h3>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:15px;">
-              <div>
-                <label style="font-weight:bold;display:block;margin-bottom:5px;">Nomor Tujuan *</label>
-                <input id="waSendNumber" class="search" placeholder="628123456789">
-              </div>
-              <div>
-                <label style="font-weight:bold;display:block;margin-bottom:5px;">Template Pesan</label>
-                <select id="waTemplate" class="filter" style="width:100%;" onchange="setTemplateMessage()">
-                  <option value="">Pilih Template</option>
-                  <option value="tagihan">📄 Tagihan</option>
-                  <option value="pengingat">⏰ Pengingat</option>
-                  <option value="promo">🎉 Promo</option>
-                  <option value="custom">✏️ Custom</option>
-                </select>
-              </div>
-            </div>
-            <div style="margin-top:10px;">
-              <label style="font-weight:bold;display:block;margin-bottom:5px;">Pesan *</label>
-              <textarea id="waSendMessage" class="search" rows="4" placeholder="Tulis pesan Anda..." style="width:100%;resize:vertical;"></textarea>
-            </div>
-            <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
-              <button class="success-btn" onclick="sendWhatsAppMessage()" style="background:#25D366;">📤 Kirim Pesan</button>
-              <button class="reset-btn" onclick="clearWhatsAppForm()">↺ Reset</button>
-            </div>
-            <div id="waSendResult" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
-          </div>
-          <div class="card" style="padding:20px;">
-            <h3 style="margin-top:0;">📨 Kirim Massal (Broadcast)</h3>
-            <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
-              <select id="waBroadcastPeriode" class="filter" style="min-width:150px;">
+
+        <!-- File Upload -->
+        <div class="file-upload-area" onclick="document.getElementById('fileUpload').click()">
+            <span style="font-size:32px;">📎</span>
+            <p style="margin:5px 0 0;color:#6b7280;">Kirim File (Opsional) — Maksimal 2MB</p>
+            <input type="file" id="fileUpload" accept=".jpg,.jpeg,.png,.gif,.pdf,.doc,.docx">
+            <span id="fileName" style="font-size:13px;color:#25d366;display:block;margin-top:5px;"></span>
+        </div>
+
+        <!-- Keyword Otomatis -->
+        <label style="font-weight:600;display:block;margin:15px 0 8px;">🔑 Keyword Pesan Otomatis</label>
+        <div class="keyword-buttons" id="keywordContainer">
+            <button class="keyword-btn" data-key="[nama_pelanggan]">[nama_pelanggan]</button>
+            <button class="keyword-btn" data-key="[no_invoice]">[no_invoice]</button>
+            <button class="keyword-btn" data-key="[price]">[price]</button>
+            <button class="keyword-btn" data-key="[due_date]">[due_date]</button>
+            <button class="keyword-btn" data-key="[expired]">[expired]</button>
+            <button class="keyword-btn" data-key="[pake_t]">[pake_t]</button>
+            <button class="keyword-btn" data-key="[alamat]">[alamat]</button>
+            <button class="keyword-btn" data-key="[tgl_sekarang]">[tgl_sekarang]</button>
+        </div>
+
+        <!-- Variant Pesan -->
+        <label style="font-weight:600;display:block;margin:15px 0 8px;">📝 Variant Pesan</label>
+        <div class="variant-section" id="variantContainer">
+            <button class="variant-btn active" data-variant="v1">V1</button>
+            <button class="variant-btn" data-variant="v2">V2</button>
+            <button class="variant-btn" data-variant="v3">V3</button>
+            <button class="variant-btn" data-variant="v4">V4</button>
+            <button class="variant-btn" data-variant="v5">V5</button>
+        </div>
+
+        <!-- Data Pelanggan -->
+        <label style="font-weight:600;display:block;margin:15px 0 8px;">📊 Data Pelanggan</label>
+        <div class="data-fields">
+            <span class="field">📌 ID: <code onclick="insertKeyword('[uid]')">[uid]</code></span>
+            <span class="field">📌 Nama: <code onclick="insertKeyword('[nama_pelanggan]')">[nama_pelanggan]</code></span>
+            <span class="field">📌 No HP: <code onclick="insertKeyword('[phone_pelanggan]')">[phone_pelanggan]</code></span>
+            <span class="field">📌 Email: <code onclick="insertKeyword('[email_pelanggan]')">[email_pelanggan]</code></span>
+            <span class="field">📌 Alamat: <code onclick="insertKeyword('[alamat]')">[alamat]</code></span>
+            <span class="field">📌 Tgl Sekarang: <code onclick="insertKeyword('[tgl_sekarang]')">[tgl_sekarang]</code></span>
+            <span class="field">📌 No Invoice: <code onclick="insertKeyword('[no_invoice]')">[no_invoice]</code></span>
+            <span class="field">📌 Due Date: <code onclick="insertKeyword('[due_date]')">[due_date]</code></span>
+            <span class="field">📌 Expired: <code onclick="insertKeyword('[expired]')">[expired]</code></span>
+            <span class="field">📌 Paket: <code onclick="insertKeyword('[pake_t]')">[pake_t]</code></span>
+        </div>
+
+        <!-- Message Area -->
+        <div class="message-area">
+            <textarea id="waSendMessage" placeholder="Tulis pesan Anda di sini... Gunakan keyword untuk mempersonalisasi pesan.">Halo [nama_pelanggan], tagihan internet Anda sebesar Rp[price] sudah jatuh tempo. Segera bayar sebelum [due_date]!</textarea>
+        </div>
+
+        <!-- Tombol Kirim -->
+        <button class="send-btn" onclick="sendWhatsAppMessage()">📤 Kirim Pesan</button>
+        <div id="waSendResult" style="margin-top:12px;font-size:14px;color:#6b7280;text-align:center;"></div>
+    </div>
+
+    <!-- Broadcast Section -->
+    <div class="card" style="margin-top:25px;padding:20px;">
+        <h3 style="margin-top:0;">📨 Kirim Massal (Broadcast)</h3>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+            <select id="waBroadcastPeriode" class="filter" style="min-width:180px;">
                 <option value="">Pilih Periode Tagihan</option>
-              </select>
-              <button class="success-btn" onclick="sendBroadcastTagihan()" style="background:#25D366;">📤 Kirim Tagihan</button>
-              <button class="detail-btn" onclick="sendBroadcastPengingat()">⏰ Kirim Pengingat</button>
-            </div>
-            <div id="waBroadcastResult" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
-          </div>
+            </select>
+            <textarea id="waBroadcastMessage" placeholder="Pesan broadcast..." style="flex:1;min-width:200px;padding:10px;border:2px solid var(--input-border);border-radius:10px;background:var(--input-bg);color:var(--text-primary);resize:vertical;min-height:60px;"></textarea>
+            <button class="success-btn" onclick="sendBroadcastWA()" style="background:#25D366;padding:12px 20px;">📤 Kirim Broadcast</button>
         </div>
-        <div id="whatsappLogSection" style="display:none;">
-          <div class="toolbar">
-            <button class="detail-btn" onclick="loadWALog()">🔄 Refresh</button>
-            <button class="danger-btn" onclick="clearWALog()">🗑️ Hapus Log</button>
-          </div>
-          <div class="cards">
-            <div class="card"><div class="card-title">Total Kiriman</div><div class="card-number" id="waTotal">0</div></div>
-            <div class="card"><div class="card-title">Berhasil</div><div class="card-number" id="waSuccess" style="color:#16a34a;">0</div></div>
-            <div class="card"><div class="card-title">Gagal</div><div class="card-number" id="waFailed" style="color:#dc2626;">0</div></div>
-          </div>
-          <div class="table-box">
-            <table>
-              <thead><tr><th>Tanggal</th><th>No WhatsApp</th><th>Pesan</th><th>Status</th></tr></thead>
-              <tbody id="waLogTable"><tr><td colspan="4" style="text-align:center;padding:30px;">Belum ada log WhatsApp</td></tr></tbody>
-            </table>
-          </div>
-          <div class="info-data">Total: <span id="jmlWALog">0</span> data log</div>
-        </div>
-      </div>
+        <div id="waBroadcastResult" style="margin-top:10px;font-size:14px;color:#6b7280;"></div>
+    </div>
+</div>
 
       <!-- TELEGRAM -->
       <div id="telegramPage" style="display:none;">
@@ -3408,6 +3560,206 @@ window.onload = function() {
         document.getElementById('dashboardPage').style.display = 'none';
     }
 };
+    // ==========================================
+// FUNGSI WHATSAPP - KEYWORD, VARIANT, BROADCAST
+// ==========================================
+
+// --- INSERT KEYWORD KE TEXTAREA ---
+function insertKeyword(keyword) {
+    var textarea = document.getElementById('waSendMessage');
+    if (!textarea) return;
+    var start = textarea.selectionStart;
+    var end = textarea.selectionEnd;
+    var text = textarea.value;
+    textarea.value = text.substring(0, start) + keyword + text.substring(end);
+    textarea.focus();
+    textarea.selectionStart = textarea.selectionEnd = start + keyword.length;
+}
+
+// --- VARIANT PESAN ---
+var variantTemplates = {
+    'v1': 'Halo [nama_pelanggan], tagihan internet Anda sebesar Rp[price] sudah jatuh tempo. Segera bayar sebelum [due_date]!',
+    'v2': 'Yth. [nama_pelanggan], invoice [no_invoice] dengan total Rp[price] telah terbit. Deadline: [due_date]',
+    'v3': 'Pemberitahuan: Paket internet [pake_t] Anda akan berakhir pada [expired]. Perpanjang sekarang!',
+    'v4': 'Halo [nama_pelanggan], kami ingatkan tagihan Anda Rp[price] sudah jatuh tempo. Hubungi kami jika sudah bayar.',
+    'v5': 'Yth. [nama_pelanggan], [no_invoice] - Rp[price]. Segera lunasi sebelum layanan dihentikan.'
+};
+
+// --- EVENT LISTENER UNTUK VARIANT & KEYWORD ---
+document.addEventListener('DOMContentLoaded', function() {
+    // Variant buttons
+    var variantBtns = document.querySelectorAll('.variant-btn');
+    variantBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            variantBtns.forEach(function(b) { b.classList.remove('active'); });
+            this.classList.add('active');
+            var variant = this.dataset.variant;
+            var textarea = document.getElementById('waSendMessage');
+            if (variantTemplates[variant] && textarea) {
+                textarea.value = variantTemplates[variant];
+            }
+        });
+    });
+
+    // Keyword buttons
+    var keywordBtns = document.querySelectorAll('.keyword-btn');
+    keywordBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            insertKeyword(this.dataset.key);
+        });
+    });
+
+    // File upload
+    var fileInput = document.getElementById('fileUpload');
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            var fileName = this.files[0] ? this.files[0].name : '';
+            var fileNameDisplay = document.getElementById('fileName');
+            if (fileNameDisplay) {
+                fileNameDisplay.textContent = fileName ? '📎 ' + fileName : '';
+            }
+            if (this.files[0] && this.files[0].size > 2 * 1024 * 1024) {
+                alert('⚠️ File terlalu besar! Maksimal 2MB.');
+                this.value = '';
+                if (fileNameDisplay) fileNameDisplay.textContent = '';
+            }
+        });
+    }
+
+    // Broadcast periode
+    loadBroadcastPeriode();
+
+    // Status badge
+    checkWhatsAppStatus();
+});
+
+// --- BROADCAST WA ---
+function sendBroadcastWA() {
+    var message = document.getElementById('waBroadcastMessage') ? document.getElementById('waBroadcastMessage').value.trim() : '';
+    var periode = document.getElementById('waBroadcastPeriode') ? document.getElementById('waBroadcastPeriode').value : '';
+    var result = document.getElementById('waBroadcastResult');
+
+    if (!result) return;
+
+    if (!message) {
+        result.innerText = '⚠️ Isi pesan broadcast!';
+        result.style.color = '#dc2626';
+        return;
+    }
+    if (!periode) {
+        result.innerText = '⚠️ Pilih periode tagihan!';
+        result.style.color = '#dc2626';
+        return;
+    }
+    if (!confirm('📨 Kirim broadcast ke SEMUA pelanggan yang belum bayar untuk periode ' + periode + '?')) {
+        return;
+    }
+
+    result.innerText = '⏳ Mengirim broadcast...';
+    result.style.color = '#2563eb';
+
+    callWAGateway('/kirim-broadcast', 'POST', { periode: periode, pesan: message }, function(response) {
+        if (response && response.sukses) {
+            result.innerText = '✅ ' + response.pesan + ' (' + (response.terkirim || 0) + ' pelanggan)';
+            result.style.color = '#16a34a';
+            showNotification('✅ Broadcast terkirim!', 'success');
+            loadWALog();
+        } else {
+            result.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Gagal');
+            result.style.color = '#dc2626';
+            showNotification('❌ ' + (response && response.pesan ? response.pesan : 'Gagal'), 'error');
+        }
+    });
+}
+
+// --- LOAD BROADCAST PERIODE ---
+function loadBroadcastPeriode() {
+    var select = document.getElementById('waBroadcastPeriode');
+    if (!select) return;
+    
+    // Coba ambil dari data pelanggan (customerData) yang sudah ada
+    var periods = [];
+    if (typeof customerData !== 'undefined' && customerData.length > 0) {
+        var seen = {};
+        for (var i = 0; i < customerData.length; i++) {
+            var row = customerData[i];
+            // Coba ambil dari berbagai field yang mungkin ada
+            var periode = row.PERIODE || row.BULAN || row.TAGIHAN_PERIODE || '';
+            if (periode && !seen[periode]) {
+                seen[periode] = true;
+                periods.push(periode);
+            }
+        }
+    }
+    
+    // Jika tidak ada periode dari data, tambahkan default
+    if (periods.length === 0) {
+        var now = new Date();
+        var bulan = now.getMonth() + 1;
+        var tahun = now.getFullYear();
+        var bulanNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+        // Tambahkan 6 bulan terakhir
+        for (var i = 0; i < 6; i++) {
+            var d = new Date(tahun, bulan - 1 - i, 1);
+            var b = d.getMonth() + 1;
+            var t = d.getFullYear();
+            var value = t + '-' + String(b).padStart(2, '0');
+            var label = bulanNames[b - 1] + ' ' + t;
+            periods.push({ value: value, label: label });
+        }
+    }
+    
+    select.innerHTML = '<option value="">Pilih Periode Tagihan</option>';
+    for (var i = 0; i < periods.length; i++) {
+        var opt = document.createElement('option');
+        if (typeof periods[i] === 'object') {
+            opt.value = periods[i].value;
+            opt.textContent = periods[i].label;
+        } else {
+            opt.value = periods[i];
+            opt.textContent = periods[i];
+        }
+        select.appendChild(opt);
+    }
+}
+
+// --- OVERRIDE FUNGSI WHATSAPP YANG SUDAH ADA (jika perlu) ---
+// Fungsi-fungsi ini akan menggantikan yang sudah ada jika didefinisikan ulang
+
+// generateQRCode - sudah ada di kode sebelumnya
+// checkWhatsAppStatus - sudah ada di kode sebelumnya
+// sendWhatsAppMessage - sudah ada di kode sebelumnya
+// loadWALog - sudah ada di kode sebelumnya
+// clearWALog - sudah ada di kode sebelumnya
+// generatePairingCode - sudah ada di kode sebelumnya
+
+// --- FUNGSI UNTUK CLEAR FORM WHATSAPP ---
+function clearWhatsAppForm() {
+    var elements = ['waSendNumber', 'waSendMessage', 'waTemplate', 'waSendResult'];
+    for (var i = 0; i < elements.length; i++) {
+        var el = document.getElementById(elements[i]);
+        if (el) {
+            if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
+                el.value = '';
+            } else {
+                el.innerText = '';
+            }
+        }
+    }
+    // Reset variant ke V1
+    var variantBtns = document.querySelectorAll('.variant-btn');
+    variantBtns.forEach(function(btn) {
+        btn.classList.remove('active');
+        if (btn.dataset.variant === 'v1') {
+            btn.classList.add('active');
+        }
+    });
+    // Set template V1
+    var textarea = document.getElementById('waSendMessage');
+    if (textarea && variantTemplates['v1']) {
+        textarea.value = variantTemplates['v1'];
+    }
+}
 </script>
 </body>
 </html>
