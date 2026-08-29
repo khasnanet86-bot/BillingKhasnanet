@@ -2308,31 +2308,43 @@ function generateQRCode() {
     var status = document.getElementById('qrStatus');
     var placeholder = document.getElementById('qrPlaceholder');
     var qrImage = document.getElementById('qrImage');
-    if (!status || !placeholder || !qrImage) {
-        console.error('QR Code elements not found!');
-        return;
-    }
     
-    status.innerText = '⏳ Meminta QR dari gateway...';
+    if (!status || !placeholder || !qrImage) return;
+    
+    status.innerText = '⏳ Meminta QR...';
     status.style.color = '#2563eb';
     placeholder.style.display = 'none';
     qrImage.style.display = 'none';
-    
-    callWebApp('generateWhatsAppQR', {}, function(response) {
-        var qrValue = response && (response.qrCode || (response.data && response.data.qr));
-        if (!response || !response.success || !qrValue) {
-            status.innerText = '❌ ' + (response && response.message ? response.message : 'QR gateway tidak tersedia');
+
+    // Panggil endpoint /qr
+    callWAGateway('/qr', 'GET', null, function(response) {
+        console.log('📥 Response QR:', response);
+        if (response && response.sukses && response.qr) {
+            qrImage.src = response.qr;
+            qrImage.style.display = 'block';
+            status.innerText = '✅ Scan QR dengan WhatsApp!';
+            status.style.color = '#16a34a';
+            showNotification('📱 Scan QR Code!', 'success');
+            
+            // Polling status setiap 3 detik
+            var statusInterval = setInterval(function() {
+                callWAGateway('/status', 'GET', null, function(res) {
+                    if (res && res.konek) {
+                        clearInterval(statusInterval);
+                        status.innerText = '✅ WhatsApp Terhubung!';
+                        status.style.color = '#16a34a';
+                        showNotification('✅ WhatsApp terhubung!', 'success');
+                        // Update badge
+                        document.getElementById('waStatusBadge').innerHTML = '● Online';
+                        document.getElementById('waStatusBadge').style.color = '#16a34a';
+                    }
+                });
+            }, 3000);
+        } else {
+            status.innerText = '❌ ' + (response && response.pesan ? response.pesan : 'Gagal ambil QR');
             status.style.color = '#dc2626';
             placeholder.style.display = 'block';
-            return;
         }
-        qrImage.src = String(qrValue).indexOf('data:image') === 0 ? qrValue : 'data:image/png;base64,' + qrValue;
-        qrImage.style.display = 'block';
-        status.innerText = '✅ QR gateway siap di-scan.';
-        status.style.color = '#16a34a';
-        document.getElementById('qrInfo').style.display = 'block';
-        showNotification('✅ QR gateway siap!', 'success');
-        startWhatsAppStatusPolling();
     });
 }
 
